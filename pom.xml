@@ -83,7 +83,7 @@
                             <classpathLayoutType>custom</classpathLayoutType>
                             <customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.prinzvalium.nextvalium.NextValium</mainClass>
+                            <mainClass>de.prinzvalium.nextvaliumgui.NextValiumGui</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

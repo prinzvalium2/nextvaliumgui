@@ -147,7 +147,7 @@ public class Galaxy {
             for (int i = 0; i < jsonPlanets.length(); i++) {
                 JSONObject obj = jsonPlanets.getJSONObject(i);
                 GalaxyMapKey key = new GalaxyMapKey(obj.getInt("x"), obj.getInt("y"));
-                GalaxyMapValue value = new GalaxyMapValue("planet", null, obj.getString("id"), obj.getString("img"));
+                GalaxyMapValue value = new GalaxyMapValue("planet", null, obj.getString("id"), obj.getString("img"), key);
                 galaxyMap.put(key, value);
             }
             

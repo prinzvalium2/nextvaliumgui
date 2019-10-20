@@ -43,6 +43,7 @@ public class Util {
     public static final String NEXTCOLONY_API_CMD_LOADPLANETS = "loadplanets?from=0&to=9999&user=%s";
     public static final String NEXTCOLONY_API_CMD_LOADMISSIONS = "loadfleetmission?user=%s";
     public static final String NEXTCOLONY_API_CMD_LOADRECENTTRANSACTIONS = "transactions?";
+    public static final String NEXTCOLONY_API_CMD_LOADCORDDATA = "loadcorddata?x=%s&y=%s";
     
     // prinzvalium
     public static final String PLANETID_06_SANDURZ = "P-ZWZVQCFOS34";
@@ -92,7 +93,7 @@ public class Util {
             jsonText += inputLine;
         in.close();
         
-        sleep(250); // do not stress nextcolony server
+        //sleep(250); // do not stress nextcolony server
         
         return jsonText;
     }

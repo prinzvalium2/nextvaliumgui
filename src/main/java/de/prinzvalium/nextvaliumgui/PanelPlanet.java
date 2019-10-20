@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import org.json.JSONException;
 
+import de.prinzvalium.nextvalium.nextcolony.CordData;
 import de.prinzvalium.nextvalium.nextcolony.GalaxyMapValue;
 import de.prinzvalium.nextvalium.nextcolony.PlanetDetails;
 
@@ -25,7 +26,9 @@ public class PanelPlanet extends JPanel {
         color = null;
         
         try {
-            color = mapUserColor.get(new PlanetDetails(value.getPlanetId()).getUserName());
+            //String userName = new PlanetDetails(value.getPlanetId()).getUserName();
+            String userName = new CordData(value.getPlanetX(), value.getPlanetY()).getUserName();
+            color = mapUserColor.get(userName);
             
         } catch (JSONException | IOException e) {
             // TODO Auto-generated catch block

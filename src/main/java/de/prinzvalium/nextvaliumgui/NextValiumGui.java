@@ -19,7 +19,7 @@ public class NextValiumGui {
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
-    private GalaxyMapPanel panelGalaxyMap;
+    private PanelGalaxyMap panelGalaxyMap;
 
     /**
      * Launch the application.
@@ -98,7 +98,7 @@ public class NextValiumGui {
         });
         panel_1.add(btnRefresh);
         
-        panelGalaxyMap = new GalaxyMapPanel();
+        panelGalaxyMap = new PanelGalaxyMap();
         frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER);
     }
 }

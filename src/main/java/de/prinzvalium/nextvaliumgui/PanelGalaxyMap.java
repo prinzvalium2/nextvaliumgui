@@ -14,7 +14,7 @@ import de.prinzvalium.nextvalium.nextcolony.Galaxy;
 import de.prinzvalium.nextvalium.nextcolony.GalaxyMapKey;
 import de.prinzvalium.nextvalium.nextcolony.GalaxyMapValue;
 
-public class GalaxyMapPanel extends JPanel {
+public class PanelGalaxyMap extends JPanel {
     
     private static final long serialVersionUID = 1L;
     private HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = null;
@@ -23,7 +23,12 @@ public class GalaxyMapPanel extends JPanel {
     private Color color = null;
     private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
     
-    GalaxyMapPanel()  {
+    PanelGalaxyMap()  {
+        setLayout(null);
+        
+        JPanel panel = new JPanel();
+        panel.setBounds(116, 98, 10, 10);
+        add(panel);
     }
     
     public void loadGalaxyMap(int x, int y) {
@@ -37,6 +42,7 @@ public class GalaxyMapPanel extends JPanel {
             galaxyMapRight = Galaxy.loadGalaxyMap(locationX+50, locationY, 100, 125);
             galaxyMap = new HashMap<GalaxyMapKey, GalaxyMapValue>(galaxyMapLeft);
             galaxyMap.putAll(galaxyMapRight);
+            
            
         } catch (JSONException | IOException e) {
             // TODO Auto-generated catch block
@@ -89,32 +95,13 @@ public class GalaxyMapPanel extends JPanel {
             int x = (galaxyMapKey.getX() - locationX) * 6 + (getWidth() / 2);
             int y = (galaxyMapKey.getY() - locationY) * -6 + (getHeight() / 2);
             
-            String status = galaxyMapValue.getStatus();
-            String userName = galaxyMapValue.getUserName();
-            
-            color = Color.BLACK;
-            
-            if (userName != null) {
-                
-                color = mapUserColor.get(userName);
-                
-                if (color == null) {
-                    int red = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    int green = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    int blue = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    color = new Color(red, green, blue);
-                    mapUserColor.put(userName, color);
-                }
-            }
-            
-            switch (status) {
-            case "planet":
-                g.setColor(color.darker());
-                g.fillOval(x-6, y-6, 12, 12);
-                g.drawOval(x-6, y-6, 12, 12);
-                break;
+            if (galaxyMapValue.getStatus().equalsIgnoreCase("planet")) {
+                PanelPlanet panelPlanet = new PanelPlanet(galaxyMapValue, mapUserColor);
+                panelPlanet.setLocation(x-panelPlanet.getWidth()/2, y-panelPlanet.getHeight()/2);
+                //panelPlanet.setVisible(true);
+                add(panelPlanet);
             }
         });
+        
     }
-
 }

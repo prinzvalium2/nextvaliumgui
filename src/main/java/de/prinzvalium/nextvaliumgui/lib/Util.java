@@ -40,7 +40,8 @@ public class Util {
     public static final String NEXTCOLONY_API_CMD_LOADBUILDINGS = "loadbuildings?id=%s";
     public static final String NEXTCOLONY_API_CMD_LOADRESSOURCEQUANTITIES = "loadqyt?id=%s";
     public static final String NEXTCOLONY_API_CMD_LOADPLANET = "loadplanet?id=%s";
-    public static final String NEXTCOLONY_API_CMD_LOADPLANETS = "loadplanets?from=0&to=9999&user=%s";
+    public static final String NEXTCOLONY_API_CMD_LOADUSERPLANETS = "loadplanets?from=0&to=9999&user=%s";
+    public static final String NEXTCOLONY_API_CMD_LOADALLPLANETS = "loadplanets?from=%s&to=%s";
     public static final String NEXTCOLONY_API_CMD_LOADMISSIONS = "loadfleetmission?user=%s";
     public static final String NEXTCOLONY_API_CMD_LOADRECENTTRANSACTIONS = "transactions?";
     public static final String NEXTCOLONY_API_CMD_LOADCORDDATA = "loadcorddata?x=%s&y=%s";

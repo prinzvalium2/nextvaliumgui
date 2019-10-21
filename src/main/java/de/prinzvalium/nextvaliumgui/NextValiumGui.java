@@ -16,6 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 
@@ -23,6 +26,7 @@ import javax.swing.JButton;
 
 public class NextValiumGui {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
@@ -63,6 +67,8 @@ public class NextValiumGui {
      * Initialize the contents of the frame.
      */
     private void initialize() {
+        LOGGER.trace("initialize()");
+        
         frmNextvaliumManagementGui = new JFrame();
         frmNextvaliumManagementGui.setTitle("NextValium GUI - Management GUI for NextColony");
         frmNextvaliumManagementGui.setBounds(10, 10, 1250, 900);

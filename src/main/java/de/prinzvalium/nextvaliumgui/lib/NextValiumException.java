@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvalium.lib;
+package de.prinzvalium.nextvaliumgui.lib;
 
 public class NextValiumException extends Exception {
 

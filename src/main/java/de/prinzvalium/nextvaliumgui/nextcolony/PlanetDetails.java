@@ -1,11 +1,11 @@
-package de.prinzvalium.nextvalium.nextcolony;
+package de.prinzvalium.nextvaliumgui.nextcolony;
 
 import java.io.IOException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.prinzvalium.nextvalium.lib.Util;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 
 public class PlanetDetails {
     

@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvalium.nextcolony;
+package de.prinzvalium.nextvaliumgui.nextcolony.galaxymap;
 
 
 public class GalaxyMapValue {

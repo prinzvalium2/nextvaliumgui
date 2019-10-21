@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvalium.nextcolony;
+package de.prinzvalium.nextvaliumgui.nextcolony.galaxymap;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.prinzvalium.nextvalium.lib.Util;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;

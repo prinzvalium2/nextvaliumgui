@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvalium.lib;
+package de.prinzvalium.nextvaliumgui.lib;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 
-import de.prinzvalium.nextvalium.steem.SteemUtil;
+import de.prinzvalium.nextvaliumgui.steem.SteemUtil;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;

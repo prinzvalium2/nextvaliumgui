@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvaliumgui;
+package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,9 +10,9 @@ import javax.swing.JPanel;
 
 import org.json.JSONException;
 
-import de.prinzvalium.nextvalium.nextcolony.Galaxy;
-import de.prinzvalium.nextvalium.nextcolony.GalaxyMapKey;
-import de.prinzvalium.nextvalium.nextcolony.GalaxyMapValue;
+import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.Galaxy;
+import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
+import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 
 public class PanelGalaxyMap extends JPanel {
     
@@ -23,7 +23,7 @@ public class PanelGalaxyMap extends JPanel {
     private Color color = null;
     private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
     
-    PanelGalaxyMap()  {
+    public PanelGalaxyMap()  {
         setLayout(null);
         
         JPanel panel = new JPanel();

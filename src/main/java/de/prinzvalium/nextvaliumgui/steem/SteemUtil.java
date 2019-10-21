@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvalium.steem;
+package de.prinzvalium.nextvaliumgui.steem;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.prinzvalium.nextvalium.lib.Util;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;
 import eu.bittrade.libs.steemj.base.models.SignedTransaction;

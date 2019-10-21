@@ -8,10 +8,17 @@ import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
+import de.prinzvalium.nextvaliumgui.lib.Util;
+
 import javax.swing.JButton;
 
 public class NextValiumGui {
@@ -40,8 +47,15 @@ public class NextValiumGui {
 
     /**
      * Create the application.
+     * @throws IOException 
+     * @throws FileNotFoundException 
      */
-    public NextValiumGui() {
+    public NextValiumGui() throws FileNotFoundException, IOException {
+        
+        // Read user and keys from ini-file. User skills are loaded
+        HashMap<String, String> mapUserAndKey = new HashMap<String, String>();
+        Util.loadProperties(mapUserAndKey);
+        
         initialize();
     }
 

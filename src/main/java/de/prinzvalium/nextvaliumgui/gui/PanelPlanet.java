@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvaliumgui;
+package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,9 +9,9 @@ import javax.swing.JPanel;
 
 import org.json.JSONException;
 
-import de.prinzvalium.nextvalium.nextcolony.CordData;
-import de.prinzvalium.nextvalium.nextcolony.GalaxyMapValue;
-import de.prinzvalium.nextvalium.nextcolony.PlanetDetails;
+import de.prinzvalium.nextvaliumgui.nextcolony.CordData;
+import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
+import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 
 public class PanelPlanet extends JPanel {
     

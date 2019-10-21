@@ -38,7 +38,6 @@ public class PanelGalaxyMap extends JPanel {
         LOGGER.trace("loadGalaxyMap()");
         
         try {
-            removeAll();
             locationX = x;
             locationY = y;
             galaxyMap = Galaxy.loadGalaxyMap(locationX-50, locationY, 100, 125);
@@ -92,6 +91,7 @@ public class PanelGalaxyMap extends JPanel {
             }
         });
         
+        removeAll();
         paintPlanets();
     }
     

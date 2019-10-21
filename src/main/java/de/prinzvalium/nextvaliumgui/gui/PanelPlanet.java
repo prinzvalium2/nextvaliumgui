@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PanelPlanet extends JPanel {
     
@@ -35,6 +37,7 @@ public class PanelPlanet extends JPanel {
             Planet planet = planets.get(planetId);
             String userName = planet.getUserName();
             color = mapUserColor.get(userName);
+            setToolTipText("<html>" + userName + "<br>" + planet.getName() + "</html>");
             
             if (color == null) {
                 int red = ThreadLocalRandom.current().nextInt(1, 13) * 20;

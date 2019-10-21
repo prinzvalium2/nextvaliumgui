@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JPanel;
 
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
@@ -16,6 +19,7 @@ import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 public class PanelPlanet extends JPanel {
     
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PanelPlanet.class);
     private GalaxyMapValue galaxyMapValue;
     private Color color;
 
@@ -32,6 +36,14 @@ public class PanelPlanet extends JPanel {
             String userName = planet.getUserName();
             color = mapUserColor.get(userName);
             
+            if (color == null) {
+                int red = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                int green = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                int blue = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                color = new Color(red, green, blue);
+                mapUserColor.put(userName, color);
+            }
+            
         } catch (JSONException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -44,12 +56,7 @@ public class PanelPlanet extends JPanel {
     }
 
     protected void paintComponent(Graphics g) {
-        
         g.setColor(color.darker());
-//        g.fillOval(0, 0, getSize().width, getSize().height);
-//        g.drawOval(0, 0, getSize().width, getSize().height);
-        
         g.fillOval(0, 0, getWidth(), getHeight());
-        //g.drawOval(0, 0, getWidth(), getHeight());
     }
 }

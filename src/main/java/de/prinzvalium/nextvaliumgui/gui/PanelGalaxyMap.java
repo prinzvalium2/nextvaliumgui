@@ -27,22 +27,20 @@ public class PanelGalaxyMap extends JPanel {
     private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
     
     public PanelGalaxyMap()  {
+        LOGGER.trace("PanelGalaxyMap()");
+        
         setLayout(null);
     }
     
     public void loadGalaxyMap(int x, int y) {
+        LOGGER.trace("loadGalaxyMap()");
         
         try {
             removeAll();
             locationX = x;
             locationY = y;
-            HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMapLeft;
-            HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMapRight;
-            galaxyMapLeft = Galaxy.loadGalaxyMap(locationX-50, locationY, 100, 125);
-            galaxyMapRight = Galaxy.loadGalaxyMap(locationX+50, locationY, 100, 125);
-            galaxyMap = new HashMap<GalaxyMapKey, GalaxyMapValue>(galaxyMapLeft);
-            galaxyMap.putAll(galaxyMapRight);
-            
+            galaxyMap = Galaxy.loadGalaxyMap(locationX-50, locationY, 100, 125);
+            galaxyMap.putAll(Galaxy.loadGalaxyMap(locationX+50, locationY, 100, 125));
            
         } catch (JSONException | IOException e) {
             // TODO Auto-generated catch block
@@ -53,6 +51,7 @@ public class PanelGalaxyMap extends JPanel {
 
     @Override 
     protected void paintComponent(Graphics g) {
+        LOGGER.trace("paintComponent()");
         
         if (galaxyMap == null)
             return;
@@ -91,7 +90,11 @@ public class PanelGalaxyMap extends JPanel {
             }
         });
         
-        LOGGER.trace("vor galaxyMap.forEach()");
+        paintPlanets();
+    }
+    
+    public void paintPlanets() {
+        LOGGER.trace("paintPlanets() - start");
         
         galaxyMap.forEach((galaxyMapKey, galaxyMapValue) -> {
             
@@ -106,6 +109,6 @@ public class PanelGalaxyMap extends JPanel {
             add(panelPlanet);
         });
         
-        LOGGER.trace("nach galaxyMap.forEach()");
+        LOGGER.trace("paintPlanets() - end");
     }
 }

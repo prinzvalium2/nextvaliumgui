@@ -84,10 +84,10 @@ public class Util {
         
         URL url = new URL(NEXTCOLONY_API_URL + apiCommand);
         
+        LOGGER.debug("    open: " + url.toString());
+        
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 
-        LOGGER.debug("    " + url.toString());
-        
         String jsonText = "";
         String inputLine;
         while ((inputLine = in.readLine()) != null)
@@ -95,6 +95,8 @@ public class Util {
         in.close();
         
         //sleep(250); // do not stress nextcolony server
+        
+        LOGGER.debug("    close: " + url.toString());
         
         return jsonText;
     }

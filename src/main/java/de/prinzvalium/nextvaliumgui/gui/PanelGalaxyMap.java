@@ -30,6 +30,8 @@ public class PanelGalaxyMap extends JPanel {
         LOGGER.trace("PanelGalaxyMap()");
         
         setLayout(null);
+        
+        loadGalaxyMap(0, 0);
     }
     
     public void loadGalaxyMap(int x, int y) {

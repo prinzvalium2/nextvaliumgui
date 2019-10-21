@@ -39,9 +39,7 @@ public class NextValiumGui {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    NextValiumGui window = new NextValiumGui();
-                    window.panelGalaxyMap.loadGalaxyMap(0, 0); 
-                    window.frmNextvaliumManagementGui.setVisible(true);
+                    new NextValiumGui();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -124,5 +122,7 @@ public class NextValiumGui {
         
         panelGalaxyMap = new PanelGalaxyMap();
         frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER);
+        
+        frmNextvaliumManagementGui.setVisible(true);
     }
 }

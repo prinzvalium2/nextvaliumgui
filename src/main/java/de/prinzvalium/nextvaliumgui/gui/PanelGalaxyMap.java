@@ -9,6 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JPanel;
 
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.Galaxy;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
@@ -17,6 +19,7 @@ import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 public class PanelGalaxyMap extends JPanel {
     
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PanelGalaxyMap.class);
     private HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = null;
     private int locationX;
     private int locationY;
@@ -25,15 +28,12 @@ public class PanelGalaxyMap extends JPanel {
     
     public PanelGalaxyMap()  {
         setLayout(null);
-        
-        JPanel panel = new JPanel();
-        panel.setBounds(116, 98, 10, 10);
-        add(panel);
     }
     
     public void loadGalaxyMap(int x, int y) {
         
         try {
+            removeAll();
             locationX = x;
             locationY = y;
             HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMapLeft;
@@ -91,17 +91,21 @@ public class PanelGalaxyMap extends JPanel {
             }
         });
         
+        LOGGER.trace("vor galaxyMap.forEach()");
+        
         galaxyMap.forEach((galaxyMapKey, galaxyMapValue) -> {
+            
+            if (!galaxyMapValue.getStatus().equalsIgnoreCase("planet"))
+                return;
+            
             int x = (galaxyMapKey.getX() - locationX) * 6 + (getWidth() / 2);
             int y = (galaxyMapKey.getY() - locationY) * -6 + (getHeight() / 2);
             
-            if (galaxyMapValue.getStatus().equalsIgnoreCase("planet")) {
-                PanelPlanet panelPlanet = new PanelPlanet(galaxyMapValue, mapUserColor);
-                panelPlanet.setLocation(x-panelPlanet.getWidth()/2, y-panelPlanet.getHeight()/2);
-                //panelPlanet.setVisible(true);
-                add(panelPlanet);
-            }
+            PanelPlanet panelPlanet = new PanelPlanet(galaxyMapValue, mapUserColor);
+            panelPlanet.setLocation(x-panelPlanet.getWidth()/2, y-panelPlanet.getHeight()/2);
+            add(panelPlanet);
         });
         
+        LOGGER.trace("nach galaxyMap.forEach()");
     }
 }

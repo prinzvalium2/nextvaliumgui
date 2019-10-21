@@ -29,10 +29,11 @@ public class Planets {
         HashMap<String, Planet>  mapPlanets = new HashMap<String, Planet>();
         
         int from = 0;
+        int SPLITSIZE = 100000;
         
         while (true) {
             
-            String apiCmd = String.format(Util.NEXTCOLONY_API_CMD_LOADALLPLANETS, Integer.toString(from), Integer.toString(from+999));
+            String apiCmd = String.format(Util.NEXTCOLONY_API_CMD_LOADALLPLANETS, Integer.toString(from), Integer.toString(from + SPLITSIZE));
             JSONObject jsonObject = Util.getJSONObjectFromApiCommand(apiCmd);
             JSONArray jsonPlanets = jsonObject.getJSONArray("planets");
             
@@ -44,7 +45,10 @@ public class Planets {
                 mapPlanets.put(p.getId(), p);
             }
             
-            from += 1000;
+            if (jsonPlanets.length() < SPLITSIZE)
+                break;
+            
+            from += SPLITSIZE;
         }
         
         return mapPlanets;

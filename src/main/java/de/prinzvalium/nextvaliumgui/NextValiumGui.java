@@ -55,6 +55,10 @@ public class NextValiumGui {
      * @throws FileNotFoundException 
      */
     public NextValiumGui() throws FileNotFoundException, IOException {
+        LOGGER.trace("");
+        LOGGER.trace("---------------");
+        LOGGER.trace("NextValiumGui()");
+        LOGGER.trace("---------------");
         
         // Read user and keys from ini-file. User skills are loaded
         HashMap<String, String> mapUserAndKey = new HashMap<String, String>();

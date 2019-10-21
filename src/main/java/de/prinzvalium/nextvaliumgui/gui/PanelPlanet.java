@@ -9,15 +9,14 @@ import javax.swing.JPanel;
 
 import org.json.JSONException;
 
-import de.prinzvalium.nextvaliumgui.nextcolony.CordData;
-import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
+import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
+import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 
 public class PanelPlanet extends JPanel {
     
     private static final long serialVersionUID = 1L;
     private GalaxyMapValue galaxyMapValue;
-    private PlanetDetails planetDetails;
     private Color color;
 
     public PanelPlanet(GalaxyMapValue value, HashMap<String, Color> mapUserColor) {
@@ -26,8 +25,11 @@ public class PanelPlanet extends JPanel {
         color = null;
         
         try {
-            //String userName = new PlanetDetails(value.getPlanetId()).getUserName();
-            String userName = new CordData(value.getPlanetX(), value.getPlanetY()).getUserName();
+            
+            HashMap<String, Planet> planets = Planets.getAllPlanets();
+            String planetId = galaxyMapValue.getPlanetId();
+            Planet planet = planets.get(planetId);
+            String userName = planet.getUserName();
             color = mapUserColor.get(userName);
             
         } catch (JSONException | IOException e) {
@@ -48,6 +50,6 @@ public class PanelPlanet extends JPanel {
 //        g.drawOval(0, 0, getSize().width, getSize().height);
         
         g.fillOval(0, 0, getWidth(), getHeight());
-        g.drawOval(0, 0, getWidth(), getHeight());
+        //g.drawOval(0, 0, getWidth(), getHeight());
     }
 }

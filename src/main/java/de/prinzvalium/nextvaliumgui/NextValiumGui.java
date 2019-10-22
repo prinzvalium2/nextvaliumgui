@@ -42,7 +42,7 @@ public class NextValiumGui {
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
-    private PanelGalaxyMap panelGalaxyMap;
+    public static PanelGalaxyMap panelGalaxyMap;
     private JTextField textFieldUserName;
     private JComboBox<String> comboBoxPlanets;
     private HashMap<String, Planet> mapPlanets;

@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
@@ -39,7 +40,7 @@ public class PanelPlanet extends JPanel {
                     DialogPlanetDetails dialog = new DialogPlanetDetails(planet);
                     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                     dialog.setVisible(true);
-                }
+                 }
                 else {
                     PopupMenuPlanet popupMenuPlanet = new PopupMenuPlanet(panelPlanet);
                     popupMenuPlanet.show(arg0.getComponent(), arg0.getX(), arg0.getY());
@@ -66,12 +67,14 @@ public class PanelPlanet extends JPanel {
             String planetId = value.getPlanetId();
             planet = planets.get(planetId);
             
-            if (PanelGalaxyMap.getMarkedPlanetId() != null && PanelGalaxyMap.getMarkedPlanetId().equalsIgnoreCase(planetId))
+            String userName = planet.getUserName();
+            setToolTipText("<html>" + userName + "<br>" + planet.getName() + "</html>");
+            
+            Planet planetTarget = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
+            if (planetTarget != null && planetTarget.getId().equalsIgnoreCase(planetId))
                 return Color.WHITE;
             
-            String userName = planet.getUserName();
             color = mapUserColor.get(userName);
-            setToolTipText("<html>" + userName + "<br>" + planet.getName() + "</html>");
             
             if (color == null) {
                 int red = ThreadLocalRandom.current().nextInt(1, 13) * 20;
@@ -84,17 +87,26 @@ public class PanelPlanet extends JPanel {
             return color;
             
         } catch (JSONException | IOException e) {
-            
             return null;
         }
     }
 
     protected void paintComponent(Graphics g) {
-        g.setColor(color.equals(Color.WHITE) ? Color.WHITE : color.darker());
+        
+        if (color.equals(Color.WHITE)) {
+            g.setColor(Color.WHITE);
+            g.fillOval(0, 0, getWidth(), getHeight());
+            g.setColor(Color.RED);
+            g.drawOval(0+1, 0+1, getWidth()-2, getHeight()-2);
+            g.drawOval(0+3, 0+3, getWidth()-6, getHeight()-6);
+            g.drawOval(0+5, 0+5, getWidth()-10, getHeight()-10);
+            return;
+        }
+        g.setColor(color.darker());
         g.fillOval(0, 0, getWidth(), getHeight());
     }
     
     public void setMarked(boolean marked) {
-        PanelGalaxyMap.setMarkedPlanetId(planet.getId());
+        NextValiumGui.getNextValiumGui().setPlanetMarkedAsTarget(planet);
     }
 }

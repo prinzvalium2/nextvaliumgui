@@ -2,31 +2,27 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.json.JSONException;
-
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
-import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
 import javax.swing.JTabbedPane;
 
 public class DialogPlanetDetails extends JDialog {
 
     private static final long serialVersionUID = 1L;
     private final JPanel contentPanel = new JPanel();
-    private Planet planet;
 
     /**
      * Create the dialog.
      */
     public DialogPlanetDetails(Planet planet) {
+        super(NextValiumGui.getNextValiumGui().getFrmNextvaliumManagementGui(), true);
         
-        this.planet = planet;
         setTitle(planet.getUserName() + " / " + planet.getName());
         
         setBounds(100, 150, 800, 600);

@@ -20,7 +20,6 @@ public class PopupMenuPlanet extends JPopupMenu {
         mntmMarkAsTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 panelPlanet.setMarked(true);
-                NextValiumGui.panelGalaxyMap.repaint();
             }
         });
         add(mntmMarkAsTarget);

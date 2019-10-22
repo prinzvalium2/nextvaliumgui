@@ -39,13 +39,16 @@ import java.awt.FlowLayout;
 public class NextValiumGui {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
+    private static NextValiumGui nextValiumGui = null;
     private JFrame frmNextvaliumManagementGui;
+    private PanelGalaxyMap panelGalaxyMap;
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
-    public static PanelGalaxyMap panelGalaxyMap;
     private JTextField textFieldUserName;
     private JComboBox<String> comboBoxPlanets;
     private HashMap<String, Planet> mapPlanets;
+    private Planet planetMarkedAsTarget = null;
+    private JLabel lblMarkedAsTarget;
 
     /**
      * Launch the application.
@@ -54,7 +57,7 @@ public class NextValiumGui {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new NextValiumGui();
+                    nextValiumGui = new NextValiumGui();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -120,9 +123,6 @@ public class NextValiumGui {
         frmNextvaliumManagementGui.getContentPane().add(panel_1, BorderLayout.NORTH);
         panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         
-        Component horizontalStrut_2 = Box.createHorizontalStrut(20);
-        panel_1.add(horizontalStrut_2);
-        
         JLabel lblUserName = new JLabel("User:");
         panel_1.add(lblUserName);
         
@@ -169,10 +169,7 @@ public class NextValiumGui {
         comboBoxPlanets.setPreferredSize(new Dimension(150, 20));
         panel_1.add(comboBoxPlanets);
         
-        Component horizontalStrut_1 = Box.createHorizontalStrut(20);
-        panel_1.add(horizontalStrut_1);
-        
-        JLabel lblMapPosition = new JLabel("Map position - X:");
+        JLabel lblMapPosition = new JLabel("X:");
         panel_1.add(lblMapPosition);
         
         textFieldPosX = new JTextField();
@@ -199,13 +196,52 @@ public class NextValiumGui {
         });
         panel_1.add(btnRefresh);
         
+        Component horizontalStrut_3 = Box.createHorizontalStrut(20);
+        panel_1.add(horizontalStrut_3);
+        
+        JButton btnClearTarget = new JButton("Clear target");
+        btnClearTarget.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                planetMarkedAsTarget = null;
+                lblMarkedAsTarget.setText(null);
+                frmNextvaliumManagementGui.repaint();
+            }
+        });
+        panel_1.add(btnClearTarget);
+        
+        JLabel lblMarkedAsTargetDescription = new JLabel("Right click on planet to mark as target:");
+        panel_1.add(lblMarkedAsTargetDescription);
+        
+        lblMarkedAsTarget = new JLabel();
+        panel_1.add(lblMarkedAsTarget);
+        
         Component horizontalStrut = Box.createHorizontalStrut(20);
         horizontalStrut.setPreferredSize(new Dimension(1000, 0));
         panel_1.add(horizontalStrut);
         
+        // TODO: comment for windowbuilder
         panelGalaxyMap = new PanelGalaxyMap();
         frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER);
+        // TODO: comment for windowbuilder
         
         frmNextvaliumManagementGui.setVisible(true);
+    }
+
+    public Planet getPlanetMarkedAsTarget() {
+        return planetMarkedAsTarget;
+    }
+
+    public void setPlanetMarkedAsTarget(Planet planetMarkedAsTarget) {
+        this.planetMarkedAsTarget = planetMarkedAsTarget;
+        lblMarkedAsTarget.setText(planetMarkedAsTarget.getUserName() + " / " + planetMarkedAsTarget.getName());
+        frmNextvaliumManagementGui.repaint();
+    }
+
+    public static NextValiumGui getNextValiumGui() {
+        return nextValiumGui;
+    }
+
+    public JFrame getFrmNextvaliumManagementGui() {
+        return frmNextvaliumManagementGui;
     }
 }

@@ -25,20 +25,12 @@ public class PanelGalaxyMap extends JPanel {
     private int locationY;
     private Color color = null;
     private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
-    private static String markedPlanetId = null;
-    private static PanelGalaxyMap panelGalaxyMap = null;
     
     public PanelGalaxyMap()  {
         LOGGER.trace("PanelGalaxyMap()");
         
-        panelGalaxyMap = this;
         setLayout(null);
-        
         loadGalaxyMap(0, 0);
-    }
-    
-    public static PanelGalaxyMap getInstance() {
-        return panelGalaxyMap;
     }
     
     public void loadGalaxyMap(int x, int y) {
@@ -119,14 +111,5 @@ public class PanelGalaxyMap extends JPanel {
         });
         
         LOGGER.trace("paintPlanets() - end");
-    }
-    
-
-    public static void setMarkedPlanetId(String id) {
-        markedPlanetId = id;
-    }
-    
-    public static String getMarkedPlanetId() {
-        return markedPlanetId;
     }
 }

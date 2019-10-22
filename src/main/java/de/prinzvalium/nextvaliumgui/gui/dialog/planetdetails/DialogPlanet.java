@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvaliumgui.gui;
+package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -11,8 +11,10 @@ import javax.swing.border.EmptyBorder;
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import javax.swing.JTabbedPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class DialogPlanetDetails extends JDialog {
+public class DialogPlanet extends JDialog {
 
     private static final long serialVersionUID = 1L;
     private final JPanel contentPanel = new JPanel();
@@ -20,7 +22,7 @@ public class DialogPlanetDetails extends JDialog {
     /**
      * Create the dialog.
      */
-    public DialogPlanetDetails(Planet planet) {
+    public DialogPlanet(Planet planet) {
         super(NextValiumGui.getNextValiumGui().getFrmNextvaliumManagementGui(), true);
         
         setTitle(planet.getUserName() + " / " + planet.getName());
@@ -38,7 +40,7 @@ public class DialogPlanetDetails extends JDialog {
                 tabbedPane.addTab("Details", null, panelPlanetDetails, null);
             }
             {
-                JPanel panelFleet = new JPanel();
+                PanelFleet panelFleet = new PanelFleet(planet);
                 tabbedPane.addTab("Fleet", null, panelFleet, null);
             }
             {
@@ -52,12 +54,22 @@ public class DialogPlanetDetails extends JDialog {
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
             {
                 JButton okButton = new JButton("OK");
+                okButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
+                });
                 okButton.setActionCommand("OK");
                 buttonPane.add(okButton);
                 getRootPane().setDefaultButton(okButton);
             }
             {
                 JButton cancelButton = new JButton("Cancel");
+                cancelButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
+                });
                 cancelButton.setActionCommand("Cancel");
                 buttonPane.add(cancelButton);
             }
@@ -69,7 +81,7 @@ public class DialogPlanetDetails extends JDialog {
      */
     public static void main(String[] args) {
         try {
-            DialogPlanetDetails dialog = new DialogPlanetDetails(null);
+            DialogPlanet dialog = new DialogPlanet(null);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {

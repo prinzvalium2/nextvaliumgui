@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvaliumgui.gui;
+package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 
 import java.io.IOException;
 

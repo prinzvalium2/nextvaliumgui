@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
+import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.DialogPlanet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
@@ -37,7 +38,7 @@ public class PanelPlanet extends JPanel {
             @Override
             public void mouseClicked(MouseEvent arg0) {
                 if (arg0.getButton() == arg0.BUTTON1) {
-                    DialogPlanetDetails dialog = new DialogPlanetDetails(planet);
+                    DialogPlanet dialog = new DialogPlanet(planet);
                     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                     dialog.setVisible(true);
                  }

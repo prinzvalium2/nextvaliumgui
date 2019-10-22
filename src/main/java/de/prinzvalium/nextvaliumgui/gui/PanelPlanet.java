@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.json.JSONException;
@@ -22,19 +23,28 @@ public class PanelPlanet extends JPanel {
     
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(PanelPlanet.class);
-    private GalaxyMapValue galaxyMapValue;
+    private Planet planet;
     private Color color;
 
     public PanelPlanet(GalaxyMapValue value, HashMap<String, Color> mapUserColor) {
         
-        galaxyMapValue = value;
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent arg0) {
+                DialogPlanetDetails dialog = new DialogPlanetDetails(planet);
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                dialog.setVisible(true);
+            }
+        });
+        
+        GalaxyMapValue galaxyMapValue = value;
         color = null;
         
         try {
             
             HashMap<String, Planet> planets = Planets.getAllPlanets();
             String planetId = galaxyMapValue.getPlanetId();
-            Planet planet = planets.get(planetId);
+            planet = planets.get(planetId);
             String userName = planet.getUserName();
             color = mapUserColor.get(userName);
             setToolTipText("<html>" + userName + "<br>" + planet.getName() + "</html>");

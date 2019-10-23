@@ -32,9 +32,12 @@ import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import java.awt.Dimension;
-import java.awt.Component;
-import javax.swing.Box;
-import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Insets;
 
 public class NextValiumGui {
 
@@ -48,12 +51,17 @@ public class NextValiumGui {
     private JComboBox<String> comboBoxPlanets;
     private HashMap<String, Planet> mapPlanets;
     private Planet planetMarkedAsTarget = null;
-    private JLabel lblMarkedAsTarget;
+    private JTextField textFieldMarkedAsTarget;
 
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -102,7 +110,7 @@ public class NextValiumGui {
         
         frmNextvaliumManagementGui = new JFrame();
         frmNextvaliumManagementGui.setTitle("NextValium GUI - Management GUI for NextColony");
-        frmNextvaliumManagementGui.setBounds(10, 10, 1250, 880);
+        frmNextvaliumManagementGui.setBounds(10, 10, 1250, 900);
         frmNextvaliumManagementGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         JMenuBar menuBar = new JMenuBar();
@@ -120,38 +128,96 @@ public class NextValiumGui {
         mnFile.add(mntmExit);
         
         JPanel panel_1 = new JPanel();
+        panel_1.setBorder(null);
         frmNextvaliumManagementGui.getContentPane().add(panel_1, BorderLayout.NORTH);
-        panel_1.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        GridBagLayout gbl_panel_1 = new GridBagLayout();
+        gbl_panel_1.columnWidths = new int[]{26, 91, 0};
+        gbl_panel_1.rowHeights = new int[]{23, 0};
+        gbl_panel_1.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        gbl_panel_1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+        panel_1.setLayout(gbl_panel_1);
+        
+        JPanel panelUserPlanet = new JPanel();
+        panelUserPlanet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Select user planet or x/y", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        GridBagConstraints gbc_panelUserPlanet = new GridBagConstraints();
+        gbc_panelUserPlanet.fill = GridBagConstraints.BOTH;
+        gbc_panelUserPlanet.gridx = 0;
+        gbc_panelUserPlanet.gridy = 0;
+        panel_1.add(panelUserPlanet, gbc_panelUserPlanet);
+        GridBagLayout gbl_panelUserPlanet = new GridBagLayout();
+        gbl_panelUserPlanet.columnWidths = new int[]{26, 86, 0, 0, 0, 0};
+        gbl_panelUserPlanet.rowHeights = new int[]{23, 1, 0};
+        gbl_panelUserPlanet.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelUserPlanet.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        panelUserPlanet.setLayout(gbl_panelUserPlanet);
         
         JLabel lblUserName = new JLabel("User:");
-        panel_1.add(lblUserName);
+        GridBagConstraints gbc_lblUserName = new GridBagConstraints();
+        gbc_lblUserName.insets = new Insets(0, 2, 0, 0);
+        gbc_lblUserName.anchor = GridBagConstraints.WEST;
+        gbc_lblUserName.gridx = 0;
+        gbc_lblUserName.gridy = 0;
+        panelUserPlanet.add(lblUserName, gbc_lblUserName);
         
         textFieldUserName = new JTextField();
+        GridBagConstraints gbc_textFieldUserName = new GridBagConstraints();
+        gbc_textFieldUserName.insets = new Insets(0, 2, 0, 0);
+        gbc_textFieldUserName.anchor = GridBagConstraints.WEST;
+        gbc_textFieldUserName.gridx = 1;
+        gbc_textFieldUserName.gridy = 0;
+        panelUserPlanet.add(textFieldUserName, gbc_textFieldUserName);
         textFieldUserName.setMinimumSize(new Dimension(150, 20));
         textFieldUserName.setPreferredSize(new Dimension(150, 20));
-        textFieldUserName.addActionListener(new ActionListener() {
+        
+        JLabel lblMapPosition = new JLabel("X:");
+        GridBagConstraints gbc_lblMapPosition = new GridBagConstraints();
+        gbc_lblMapPosition.insets = new Insets(0, 5, 0, 0);
+        gbc_lblMapPosition.anchor = GridBagConstraints.EAST;
+        gbc_lblMapPosition.gridx = 2;
+        gbc_lblMapPosition.gridy = 0;
+        panelUserPlanet.add(lblMapPosition, gbc_lblMapPosition);
+        
+        textFieldPosX = new JTextField();
+        GridBagConstraints gbc_textFieldPosX = new GridBagConstraints();
+        gbc_textFieldPosX.insets = new Insets(0, 2, 0, 0);
+        gbc_textFieldPosX.anchor = GridBagConstraints.WEST;
+        gbc_textFieldPosX.gridx = 3;
+        gbc_textFieldPosX.gridy = 0;
+        panelUserPlanet.add(textFieldPosX, gbc_textFieldPosX);
+        textFieldPosX.setColumns(4);
+        textFieldPosX.setText("0");
+        
+        JButton btnRefresh = new JButton("Refresh");
+        GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
+        gbc_btnRefresh.insets = new Insets(0, 5, 0, 0);
+        gbc_btnRefresh.anchor = GridBagConstraints.WEST;
+        gbc_btnRefresh.gridx = 4;
+        gbc_btnRefresh.gridy = 0;
+        panelUserPlanet.add(btnRefresh, gbc_btnRefresh);
+        btnRefresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    ArrayList<String> list = new ArrayList<String>();
-                    mapPlanets = Planets.loadUserPlanets(textFieldUserName.getText());
-                    mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
-                    Collections.sort(list);
-                    comboBoxPlanets.removeAllItems();
-                    list.forEach(planetName -> comboBoxPlanets.addItem(planetName));
-                    
-                } catch (JSONException | IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+                int x = Integer.parseInt(textFieldPosX.getText());
+                int y = Integer.parseInt(textFieldPosY.getText());
+                panelGalaxyMap.loadGalaxyMap(x, y);
+                frmNextvaliumManagementGui.repaint();
             }
         });
-        panel_1.add(textFieldUserName);
-        textFieldUserName.setColumns(10);
         
         JLabel lblPlanet = new JLabel("Planet:");
-        panel_1.add(lblPlanet);
+        GridBagConstraints gbc_lblPlanet = new GridBagConstraints();
+        gbc_lblPlanet.insets = new Insets(0, 2, 0, 0);
+        gbc_lblPlanet.anchor = GridBagConstraints.WEST;
+        gbc_lblPlanet.gridx = 0;
+        gbc_lblPlanet.gridy = 1;
+        panelUserPlanet.add(lblPlanet, gbc_lblPlanet);
         
         comboBoxPlanets = new JComboBox<String>();
+        GridBagConstraints gbc_comboBoxPlanets = new GridBagConstraints();
+        gbc_comboBoxPlanets.insets = new Insets(0, 2, 0, 0);
+        gbc_comboBoxPlanets.anchor = GridBagConstraints.WEST;
+        gbc_comboBoxPlanets.gridx = 1;
+        gbc_comboBoxPlanets.gridy = 1;
+        panelUserPlanet.add(comboBoxPlanets, gbc_comboBoxPlanets);
         comboBoxPlanets.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (comboBoxPlanets.getSelectedItem() == null)
@@ -167,60 +233,79 @@ public class NextValiumGui {
             }
         });
         comboBoxPlanets.setPreferredSize(new Dimension(150, 20));
-        panel_1.add(comboBoxPlanets);
-        
-        JLabel lblMapPosition = new JLabel("X:");
-        panel_1.add(lblMapPosition);
-        
-        textFieldPosX = new JTextField();
-        textFieldPosX.setText("0");
-        panel_1.add(textFieldPosX);
-        textFieldPosX.setColumns(4);
         
         JLabel lblMapPositionY = new JLabel("Y:");
-        panel_1.add(lblMapPositionY);
+        GridBagConstraints gbc_lblMapPositionY = new GridBagConstraints();
+        gbc_lblMapPositionY.anchor = GridBagConstraints.EAST;
+        gbc_lblMapPositionY.gridx = 2;
+        gbc_lblMapPositionY.gridy = 1;
+        panelUserPlanet.add(lblMapPositionY, gbc_lblMapPositionY);
         
         textFieldPosY = new JTextField();
+        GridBagConstraints gbc_textFieldPosY = new GridBagConstraints();
+        gbc_textFieldPosY.insets = new Insets(0, 2, 0, 0);
+        gbc_textFieldPosY.anchor = GridBagConstraints.WEST;
+        gbc_textFieldPosY.gridx = 3;
+        gbc_textFieldPosY.gridy = 1;
+        panelUserPlanet.add(textFieldPosY, gbc_textFieldPosY);
         textFieldPosY.setText("0");
-        panel_1.add(textFieldPosY);
         textFieldPosY.setColumns(4);
-        
-        JButton btnRefresh = new JButton("Refresh");
-        btnRefresh.addActionListener(new ActionListener() {
+        textFieldUserName.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int x = Integer.parseInt(textFieldPosX.getText());
-                int y = Integer.parseInt(textFieldPosY.getText());
-                panelGalaxyMap.loadGalaxyMap(x, y);
-                frmNextvaliumManagementGui.repaint();
+                try {
+                    ArrayList<String> list = new ArrayList<String>();
+                    mapPlanets = Planets.loadUserPlanets(textFieldUserName.getText());
+                    mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
+                    Collections.sort(list);
+                    comboBoxPlanets.removeAllItems();
+                    list.forEach(planetName -> comboBoxPlanets.addItem(planetName));
+                    
+                } catch (JSONException | IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
-        panel_1.add(btnRefresh);
         
-        Component horizontalStrut_3 = Box.createHorizontalStrut(20);
-        panel_1.add(horizontalStrut_3);
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Right click on planet to mark as target", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        GridBagConstraints gbc_panel = new GridBagConstraints();
+        gbc_panel.fill = GridBagConstraints.BOTH;
+        gbc_panel.gridx = 1;
+        gbc_panel.gridy = 0;
+        panel_1.add(panel, gbc_panel);
+        GridBagLayout gbl_panel = new GridBagLayout();
+        gbl_panel.columnWidths = new int[]{200, 0};
+        gbl_panel.rowHeights = new int[]{23, 1, 0};
+        gbl_panel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
+        gbl_panel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        panel.setLayout(gbl_panel);
         
         JButton btnClearTarget = new JButton("Clear target");
+        GridBagConstraints gbc_btnClearTarget = new GridBagConstraints();
+        gbc_btnClearTarget.anchor = GridBagConstraints.EAST;
+        gbc_btnClearTarget.gridx = 0;
+        gbc_btnClearTarget.gridy = 1;
+        panel.add(btnClearTarget, gbc_btnClearTarget);
+        
+        textFieldMarkedAsTarget = new JTextField();
+        GridBagConstraints gbc_textFieldMarkedAsTarget = new GridBagConstraints();
+        gbc_textFieldMarkedAsTarget.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldMarkedAsTarget.gridx = 0;
+        gbc_textFieldMarkedAsTarget.gridy = 0;
+        panel.add(textFieldMarkedAsTarget, gbc_textFieldMarkedAsTarget);
+        textFieldMarkedAsTarget.setEditable(false);
+        textFieldMarkedAsTarget.setColumns(10);
         btnClearTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 planetMarkedAsTarget = null;
-                lblMarkedAsTarget.setText(null);
+                textFieldMarkedAsTarget.setText(null);
                 frmNextvaliumManagementGui.repaint();
             }
         });
-        panel_1.add(btnClearTarget);
         
-        JLabel lblMarkedAsTargetDescription = new JLabel("Right click on planet to mark as target:");
-        panel_1.add(lblMarkedAsTargetDescription);
-        
-        lblMarkedAsTarget = new JLabel();
-        panel_1.add(lblMarkedAsTarget);
-        
-        Component horizontalStrut = Box.createHorizontalStrut(20);
-        horizontalStrut.setPreferredSize(new Dimension(1000, 0));
-        panel_1.add(horizontalStrut);
+        panelGalaxyMap = new PanelGalaxyMap();
         
         // TODO: comment for windowbuilder
-        panelGalaxyMap = new PanelGalaxyMap();
         frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER);
         // TODO: comment for windowbuilder
         
@@ -233,7 +318,7 @@ public class NextValiumGui {
 
     public void setPlanetMarkedAsTarget(Planet planetMarkedAsTarget) {
         this.planetMarkedAsTarget = planetMarkedAsTarget;
-        lblMarkedAsTarget.setText(planetMarkedAsTarget.getUserName() + " / " + planetMarkedAsTarget.getName());
+        textFieldMarkedAsTarget.setText(planetMarkedAsTarget.getUserName() + " / " + planetMarkedAsTarget.getName());
         frmNextvaliumManagementGui.repaint();
     }
 

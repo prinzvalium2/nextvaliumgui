@@ -55,10 +55,10 @@ public class PanelFleet extends JPanel {
                 }
             ) {
                 private static final long serialVersionUID = 1L;
-                Class[] columnTypes = new Class[] {
+                Class<?>[] columnTypes = new Class<?>[] {
                     String.class, Integer.class, Integer.class, Integer.class
                 };
-                public Class getColumnClass(int columnIndex) {
+                public Class<?> getColumnClass(int columnIndex) {
                     return columnTypes[columnIndex];
                 }
                 boolean[] columnEditables = new boolean[] {

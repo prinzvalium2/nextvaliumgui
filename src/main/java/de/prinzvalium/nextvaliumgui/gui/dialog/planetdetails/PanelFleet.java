@@ -46,8 +46,6 @@ public class PanelFleet extends JPanel {
         gbc_scrollPane.gridy = 0;
         add(scrollPane, gbc_scrollPane);
         
-        //DefaultTableModel model = new DefaultTableModel(new Object[] { "Ship type", "Count", "Use for mission", "Position" }, 0);
-
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][] {
                     {null, null, null, null},
@@ -83,14 +81,7 @@ public class PanelFleet extends JPanel {
         }
         
         tableShips = new JTable();
-        tableShips.setModel(new DefaultTableModel(
-            new Object[][] {
-                {null, null, null, null},
-            },
-            new String[] {
-                "Ship type", "Count", "Use", "Pos"
-            }
-        ));
+        tableShips.setModel(model);
         tableShips.getColumnModel().getColumn(0).setPreferredWidth(125);
         tableShips.getColumnModel().getColumn(1).setPreferredWidth(25);
         tableShips.getColumnModel().getColumn(2).setPreferredWidth(25);

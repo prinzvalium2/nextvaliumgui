@@ -11,20 +11,15 @@ import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
 
 public class PanelPlanetDetails extends JPanel {
 
-    private Planet planet;
+    private static final long serialVersionUID = 1L;
     
     public PanelPlanetDetails(Planet planet) {
         
-        this.planet = planet;
-
         try {
-            PlanetDetails planetDetails = new PlanetDetails(planet.getId());
+            new PlanetDetails(planet.getId());
             
         } catch (JSONException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
     }
-
 }

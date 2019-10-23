@@ -10,8 +10,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.DialogPlanet;
@@ -24,7 +22,6 @@ import java.awt.event.MouseEvent;
 public class PanelPlanet extends JPanel {
     
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(PanelPlanet.class);
     private Planet planet;
     private Color color;
     private PanelPlanet panelPlanet;
@@ -37,7 +34,7 @@ public class PanelPlanet extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent arg0) {
-                if (arg0.getButton() == arg0.BUTTON1) {
+                if (arg0.getButton() == MouseEvent.BUTTON1) {
                     DialogPlanet dialog = new DialogPlanet(planet);
                     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                     dialog.setVisible(true);

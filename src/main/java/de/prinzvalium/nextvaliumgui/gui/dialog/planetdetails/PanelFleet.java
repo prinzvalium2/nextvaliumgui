@@ -31,10 +31,10 @@ public class PanelFleet extends JPanel {
     public PanelFleet(Planet planet) {
         
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[]{0, 0, 0};
+        gridBagLayout.columnWidths = new int[]{300, 0, 0};
         gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};
-        gridBagLayout.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
-        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+        gridBagLayout.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        gridBagLayout.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0};
         setLayout(gridBagLayout);
         
         JScrollPane scrollPane = new JScrollPane();
@@ -46,21 +46,55 @@ public class PanelFleet extends JPanel {
         gbc_scrollPane.gridy = 0;
         add(scrollPane, gbc_scrollPane);
         
-        DefaultTableModel model = new DefaultTableModel(new Object[] { "Ship type", "Count", "Use for mission", "Position" }, 0);
+        //DefaultTableModel model = new DefaultTableModel(new Object[] { "Ship type", "Count", "Use for mission", "Position" }, 0);
+
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][] {
+                    {null, null, null, null},
+                },
+                new String[] {
+                    "Ship type", "Count", "Use", "Pos"
+                }
+            ) {
+                private static final long serialVersionUID = 1L;
+                Class[] columnTypes = new Class[] {
+                    String.class, Integer.class, Integer.class, Integer.class
+                };
+                public Class getColumnClass(int columnIndex) {
+                    return columnTypes[columnIndex];
+                }
+                boolean[] columnEditables = new boolean[] {
+                    false, false, true, true
+                };
+                public boolean isCellEditable(int row, int column) {
+                    return columnEditables[column];
+                }
+            };
         
         try {
             Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
             HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
+            model.removeRow(0);
             for (Map.Entry<?,?> entry : mapShips.entrySet())
                 model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
 
         } catch (JSONException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
         tableShips = new JTable();
-        tableShips.setModel(model);
+        tableShips.setModel(new DefaultTableModel(
+            new Object[][] {
+                {null, null, null, null},
+            },
+            new String[] {
+                "Ship type", "Count", "Use", "Pos"
+            }
+        ));
+        tableShips.getColumnModel().getColumn(0).setPreferredWidth(125);
+        tableShips.getColumnModel().getColumn(1).setPreferredWidth(25);
+        tableShips.getColumnModel().getColumn(2).setPreferredWidth(25);
+        tableShips.getColumnModel().getColumn(3).setPreferredWidth(25);
         scrollPane.setViewportView(tableShips);
         
         JPanel panelMission = new JPanel();

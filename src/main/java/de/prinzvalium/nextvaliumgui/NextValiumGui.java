@@ -44,7 +44,6 @@ public class NextValiumGui {
     private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
     private static NextValiumGui nextValiumGui = null;
     private JFrame frmNextvaliumManagementGui;
-    private PanelGalaxyMap panelGalaxyMap;
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
     private JTextField textFieldUserName;
@@ -107,6 +106,8 @@ public class NextValiumGui {
      */
     private void initialize() {
         LOGGER.trace("initialize()");
+        
+        PanelGalaxyMap panelGalaxyMap = new PanelGalaxyMap();
         
         frmNextvaliumManagementGui = new JFrame();
         frmNextvaliumManagementGui.setTitle("NextValium GUI - Management GUI for NextColony");
@@ -303,12 +304,7 @@ public class NextValiumGui {
             }
         });
         
-        panelGalaxyMap = new PanelGalaxyMap();
-        
-        // TODO: comment for windowbuilder
-        frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER);
-        // TODO: comment for windowbuilder
-        
+        frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER); // $hide$
         frmNextvaliumManagementGui.setVisible(true);
     }
 

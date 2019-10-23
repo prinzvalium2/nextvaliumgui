@@ -36,12 +36,12 @@ public class DialogPlanet extends JDialog {
             JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
             contentPanel.add(tabbedPane);
             {
-                PanelPlanetDetails panelPlanetDetails = new PanelPlanetDetails(planet);
-                tabbedPane.addTab("Details", null, panelPlanetDetails, null);
-            }
-            {
                 PanelFleet panelFleet = new PanelFleet(planet);
                 tabbedPane.addTab("Fleet", null, panelFleet, null);
+            }
+            {
+                PanelPlanetDetails panelPlanetDetails = new PanelPlanetDetails(planet);
+                tabbedPane.addTab("Details", null, panelPlanetDetails, null);
             }
             {
                 JPanel panelMissions = new JPanel();

@@ -5,41 +5,53 @@ import javax.swing.JPanel;
 import org.json.JSONException;
 
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
-import de.prinzvalium.nextvaliumgui.nextcolony.FleetShip;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
-import java.awt.BorderLayout;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import javax.swing.JTable;
+import java.awt.GridBagConstraints;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
 
 public class PanelFleet extends JPanel {
 
-    private Planet planet;
+    private static final long serialVersionUID = 1L;
+    private JTable tableShips;
     
     public PanelFleet(Planet planet) {
         
-        this.planet = planet;
-        setLayout(new BorderLayout(0, 0));
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.columnWidths = new int[]{0, 0};
+        gridBagLayout.rowHeights = new int[]{0, 0};
+        gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gridBagLayout.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        setLayout(gridBagLayout);
         
-        DefaultListModel<String> l1 = new DefaultListModel<>();
+        JScrollPane scrollPane = new JScrollPane();
+        GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+        gbc_scrollPane.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane.gridx = 0;
+        gbc_scrollPane.gridy = 0;
+        add(scrollPane, gbc_scrollPane);
+        
+        DefaultTableModel model = new DefaultTableModel(new Object[] { "Ship type", "Count", "Use for mission", "Position" }, 0);
         
         try {
             Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
             HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
-            mapShips.forEach((shipType, num) -> l1.addElement(shipType + " " + num));
-            
+            for (Map.Entry<?,?> entry : mapShips.entrySet())
+                model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
+
         } catch (JSONException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
-        JList<String> listShips = new JList<String>(l1);
-        listShips.setPreferredSize(new Dimension(100, 0));
-        add(listShips, BorderLayout.WEST);
+        tableShips = new JTable();
+        tableShips.setModel(model);
+        scrollPane.setViewportView(tableShips);
     }
-
 }

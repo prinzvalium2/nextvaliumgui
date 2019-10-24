@@ -50,12 +50,15 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldResourcesShipTotal;
     private JTextField textFieldResourcesFleetMax;
     private JComboBox<String> comboBoxTargetPlanet;
-    JComboBox comboBoxMissionsPredefined;
+    private JComboBox comboBoxMissionsPredefined;
+    private JComboBox comboBoxMissionsStandard;
     private HashMap<String, Planet> mapPlanets;
+    private DefaultTableModel model;
     
     private String[] predefinedMissions = {
             "",
             "Explore with explorer",
+            "Explore with Explorer II",
             "Deploy all ships", 
             "Deploy all explorers",
             "Deploy all corvettes",
@@ -92,12 +95,12 @@ public class PanelFleet extends JPanel {
         gbc_scrollPane.gridy = 0;
         add(scrollPane, gbc_scrollPane);
         
-        DefaultTableModel model = new DefaultTableModel(
+        model = new DefaultTableModel(
                 new Object[][] {
                     {null, null, null, null},
                 },
                 new String[] {
-                    "Ship type", "Count", "Use", "Pos"
+                    "Ship type", "Planet", "Use", "Pos"
                 }
             ) {
                 private static final long serialVersionUID = 1L;
@@ -156,6 +159,12 @@ public class PanelFleet extends JPanel {
         panelMissions.add(lblMissionsPredefined, gbc_lblMissionsPredefined);
         
         comboBoxMissionsPredefined = new JComboBox(predefinedMissions);
+        comboBoxMissionsPredefined.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                actionPerformed_comboBoxMissionsPredefined();
+            }
+        });
+        
         GridBagConstraints gbc_comboBoxMissionsPredefined = new GridBagConstraints();
         gbc_comboBoxMissionsPredefined.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsPredefined.insets = new Insets(0, 0, 5, 0);
@@ -163,7 +172,7 @@ public class PanelFleet extends JPanel {
         gbc_comboBoxMissionsPredefined.gridy = 0;
         panelMissions.add(comboBoxMissionsPredefined, gbc_comboBoxMissionsPredefined);
         
-        JLabel lblMissionsStandard = new JLabel("Standard:");
+        JLabel lblMissionsStandard = new JLabel("Type:");
         GridBagConstraints gbc_lblMissionsStandard = new GridBagConstraints();
         gbc_lblMissionsStandard.anchor = GridBagConstraints.EAST;
         gbc_lblMissionsStandard.insets = new Insets(0, 0, 0, 5);
@@ -171,7 +180,7 @@ public class PanelFleet extends JPanel {
         gbc_lblMissionsStandard.gridy = 1;
         panelMissions.add(lblMissionsStandard, gbc_lblMissionsStandard);
         
-        JComboBox comboBoxMissionsStandard = new JComboBox(missions);
+        comboBoxMissionsStandard = new JComboBox(missions);
         GridBagConstraints gbc_comboBoxMissionsStandard = new GridBagConstraints();
         gbc_comboBoxMissionsStandard.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsStandard.gridx = 1;
@@ -478,5 +487,40 @@ public class PanelFleet extends JPanel {
         textFieldTargetUser.setText(targetPlanet.getUserName());
         textFieldTargetUser.postActionEvent();
         comboBoxTargetPlanet.setSelectedItem(targetPlanet.getName());
+    }
+    
+    private void actionPerformed_comboBoxMissionsPredefined() {
+        switch (comboBoxMissionsPredefined.getSelectedIndex()) {
+        
+        // Explore with explorer
+        case 1:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership")) {
+                    model.setValueAt(1, i, 2);
+                    model.setValueAt(0, i, 3);
+                }
+                else {
+                    model.setValueAt(null, i, 2);
+                    model.setValueAt(null, i, 3);
+                }
+            }
+            comboBoxMissionsStandard.setSelectedIndex(1);
+            break;
+            
+        // Explore with Explorer 2
+        case 2:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership1")) {
+                    model.setValueAt(1, i, 2);
+                    model.setValueAt(0, i, 3);
+                }
+                else {
+                    model.setValueAt(null, i, 2);
+                    model.setValueAt(null, i, 3);
+                }
+            }
+            comboBoxMissionsStandard.setSelectedIndex(1);
+            break;
+        }
     }
 }

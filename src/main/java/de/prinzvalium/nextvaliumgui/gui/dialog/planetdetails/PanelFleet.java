@@ -23,6 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JTextArea;
 
 public class PanelFleet extends JPanel {
 
@@ -31,10 +32,21 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldTargetUser;
     private JTextField textFieldTargetPositionX;
     private JTextField textFieldTargetPositionY;
+    private JTextField textFieldResourcesCoal;
+    private JTextField textFieldResourcesOre;
+    private JTextField textFieldResourcesCopper;
+    private JTextField textFieldResourcesUranium;
+    private JTextField textFieldResourcesShipCoal;
+    private JTextField textFieldResourcesShipOre;
+    private JTextField textFieldResourcesShipCopper;
+    private JTextField textFieldResourcesShipUranium;
+    private JTextField textFieldResourcesShipTotal;
+    private JTextField textFieldResourcesFleetMax;
     
     public PanelFleet(Planet planet) {
         
         GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
         gridBagLayout.columnWeights = new double[]{0.0, 1.0};
         gridBagLayout.columnWidths = new int[]{189, 0};
         setLayout(gridBagLayout);
@@ -211,10 +223,183 @@ public class PanelFleet extends JPanel {
         panelTargetPosition.add(textFieldTargetPositionY);
         textFieldTargetPositionY.setColumns(10);
         
+        JPanel panelResources = new JPanel();
+        panelResources.setBorder(new TitledBorder(null, "Resources", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_panelResources = new GridBagConstraints();
+        gbc_panelResources.insets = new Insets(0, 0, 5, 0);
+        gbc_panelResources.fill = GridBagConstraints.BOTH;
+        gbc_panelResources.gridx = 1;
+        gbc_panelResources.gridy = 2;
+        add(panelResources, gbc_panelResources);
+        GridBagLayout gbl_panelResources = new GridBagLayout();
+        gbl_panelResources.columnWidths = new int[]{70, 0, 0, 0};
+        gbl_panelResources.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panelResources.columnWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+        gbl_panelResources.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        panelResources.setLayout(gbl_panelResources);
+        
+        JLabel lblPlanet = new JLabel("Planet");
+        GridBagConstraints gbc_lblPlanet = new GridBagConstraints();
+        gbc_lblPlanet.insets = new Insets(0, 0, 5, 5);
+        gbc_lblPlanet.gridx = 1;
+        gbc_lblPlanet.gridy = 0;
+        panelResources.add(lblPlanet, gbc_lblPlanet);
+        
+        JLabel lblShip = new JLabel("Fleet");
+        GridBagConstraints gbc_lblShip = new GridBagConstraints();
+        gbc_lblShip.insets = new Insets(0, 0, 5, 0);
+        gbc_lblShip.gridx = 2;
+        gbc_lblShip.gridy = 0;
+        panelResources.add(lblShip, gbc_lblShip);
+        
+        JLabel lblRessourcesCoal = new JLabel("Coal:");
+        GridBagConstraints gbc_lblRessourcesCoal = new GridBagConstraints();
+        gbc_lblRessourcesCoal.insets = new Insets(0, 0, 5, 5);
+        gbc_lblRessourcesCoal.anchor = GridBagConstraints.EAST;
+        gbc_lblRessourcesCoal.gridx = 0;
+        gbc_lblRessourcesCoal.gridy = 1;
+        panelResources.add(lblRessourcesCoal, gbc_lblRessourcesCoal);
+        
+        textFieldResourcesCoal = new JTextField();
+        textFieldResourcesCoal.setEditable(false);
+        GridBagConstraints gbc_textFieldResourcesCoal = new GridBagConstraints();
+        gbc_textFieldResourcesCoal.insets = new Insets(0, 0, 5, 5);
+        gbc_textFieldResourcesCoal.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesCoal.gridx = 1;
+        gbc_textFieldResourcesCoal.gridy = 1;
+        panelResources.add(textFieldResourcesCoal, gbc_textFieldResourcesCoal);
+        textFieldResourcesCoal.setColumns(10);
+        
+        textFieldResourcesShipCoal = new JTextField();
+        GridBagConstraints gbc_textFieldResourcesShipCoal = new GridBagConstraints();
+        gbc_textFieldResourcesShipCoal.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldResourcesShipCoal.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesShipCoal.gridx = 2;
+        gbc_textFieldResourcesShipCoal.gridy = 1;
+        panelResources.add(textFieldResourcesShipCoal, gbc_textFieldResourcesShipCoal);
+        textFieldResourcesShipCoal.setColumns(10);
+        
+        JLabel lblRessourcesOre = new JLabel("Ore:");
+        GridBagConstraints gbc_lblRessourcesOre = new GridBagConstraints();
+        gbc_lblRessourcesOre.anchor = GridBagConstraints.EAST;
+        gbc_lblRessourcesOre.insets = new Insets(0, 0, 5, 5);
+        gbc_lblRessourcesOre.gridx = 0;
+        gbc_lblRessourcesOre.gridy = 2;
+        panelResources.add(lblRessourcesOre, gbc_lblRessourcesOre);
+        
+        textFieldResourcesOre = new JTextField();
+        textFieldResourcesOre.setEditable(false);
+        GridBagConstraints gbc_textFieldResourcesOre = new GridBagConstraints();
+        gbc_textFieldResourcesOre.insets = new Insets(0, 0, 5, 5);
+        gbc_textFieldResourcesOre.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesOre.gridx = 1;
+        gbc_textFieldResourcesOre.gridy = 2;
+        panelResources.add(textFieldResourcesOre, gbc_textFieldResourcesOre);
+        textFieldResourcesOre.setColumns(10);
+        
+        textFieldResourcesShipOre = new JTextField();
+        GridBagConstraints gbc_textFieldResourcesShipOre = new GridBagConstraints();
+        gbc_textFieldResourcesShipOre.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldResourcesShipOre.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesShipOre.gridx = 2;
+        gbc_textFieldResourcesShipOre.gridy = 2;
+        panelResources.add(textFieldResourcesShipOre, gbc_textFieldResourcesShipOre);
+        textFieldResourcesShipOre.setColumns(10);
+        
+        JLabel lblResourcesCopper = new JLabel("Copper:");
+        GridBagConstraints gbc_lblResourcesCopper = new GridBagConstraints();
+        gbc_lblResourcesCopper.anchor = GridBagConstraints.EAST;
+        gbc_lblResourcesCopper.insets = new Insets(0, 0, 5, 5);
+        gbc_lblResourcesCopper.gridx = 0;
+        gbc_lblResourcesCopper.gridy = 3;
+        panelResources.add(lblResourcesCopper, gbc_lblResourcesCopper);
+        
+        textFieldResourcesCopper = new JTextField();
+        textFieldResourcesCopper.setEditable(false);
+        GridBagConstraints gbc_textFieldResourcesCopper = new GridBagConstraints();
+        gbc_textFieldResourcesCopper.insets = new Insets(0, 0, 5, 5);
+        gbc_textFieldResourcesCopper.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesCopper.gridx = 1;
+        gbc_textFieldResourcesCopper.gridy = 3;
+        panelResources.add(textFieldResourcesCopper, gbc_textFieldResourcesCopper);
+        textFieldResourcesCopper.setColumns(10);
+        
+        textFieldResourcesShipCopper = new JTextField();
+        GridBagConstraints gbc_textFieldResourcesShipCopper = new GridBagConstraints();
+        gbc_textFieldResourcesShipCopper.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldResourcesShipCopper.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesShipCopper.gridx = 2;
+        gbc_textFieldResourcesShipCopper.gridy = 3;
+        panelResources.add(textFieldResourcesShipCopper, gbc_textFieldResourcesShipCopper);
+        textFieldResourcesShipCopper.setColumns(10);
+        
+        JLabel lblResourcesUranium = new JLabel("Uranium:");
+        GridBagConstraints gbc_lblResourcesUranium = new GridBagConstraints();
+        gbc_lblResourcesUranium.anchor = GridBagConstraints.EAST;
+        gbc_lblResourcesUranium.insets = new Insets(0, 0, 5, 5);
+        gbc_lblResourcesUranium.gridx = 0;
+        gbc_lblResourcesUranium.gridy = 4;
+        panelResources.add(lblResourcesUranium, gbc_lblResourcesUranium);
+        
+        textFieldResourcesUranium = new JTextField();
+        textFieldResourcesUranium.setEditable(false);
+        GridBagConstraints gbc_textFieldResourcesUranium = new GridBagConstraints();
+        gbc_textFieldResourcesUranium.insets = new Insets(0, 0, 5, 5);
+        gbc_textFieldResourcesUranium.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesUranium.gridx = 1;
+        gbc_textFieldResourcesUranium.gridy = 4;
+        panelResources.add(textFieldResourcesUranium, gbc_textFieldResourcesUranium);
+        textFieldResourcesUranium.setColumns(10);
+        
+        textFieldResourcesShipUranium = new JTextField();
+        GridBagConstraints gbc_textFieldResourcesShipUranium = new GridBagConstraints();
+        gbc_textFieldResourcesShipUranium.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldResourcesShipUranium.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesShipUranium.gridx = 2;
+        gbc_textFieldResourcesShipUranium.gridy = 4;
+        panelResources.add(textFieldResourcesShipUranium, gbc_textFieldResourcesShipUranium);
+        textFieldResourcesShipUranium.setColumns(10);
+        
+        JLabel lblResourcesShipTotal = new JLabel("Total:");
+        GridBagConstraints gbc_lblResourcesShipTotal = new GridBagConstraints();
+        gbc_lblResourcesShipTotal.insets = new Insets(0, 0, 5, 5);
+        gbc_lblResourcesShipTotal.anchor = GridBagConstraints.EAST;
+        gbc_lblResourcesShipTotal.gridx = 1;
+        gbc_lblResourcesShipTotal.gridy = 5;
+        panelResources.add(lblResourcesShipTotal, gbc_lblResourcesShipTotal);
+        
+        textFieldResourcesShipTotal = new JTextField();
+        textFieldResourcesShipTotal.setEditable(false);
+        GridBagConstraints gbc_textFieldResourcesShipTotal = new GridBagConstraints();
+        gbc_textFieldResourcesShipTotal.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldResourcesShipTotal.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesShipTotal.gridx = 2;
+        gbc_textFieldResourcesShipTotal.gridy = 5;
+        panelResources.add(textFieldResourcesShipTotal, gbc_textFieldResourcesShipTotal);
+        textFieldResourcesShipTotal.setColumns(10);
+        
+        JLabel lblResourcesFleetMax = new JLabel("Max:");
+        GridBagConstraints gbc_lblResourcesFleetMax = new GridBagConstraints();
+        gbc_lblResourcesFleetMax.anchor = GridBagConstraints.EAST;
+        gbc_lblResourcesFleetMax.insets = new Insets(0, 0, 0, 5);
+        gbc_lblResourcesFleetMax.gridx = 1;
+        gbc_lblResourcesFleetMax.gridy = 6;
+        panelResources.add(lblResourcesFleetMax, gbc_lblResourcesFleetMax);
+        
+        textFieldResourcesFleetMax = new JTextField();
+        textFieldResourcesFleetMax.setEditable(false);
+        GridBagConstraints gbc_textFieldResourcesFleetMax = new GridBagConstraints();
+        gbc_textFieldResourcesFleetMax.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldResourcesFleetMax.gridx = 2;
+        gbc_textFieldResourcesFleetMax.gridy = 6;
+        panelResources.add(textFieldResourcesFleetMax, gbc_textFieldResourcesFleetMax);
+        textFieldResourcesFleetMax.setColumns(10);
+        
         JButton btnSendTransaction = new JButton("Send Transaction to Steem");
         GridBagConstraints gbc_btnSendTransaction = new GridBagConstraints();
+        gbc_btnSendTransaction.insets = new Insets(0, 0, 5, 0);
         gbc_btnSendTransaction.gridx = 1;
-        gbc_btnSendTransaction.gridy = 2;
+        gbc_btnSendTransaction.gridy = 3;
         add(btnSendTransaction, gbc_btnSendTransaction);
     }
 }

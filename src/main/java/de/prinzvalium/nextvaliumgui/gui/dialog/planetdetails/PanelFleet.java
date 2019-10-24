@@ -4,9 +4,14 @@ import javax.swing.JPanel;
 
 import org.json.JSONException;
 
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
+import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +21,9 @@ import java.awt.GridBagConstraints;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -23,7 +31,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JTextArea;
 
 public class PanelFleet extends JPanel {
 
@@ -42,6 +49,31 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldResourcesShipUranium;
     private JTextField textFieldResourcesShipTotal;
     private JTextField textFieldResourcesFleetMax;
+    private JComboBox<String> comboBoxTargetPlanet;
+    JComboBox comboBoxMissionsPredefined;
+    private HashMap<String, Planet> mapPlanets;
+    
+    private String[] predefinedMissions = {
+            "",
+            "Explore with explorer",
+            "Deploy all ships", 
+            "Deploy all explorers",
+            "Deploy all corvettes",
+            "Deploy all battleships",
+            "Deploy all ships except explorers",
+            "Attack with all corvettes",
+            "Attack with all battleships",
+            "Attack with all ships except explorers"
+    };
+    
+    private String[] missions = {
+            "",
+            "Explore",
+            "Deploy",
+            "Attack",
+            "Support",
+            "Siege"
+    };
     
     public PanelFleet(Planet planet) {
         
@@ -123,7 +155,7 @@ public class PanelFleet extends JPanel {
         gbc_lblMissionsPredefined.gridy = 0;
         panelMissions.add(lblMissionsPredefined, gbc_lblMissionsPredefined);
         
-        JComboBox comboBoxMissionsPredefined = new JComboBox();
+        comboBoxMissionsPredefined = new JComboBox(predefinedMissions);
         GridBagConstraints gbc_comboBoxMissionsPredefined = new GridBagConstraints();
         gbc_comboBoxMissionsPredefined.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsPredefined.insets = new Insets(0, 0, 5, 0);
@@ -139,7 +171,7 @@ public class PanelFleet extends JPanel {
         gbc_lblMissionsStandard.gridy = 1;
         panelMissions.add(lblMissionsStandard, gbc_lblMissionsStandard);
         
-        JComboBox comboBoxMissionsStandard = new JComboBox();
+        JComboBox comboBoxMissionsStandard = new JComboBox(missions);
         GridBagConstraints gbc_comboBoxMissionsStandard = new GridBagConstraints();
         gbc_comboBoxMissionsStandard.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsStandard.gridx = 1;
@@ -178,6 +210,22 @@ public class PanelFleet extends JPanel {
         panelTarget.add(textFieldTargetUser, gbc_textFieldTargetUser);
         textFieldTargetUser.setColumns(10);
         
+        textFieldTargetUser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    ArrayList<String> list = new ArrayList<String>();
+                    mapPlanets = Planets.loadUserPlanets(textFieldTargetUser.getText());
+                    mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
+                    Collections.sort(list);
+                    comboBoxTargetPlanet.removeAllItems();
+                    list.forEach(planetName -> comboBoxTargetPlanet.addItem(planetName));
+                    
+                } catch (JSONException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
         JLabel lblTargetPlanet = new JLabel("Planet:");
         GridBagConstraints gbc_lblTargetPlanet = new GridBagConstraints();
         gbc_lblTargetPlanet.anchor = GridBagConstraints.EAST;
@@ -186,13 +234,29 @@ public class PanelFleet extends JPanel {
         gbc_lblTargetPlanet.gridy = 1;
         panelTarget.add(lblTargetPlanet, gbc_lblTargetPlanet);
         
-        JComboBox comboBoxTargetPlanet = new JComboBox();
+        comboBoxTargetPlanet = new JComboBox<String>();
         GridBagConstraints gbc_comboBoxTargetPlanet = new GridBagConstraints();
         gbc_comboBoxTargetPlanet.insets = new Insets(0, 0, 5, 0);
         gbc_comboBoxTargetPlanet.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxTargetPlanet.gridx = 1;
         gbc_comboBoxTargetPlanet.gridy = 1;
         panelTarget.add(comboBoxTargetPlanet, gbc_comboBoxTargetPlanet);
+
+        comboBoxTargetPlanet.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (comboBoxTargetPlanet.getSelectedItem() == null)
+                    return;
+                
+                String planetName = comboBoxTargetPlanet.getSelectedItem().toString();
+                mapPlanets.forEach((planetId, planet) -> {
+                    if (planet.getName().equalsIgnoreCase(planetName)) {
+                        textFieldTargetPositionX.setText(Integer.toString(planet.getPosX()));
+                        textFieldTargetPositionY.setText(Integer.toString(planet.getPosY()));
+                    }
+                });
+            }
+        });
+        
         
         JLabel lblTargetPosition = new JLabel("Position:");
         GridBagConstraints gbc_lblTargetPosition = new GridBagConstraints();
@@ -401,5 +465,18 @@ public class PanelFleet extends JPanel {
         gbc_btnSendTransaction.gridx = 1;
         gbc_btnSendTransaction.gridy = 3;
         add(btnSendTransaction, gbc_btnSendTransaction);
+        
+        setTarget();
+    }
+    
+    private void setTarget() {
+        
+        Planet targetPlanet = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();      
+        if (targetPlanet == null)
+            return;
+        
+        textFieldTargetUser.setText(targetPlanet.getUserName());
+        textFieldTargetUser.postActionEvent();
+        comboBoxTargetPlanet.setSelectedItem(targetPlanet.getName());
     }
 }

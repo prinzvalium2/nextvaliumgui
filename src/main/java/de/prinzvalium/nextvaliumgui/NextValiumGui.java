@@ -86,10 +86,6 @@ public class NextValiumGui {
          // Read user and keys from ini-file. User skills are loaded
         HashMap<String, String> mapUserAndKey = new HashMap<String, String>();
         try {
-            File f = new File("nextvalium.ini");
-            if (!f.exists())
-                f.createNewFile();
-            
             Util.loadProperties(mapUserAndKey);
             
         } catch (IOException e) {

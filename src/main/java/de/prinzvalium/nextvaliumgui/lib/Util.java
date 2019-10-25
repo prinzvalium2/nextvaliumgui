@@ -1,6 +1,7 @@
 package de.prinzvalium.nextvaliumgui.lib;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,6 +34,8 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 public class Util {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
+    
+    private static final String CONFIG_FILE = "nextvaliumgui.ini";
     
 	private static final String NEXTCOLONY_API_URL = "https://api.nextcolony.io/";
 	
@@ -192,7 +195,7 @@ public class Util {
     public static void setProxy() throws FileNotFoundException, IOException {
         
         Properties prop = new Properties();
-        prop.load(new FileInputStream("nextvalium.ini"));
+        prop.load(new FileInputStream(CONFIG_FILE));
 
         String value = prop.getProperty("http.proxyHost");
         if (value != null && !value.isEmpty())
@@ -213,8 +216,12 @@ public class Util {
     
     public static void loadProperties(HashMap<String, String> mapUserAndKey) throws FileNotFoundException, IOException {
         
+        File f = new File(CONFIG_FILE);
+        if (!f.exists())
+            f.createNewFile();
+        
         Properties prop = new Properties();
-        prop.load(new FileInputStream("nextvalium.ini"));
+        prop.load(new FileInputStream(CONFIG_FILE));
 
         for(int i = 0; i < 100; i++ ) {
             

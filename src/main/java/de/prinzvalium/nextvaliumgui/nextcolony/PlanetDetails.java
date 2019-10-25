@@ -45,7 +45,9 @@ public class PlanetDetails {
         
         String apiCmd = String.format(Util.NEXTCOLONY_API_CMD_LOADPLANET, planetId);
         JSONObject jsonPlanet = Util.getJSONObjectFromApiCommand(apiCmd);
-        
+ 
+        img = jsonPlanet.getString("img");
+
         userName = jsonPlanet.getString("user");
         planetId = jsonPlanet.getString("planet_id");
         planet_corx = jsonPlanet.getInt("planet_corx");
@@ -166,5 +168,4 @@ public class PlanetDetails {
         Util.setProxy();
         new PlanetDetails("P-ZGD7FULO3I8").loadPlanetDetails(); // patti.pizza
     }
-    
 }

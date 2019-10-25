@@ -142,14 +142,7 @@
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>nvg.bat</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}</directory>
-                                    <filtering>false</filtering>
-                                    <includes>
-                                        <!-- Include the ini with private keys but don't zip and repo -->
-                                        <include>NextValium.ini</include>
+                                        <include>nextvaliumgui.ini</include>
                                     </includes>
                                 </resource>
                             </resources>

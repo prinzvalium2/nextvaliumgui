@@ -28,8 +28,4 @@ hs_err_pid*
 /.classpath
 .settings/
 target/
-/NextValium.ini
-
-/NextValium - Kopie.ini
-/NextValium pv45.ini
-/nextvalium.ini
+/*.ini

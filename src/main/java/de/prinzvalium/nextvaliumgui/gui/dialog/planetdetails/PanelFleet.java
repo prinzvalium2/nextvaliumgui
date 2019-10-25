@@ -8,6 +8,7 @@ import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
+import de.prinzvalium.nextvaliumgui.steem.SteemUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class PanelFleet extends JPanel {
     public PanelFleet(Planet planet) {
         
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
         gridBagLayout.columnWeights = new double[]{0.0, 1.0};
         gridBagLayout.columnWidths = new int[]{189, 0};
         setLayout(gridBagLayout);
@@ -89,7 +90,7 @@ public class PanelFleet extends JPanel {
         JScrollPane scrollPane = new JScrollPane();
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
         gbc_scrollPane.gridheight = 4;
-        gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 0;
         gbc_scrollPane.gridy = 0;
@@ -468,12 +469,27 @@ public class PanelFleet extends JPanel {
         panelResources.add(textFieldResourcesFleetMax, gbc_textFieldResourcesFleetMax);
         textFieldResourcesFleetMax.setColumns(10);
         
-        JButton btnSendTransaction = new JButton("Send Transaction to Steem");
+        JButton btnSendTransaction = new JButton("Send transaction to Steem");
         GridBagConstraints gbc_btnSendTransaction = new GridBagConstraints();
         gbc_btnSendTransaction.insets = new Insets(0, 0, 5, 0);
         gbc_btnSendTransaction.gridx = 1;
         gbc_btnSendTransaction.gridy = 3;
         add(btnSendTransaction, gbc_btnSendTransaction);
+        
+        JLabel lblStatus = new JLabel("");
+        GridBagConstraints gbc_lblStatus = new GridBagConstraints();
+        gbc_lblStatus.anchor = GridBagConstraints.WEST;
+        gbc_lblStatus.gridwidth = 2;
+        gbc_lblStatus.insets = new Insets(0, 0, 0, 5);
+        gbc_lblStatus.gridx = 0;
+        gbc_lblStatus.gridy = 4;
+        add(lblStatus, gbc_lblStatus);
+        
+        if (!SteemUtil.isAccountRegistered(planet.getUserName())) {
+            lblStatus.setForeground(Color.RED);
+            lblStatus.setText("Private posting key of user " + planet.getUserName() + " not in nextvaliumgui.ini -> Button <send transaction to Steem> disabled");
+            btnSendTransaction.setEnabled(false);
+        }
         
         setTarget();
     }

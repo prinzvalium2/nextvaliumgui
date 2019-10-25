@@ -80,6 +80,16 @@ public class SteemUtil {
         myConfig.setDefaultAccount(new AccountName(userName));
     }
     
+    public static boolean isAccountRegistered(String userName) {
+        LOGGER.trace("isAccountRegistered()");
+        
+        for (AccountName an : SteemJConfig.getInstance().getPrivateKeyStorage().getAccounts()) {
+            if (an.getName().equalsIgnoreCase(userName))
+                return true;
+        }
+        return false;
+    }
+    
     public static void broadcastJSONStringWithRetry(String json, String id) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         LOGGER.trace("broadcastJSONStringWithRetry()");
         

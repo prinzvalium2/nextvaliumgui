@@ -24,13 +24,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonObject;
-
-import de.prinzvalium.nextvaliumgui.steem.SteemUtil;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
-
 public class Util {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
@@ -156,14 +149,6 @@ public class Util {
         }
         
         return list;
-    }
-    
-	public static void broadcastJSONObjectToSteem(JSONObject jsonObject) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
-        SteemUtil.broadcastJSONStringWithRetry(jsonObject.toString(), "nextcolony");
-	}
-    
-    public static void broadcastJSONObjectToSteem(JsonObject jsonObject) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
-        SteemUtil.broadcastJSONStringWithRetry(jsonObject.toString(), "nextcolony");
     }
     
     public static void sleep(long millis) {

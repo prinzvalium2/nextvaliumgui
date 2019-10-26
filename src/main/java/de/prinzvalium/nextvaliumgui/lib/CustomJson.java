@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 
-import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
-import de.prinzvalium.nextvaliumgui.steem.SteemUtil;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
@@ -17,7 +15,9 @@ public class CustomJson {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomJson.class);
     
-    public static void deployShipsOfPlanet(HashMap<String, Integer> mapNumberOfShipTypes, String userName, String planetId, Planet planetTo) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+    public static void deployShipsOfPlanet(HashMap<String, Integer> mapNumberOfShipTypes, String userName, String planetId, int x, int y) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+        
+        SteemUtil.setDefaultAccount(userName);
         
         JsonObject jsonCommand = new JsonObject();
         
@@ -27,8 +27,8 @@ public class CustomJson {
         jsonCommand.add("tr_var1", jsonShips); 
         
         // Destination
-        jsonCommand.addProperty("tr_var2", planetTo.getPosX());
-        jsonCommand.addProperty("tr_var3", planetTo.getPosY());
+        jsonCommand.addProperty("tr_var2", x);
+        jsonCommand.addProperty("tr_var3", y);
 
         // Ressources
         jsonCommand.addProperty("tr_var4", 0); 

@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvaliumgui.steem;
+package de.prinzvalium.nextvaliumgui.lib;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,7 +10,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.prinzvalium.nextvaliumgui.lib.Util;
 import eu.bittrade.libs.steemj.SteemJ;
 import eu.bittrade.libs.steemj.base.models.AccountName;
 import eu.bittrade.libs.steemj.base.models.SignedTransaction;
@@ -72,11 +71,10 @@ public class SteemUtil {
         myConfig.getPrivateKeyStorage().addAccount(new AccountName(userName), privateKeys);
    }
     
-    public static void setDefaultAccount(String userName, String privatePostingKey) {
+    public static void setDefaultAccount(String userName) {
         LOGGER.trace("setDefaultAccount()");
         
         SteemJConfig myConfig = SteemJConfig.getInstance();
-        //myConfig.setResponseTimeout(100000);
         myConfig.setDefaultAccount(new AccountName(userName));
     }
     
@@ -88,6 +86,16 @@ public class SteemUtil {
                 return true;
         }
         return false;
+    }
+    
+    public static AccountName getAccount(String userName) {
+        LOGGER.trace("getAccount()");
+        
+        for (AccountName an : SteemJConfig.getInstance().getPrivateKeyStorage().getAccounts()) {
+            if (an.getName().equalsIgnoreCase(userName))
+                return an;
+        }
+        return null;
     }
     
     public static void broadcastJSONStringWithRetry(String json, String id) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {

@@ -5,10 +5,14 @@ import javax.swing.JPanel;
 import org.json.JSONException;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
+import de.prinzvalium.nextvaliumgui.lib.CustomJson;
+import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
-import de.prinzvalium.nextvaliumgui.steem.SteemUtil;
+import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
+import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
+import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,31 +59,41 @@ public class PanelFleet extends JPanel {
     private JComboBox comboBoxMissionsStandard;
     private HashMap<String, Planet> mapPlanets;
     private DefaultTableModel model;
+    private Planet planet;
+    
+    private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with explorer";
+    private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
+    private final String PREDEFINED_MISSION_DEPLOY_ALL = "Deploy all ships";
+    private final String PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP = "Deploy all ships except explorers";
     
     private String[] predefinedMissions = {
             "",
-            "Explore with explorer",
-            "Explore with Explorer II",
-            "Deploy all ships", 
+            PREDEFINED_MISSION_EXPLORE_EXP,
+            PREDEFINED_MISSION_EXPLORE_EXP2,
+            PREDEFINED_MISSION_DEPLOY_ALL, 
             "Deploy all explorers",
             "Deploy all corvettes",
             "Deploy all battleships",
-            "Deploy all ships except explorers",
+            PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
             "Attack with all corvettes",
             "Attack with all battleships",
             "Attack with all ships except explorers"
     };
     
+    private final String MISSION_EXPLORE = "Explore";
+    private final String MISSION_DEPLOY = "Deploy";
     private String[] missions = {
             "",
-            "Explore",
-            "Deploy",
+            MISSION_EXPLORE,
+            MISSION_DEPLOY,
             "Attack",
             "Support",
             "Siege"
     };
     
     public PanelFleet(Planet planet) {
+        
+        this.planet = planet;
         
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
@@ -470,6 +484,11 @@ public class PanelFleet extends JPanel {
         textFieldResourcesFleetMax.setColumns(10);
         
         JButton btnSendTransaction = new JButton("Send transaction to Steem");
+        btnSendTransaction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                actionPerformed_btnSendTransaction();
+            }
+        });
         GridBagConstraints gbc_btnSendTransaction = new GridBagConstraints();
         gbc_btnSendTransaction.insets = new Insets(0, 0, 5, 0);
         gbc_btnSendTransaction.gridx = 1;
@@ -506,37 +525,85 @@ public class PanelFleet extends JPanel {
     }
     
     private void actionPerformed_comboBoxMissionsPredefined() {
-        switch (comboBoxMissionsPredefined.getSelectedIndex()) {
+        switch ((String)comboBoxMissionsPredefined.getSelectedItem()) {
         
-        // Explore with explorer
-        case 1:
+        case PREDEFINED_MISSION_EXPLORE_EXP:
             for (int i = 0; i < model.getRowCount(); i++) {
                 if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership")) {
                     model.setValueAt(1, i, 2);
-                    model.setValueAt(0, i, 3);
+                    //model.setValueAt(0, i, 3);
                 }
                 else {
                     model.setValueAt(null, i, 2);
-                    model.setValueAt(null, i, 3);
+                    //model.setValueAt(null, i, 3);
                 }
             }
-            comboBoxMissionsStandard.setSelectedIndex(1);
+            comboBoxMissionsStandard.setSelectedItem(MISSION_EXPLORE);
             break;
             
-        // Explore with Explorer 2
-        case 2:
+        case PREDEFINED_MISSION_EXPLORE_EXP2:
             for (int i = 0; i < model.getRowCount(); i++) {
                 if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership1")) {
                     model.setValueAt(1, i, 2);
-                    model.setValueAt(0, i, 3);
+                    //model.setValueAt(0, i, 3);
                 }
                 else {
                     model.setValueAt(null, i, 2);
-                    model.setValueAt(null, i, 3);
+                    //model.setValueAt(null, i, 3);
                 }
             }
-            comboBoxMissionsStandard.setSelectedIndex(1);
+            comboBoxMissionsStandard.setSelectedItem(MISSION_EXPLORE);
+            break;
+            
+        case PREDEFINED_MISSION_DEPLOY_ALL:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                model.setValueAt(model.getValueAt(i, 1), i, 2);
+                //model.setValueAt(i, i, 3);
+            }
+            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
+            break;
+            
+        case PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (!ship.equalsIgnoreCase("explorership") && !ship.equalsIgnoreCase("explorership1"))
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+                //model.setValueAt(i, i, 3);
+            }
+            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
         }
+    }
+    
+    private void actionPerformed_btnSendTransaction() {
+        
+        switch ((String)comboBoxMissionsStandard.getSelectedItem()) {
+        
+        case MISSION_DEPLOY:
+            
+             try {
+                int x = Integer.parseInt(textFieldTargetPositionX.getText());
+                int y = Integer.parseInt(textFieldTargetPositionY.getText());
+                CustomJson.deployShipsOfPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y);
+
+             } catch (SteemInvalidTransactionException | SteemCommunicationException | SteemResponseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            break;
+        }
+    }
+    
+    private HashMap<String, Integer> getMapOfShips() {
+        
+        HashMap<String, Integer> mapNumberOfShipTypes = new HashMap<String, Integer>();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String ship = (String)model.getValueAt(i, 0);
+            Integer number = (Integer)model.getValueAt(i, 2);
+            if (number != null && number > 0)
+                mapNumberOfShipTypes.put(ship, number);
+        }
+        
+        return mapNumberOfShipTypes;
     }
 }

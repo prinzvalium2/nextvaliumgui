@@ -10,7 +10,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -199,7 +198,7 @@ public class Util {
             System.setProperty("https.proxyPort", value);
     }
     
-    public static void loadProperties(HashMap<String, String> mapUserAndKey) throws FileNotFoundException, IOException {
+    public static void loadProperties() throws FileNotFoundException, IOException {
         
         File f = new File(CONFIG_FILE);
         if (!f.exists())
@@ -218,7 +217,7 @@ public class Util {
             
             String[] values = value.split(",");
             
-            mapUserAndKey.put(values[0].trim(), values[1].trim());
+            SteemUtil.addPrivatePostinKey(values[0].trim(), values[1].trim());
         }
         
         setProxy();

@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,10 +82,9 @@ public class NextValiumGui {
         LOGGER.trace("NextValiumGui()");
         LOGGER.trace("---------------");
         
-         // Read user and keys from ini-file. User skills are loaded
-        HashMap<String, String> mapUserAndKey = new HashMap<String, String>();
         try {
-            Util.loadProperties(mapUserAndKey);
+            // Read user and keys from ini-file. User skills are loaded
+            Util.loadProperties();
             
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
@@ -106,7 +104,7 @@ public class NextValiumGui {
         PanelGalaxyMap panelGalaxyMap = new PanelGalaxyMap();
         
         frmNextvaliumManagementGui = new JFrame();
-        frmNextvaliumManagementGui.setTitle("NextValium GUI - Management GUI for NextColony");
+        frmNextvaliumManagementGui.setTitle("NextValium GUI - Multi user management GUI for NextColony");
         frmNextvaliumManagementGui.setBounds(10, 10, 1250, 900);
         frmNextvaliumManagementGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         

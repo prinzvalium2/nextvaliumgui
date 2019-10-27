@@ -66,7 +66,9 @@ public class PanelPlanet extends JPanel {
             planet = planets.get(planetId);
             
             String userName = planet.getUserName();
-            setToolTipText("<html>" + userName + "<br>" + planet.getName() + "</html>");
+            
+            // Tooltips are soooo slow.... -> remove it
+            //setToolTipText("<html>" + userName + "<br>" + planet.getName() + "</html>");
             
             Planet planetTarget = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
             if (planetTarget != null && planetTarget.getId().equalsIgnoreCase(planetId))
@@ -105,6 +107,17 @@ public class PanelPlanet extends JPanel {
     }
     
     public void setMarked(boolean marked) {
-        NextValiumGui.getNextValiumGui().setPlanetMarkedAsTarget(planet);
+        if (marked)
+            NextValiumGui.getNextValiumGui().setPlanetMarkedAsTarget(planet);
+        else
+            NextValiumGui.getNextValiumGui().clearTarget();
+    }
+
+    public Planet getPlanet() {
+        return planet;
+    }
+
+    public boolean isMarked() {
+        return marked;
     }
 }

@@ -50,6 +50,7 @@ public class NextValiumGui {
     private HashMap<String, Planet> mapPlanets;
     private Planet planetMarkedAsTarget = null;
     private JTextField textFieldMarkedAsTarget;
+    private JButton btnClearTarget;
 
     /**
      * Launch the application.
@@ -275,7 +276,7 @@ public class NextValiumGui {
         gbl_panel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panel.setLayout(gbl_panel);
         
-        JButton btnClearTarget = new JButton("Clear target");
+        btnClearTarget = new JButton("Clear target");
         GridBagConstraints gbc_btnClearTarget = new GridBagConstraints();
         gbc_btnClearTarget.anchor = GridBagConstraints.EAST;
         gbc_btnClearTarget.gridx = 0;
@@ -309,6 +310,12 @@ public class NextValiumGui {
     public void setPlanetMarkedAsTarget(Planet planetMarkedAsTarget) {
         this.planetMarkedAsTarget = planetMarkedAsTarget;
         textFieldMarkedAsTarget.setText(planetMarkedAsTarget.getUserName() + " / " + planetMarkedAsTarget.getName());
+        frmNextvaliumManagementGui.repaint();
+    }
+    
+    public void clearTarget() {
+        planetMarkedAsTarget = null;
+        textFieldMarkedAsTarget.setText(null);
         frmNextvaliumManagementGui.repaint();
     }
 

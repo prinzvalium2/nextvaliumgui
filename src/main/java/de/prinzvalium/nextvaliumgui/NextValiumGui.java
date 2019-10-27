@@ -18,6 +18,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -45,12 +46,12 @@ public class NextValiumGui {
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
-    private JTextField textFieldUserName;
     private JComboBox<String> comboBoxPlanets;
     private HashMap<String, Planet> mapPlanets;
     private Planet planetMarkedAsTarget = null;
     private JTextField textFieldMarkedAsTarget;
     private JButton btnClearTarget;
+    private ArrayList<String> listUsers;
 
     /**
      * Launch the application.
@@ -85,7 +86,7 @@ public class NextValiumGui {
         
         try {
             // Read user and keys from ini-file. User skills are loaded
-            Util.loadProperties();
+            listUsers = Util.loadProperties();
             
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
@@ -143,31 +144,46 @@ public class NextValiumGui {
         GridBagLayout gbl_panelUserPlanet = new GridBagLayout();
         gbl_panelUserPlanet.columnWidths = new int[]{26, 86, 0, 0, 0, 0};
         gbl_panelUserPlanet.rowHeights = new int[]{23, 1, 0};
-        gbl_panelUserPlanet.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelUserPlanet.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         gbl_panelUserPlanet.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panelUserPlanet.setLayout(gbl_panelUserPlanet);
         
         JLabel lblUserName = new JLabel("User:");
         GridBagConstraints gbc_lblUserName = new GridBagConstraints();
-        gbc_lblUserName.insets = new Insets(0, 2, 0, 0);
-        gbc_lblUserName.anchor = GridBagConstraints.WEST;
+        gbc_lblUserName.insets = new Insets(0, 2, 5, 5);
+        gbc_lblUserName.anchor = GridBagConstraints.EAST;
         gbc_lblUserName.gridx = 0;
         gbc_lblUserName.gridy = 0;
         panelUserPlanet.add(lblUserName, gbc_lblUserName);
         
-        textFieldUserName = new JTextField();
-        GridBagConstraints gbc_textFieldUserName = new GridBagConstraints();
-        gbc_textFieldUserName.insets = new Insets(0, 2, 0, 0);
-        gbc_textFieldUserName.anchor = GridBagConstraints.WEST;
-        gbc_textFieldUserName.gridx = 1;
-        gbc_textFieldUserName.gridy = 0;
-        panelUserPlanet.add(textFieldUserName, gbc_textFieldUserName);
-        textFieldUserName.setMinimumSize(new Dimension(150, 20));
-        textFieldUserName.setPreferredSize(new Dimension(150, 20));
+        JComboBox comboBoxUsers = new JComboBox();
+        comboBoxUsers.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    ArrayList<String> list = new ArrayList<String>();
+                    mapPlanets = Planets.loadUserPlanets((String)comboBoxUsers.getSelectedItem());
+                    mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
+                    Collections.sort(list);
+                    comboBoxPlanets.removeAllItems();
+                    list.forEach(planetName -> comboBoxPlanets.addItem(planetName));
+                    
+                } catch (JSONException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        
+        comboBoxUsers.setEditable(true);
+        GridBagConstraints gbc_comboBoxUser = new GridBagConstraints();
+        gbc_comboBoxUser.insets = new Insets(0, 0, 5, 5);
+        gbc_comboBoxUser.fill = GridBagConstraints.HORIZONTAL;
+        gbc_comboBoxUser.gridx = 1;
+        gbc_comboBoxUser.gridy = 0;
+        panelUserPlanet.add(comboBoxUsers, gbc_comboBoxUser);
         
         JLabel lblMapPosition = new JLabel("X:");
         GridBagConstraints gbc_lblMapPosition = new GridBagConstraints();
-        gbc_lblMapPosition.insets = new Insets(0, 5, 0, 0);
+        gbc_lblMapPosition.insets = new Insets(0, 5, 5, 5);
         gbc_lblMapPosition.anchor = GridBagConstraints.EAST;
         gbc_lblMapPosition.gridx = 2;
         gbc_lblMapPosition.gridy = 0;
@@ -175,7 +191,7 @@ public class NextValiumGui {
         
         textFieldPosX = new JTextField();
         GridBagConstraints gbc_textFieldPosX = new GridBagConstraints();
-        gbc_textFieldPosX.insets = new Insets(0, 2, 0, 0);
+        gbc_textFieldPosX.insets = new Insets(0, 2, 5, 5);
         gbc_textFieldPosX.anchor = GridBagConstraints.WEST;
         gbc_textFieldPosX.gridx = 3;
         gbc_textFieldPosX.gridy = 0;
@@ -185,7 +201,7 @@ public class NextValiumGui {
         
         JButton btnRefresh = new JButton("Refresh");
         GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
-        gbc_btnRefresh.insets = new Insets(0, 5, 0, 0);
+        gbc_btnRefresh.insets = new Insets(0, 5, 5, 0);
         gbc_btnRefresh.anchor = GridBagConstraints.WEST;
         gbc_btnRefresh.gridx = 4;
         gbc_btnRefresh.gridy = 0;
@@ -201,7 +217,7 @@ public class NextValiumGui {
         
         JLabel lblPlanet = new JLabel("Planet:");
         GridBagConstraints gbc_lblPlanet = new GridBagConstraints();
-        gbc_lblPlanet.insets = new Insets(0, 2, 0, 0);
+        gbc_lblPlanet.insets = new Insets(0, 2, 0, 5);
         gbc_lblPlanet.anchor = GridBagConstraints.WEST;
         gbc_lblPlanet.gridx = 0;
         gbc_lblPlanet.gridy = 1;
@@ -209,7 +225,7 @@ public class NextValiumGui {
         
         comboBoxPlanets = new JComboBox<String>();
         GridBagConstraints gbc_comboBoxPlanets = new GridBagConstraints();
-        gbc_comboBoxPlanets.insets = new Insets(0, 2, 0, 0);
+        gbc_comboBoxPlanets.insets = new Insets(0, 2, 0, 5);
         gbc_comboBoxPlanets.anchor = GridBagConstraints.WEST;
         gbc_comboBoxPlanets.gridx = 1;
         gbc_comboBoxPlanets.gridy = 1;
@@ -232,6 +248,7 @@ public class NextValiumGui {
         
         JLabel lblMapPositionY = new JLabel("Y:");
         GridBagConstraints gbc_lblMapPositionY = new GridBagConstraints();
+        gbc_lblMapPositionY.insets = new Insets(0, 0, 0, 5);
         gbc_lblMapPositionY.anchor = GridBagConstraints.EAST;
         gbc_lblMapPositionY.gridx = 2;
         gbc_lblMapPositionY.gridy = 1;
@@ -239,28 +256,13 @@ public class NextValiumGui {
         
         textFieldPosY = new JTextField();
         GridBagConstraints gbc_textFieldPosY = new GridBagConstraints();
-        gbc_textFieldPosY.insets = new Insets(0, 2, 0, 0);
+        gbc_textFieldPosY.insets = new Insets(0, 2, 0, 5);
         gbc_textFieldPosY.anchor = GridBagConstraints.WEST;
         gbc_textFieldPosY.gridx = 3;
         gbc_textFieldPosY.gridy = 1;
         panelUserPlanet.add(textFieldPosY, gbc_textFieldPosY);
         textFieldPosY.setText("0");
         textFieldPosY.setColumns(4);
-        textFieldUserName.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    ArrayList<String> list = new ArrayList<String>();
-                    mapPlanets = Planets.loadUserPlanets(textFieldUserName.getText());
-                    mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
-                    Collections.sort(list);
-                    comboBoxPlanets.removeAllItems();
-                    list.forEach(planetName -> comboBoxPlanets.addItem(planetName));
-                    
-                } catch (JSONException | IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
         
         JPanel panel = new JPanel();
         panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Right click on planet to mark as target", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -301,7 +303,22 @@ public class NextValiumGui {
         
         frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER); // $hide$
         frmNextvaliumManagementGui.setVisible(true);
-    }
+        
+        listUsers.forEach(user -> comboBoxUsers.addItem(user));
+        
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        btnRefresh.doClick();
+                    }});
+                
+            }}).start();
+     }
 
     public Planet getPlanetMarkedAsTarget() {
         return planetMarkedAsTarget;

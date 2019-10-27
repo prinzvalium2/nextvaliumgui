@@ -198,11 +198,13 @@ public class Util {
             System.setProperty("https.proxyPort", value);
     }
     
-    public static void loadProperties() throws FileNotFoundException, IOException {
+    public static ArrayList<String> loadProperties() throws FileNotFoundException, IOException {
         
         File f = new File(CONFIG_FILE);
         if (!f.exists())
             f.createNewFile();
+        
+        ArrayList<String> listUsers = new ArrayList<String>();
         
         Properties prop = new Properties();
         prop.load(new FileInputStream(CONFIG_FILE));
@@ -218,9 +220,12 @@ public class Util {
             String[] values = value.split(",");
             
             SteemUtil.addPrivatePostinKey(values[0].trim(), values[1].trim());
+            listUsers.add(values[0].trim());
         }
         
         setProxy();
+        
+        return listUsers;
     }
        
     public static void main(String[] args) throws IOException {

@@ -112,7 +112,7 @@ public class PanelFleet extends JPanel {
         
         model = new DefaultTableModel(
                 new Object[][] {
-                    {null, null, null, null},
+                    {"loading data...", null, null, null},
                 },
                 new String[] {
                     "Ship type", "Planet", "Use", "Pos"
@@ -131,18 +131,7 @@ public class PanelFleet extends JPanel {
                 public boolean isCellEditable(int row, int column) {
                     return columnEditables[column];
                 }
-            };
-        
-        try {
-            Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
-            HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
-            model.removeRow(0);
-            for (Map.Entry<?,?> entry : mapShips.entrySet())
-                model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
-
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
+        };
         
         tableShips = new JTable();
         tableShips.setModel(model);
@@ -511,6 +500,24 @@ public class PanelFleet extends JPanel {
         }
         
         setTarget();
+        
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
+                    HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
+                    model.removeRow(0);
+                    for (Map.Entry<?,?> entry : mapShips.entrySet())
+                        model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
+
+                } catch (JSONException | IOException e) {
+                    lblStatus.setForeground(Color.RED);
+                    lblStatus.setText(e.getMessage());
+                }
+            }
+        }).start();
     }
     
     private void setTarget() {

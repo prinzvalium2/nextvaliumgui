@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.SystemColor;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 public class PopupMenuPlanet extends JPopupMenu {
     
@@ -95,9 +96,15 @@ public class PopupMenuPlanet extends JPopupMenu {
                 try {
                     Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
                     HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
-                    model.removeAllElements();
-                    for (Map.Entry<?,?> entry : mapShips.entrySet())
-                        model.addElement(entry.getKey() + ": " + entry.getValue());
+                    
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            model.removeAllElements();
+                            for (Map.Entry<?,?> entry : mapShips.entrySet())
+                                model.addElement(entry.getKey() + ": " + entry.getValue());
+                        }});
 
                 } catch (JSONException | IOException e) {
                     model.addElement(e.getMessage());

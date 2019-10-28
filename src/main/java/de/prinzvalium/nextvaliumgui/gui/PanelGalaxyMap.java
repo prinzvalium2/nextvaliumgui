@@ -33,7 +33,7 @@ public class PanelGalaxyMap extends JPanel {
         setLayout(null);
         
         JLabel lblNewLabel = new JLabel("Loading data...");
-        lblNewLabel.setBounds(0, 0, 80, 14);
+        lblNewLabel.setBounds(1, 1, 80, 14);
         add(lblNewLabel);
     }
     

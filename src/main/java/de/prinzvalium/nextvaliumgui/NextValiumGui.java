@@ -52,6 +52,7 @@ public class NextValiumGui {
     private JTextField textFieldMarkedAsTarget;
     private JButton btnClearTarget;
     private ArrayList<String> listUsers;
+    private String selectedUser = null;
 
     /**
      * Launch the application.
@@ -161,7 +162,8 @@ public class NextValiumGui {
             public void actionPerformed(ActionEvent e) {
                 try {
                     ArrayList<String> list = new ArrayList<String>();
-                    mapPlanets = Planets.loadUserPlanets((String)comboBoxUsers.getSelectedItem());
+                    selectedUser = (String)comboBoxUsers.getSelectedItem();
+                    mapPlanets = Planets.loadUserPlanets(selectedUser);
                     mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
                     Collections.sort(list);
                     comboBoxPlanets.removeAllItems();
@@ -342,5 +344,9 @@ public class NextValiumGui {
 
     public JFrame getFrmNextvaliumManagementGui() {
         return frmNextvaliumManagementGui;
+    }
+
+    public String getSelectedUser() {
+        return selectedUser;
     }
 }

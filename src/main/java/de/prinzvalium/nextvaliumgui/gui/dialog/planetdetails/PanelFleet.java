@@ -10,6 +10,8 @@ import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
+import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
+import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
@@ -36,6 +38,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class PanelFleet extends JPanel {
 
@@ -64,20 +68,25 @@ public class PanelFleet extends JPanel {
     private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with explorer";
     private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
     private final String PREDEFINED_MISSION_DEPLOY_ALL = "Deploy all ships";
+    private final String PREDEFINED_MISSION_DEPLOY_ALL_EXP = "Deploy all explorers";
+    private final String PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES = "Deploy all corvettes";
+    private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS = "Deploy all battleships";
+    private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER = "Deploy all battleships and transporter";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP = "Deploy all ships except explorers";
     
     private String[] predefinedMissions = {
             "",
-            PREDEFINED_MISSION_EXPLORE_EXP,
-            PREDEFINED_MISSION_EXPLORE_EXP2,
+//            PREDEFINED_MISSION_EXPLORE_EXP,
+//            PREDEFINED_MISSION_EXPLORE_EXP2,
             PREDEFINED_MISSION_DEPLOY_ALL, 
-            "Deploy all explorers",
-            "Deploy all corvettes",
-            "Deploy all battleships",
+            PREDEFINED_MISSION_DEPLOY_ALL_EXP,
+            PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES,
+            PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS,
+            PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER,
             PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
-            "Attack with all corvettes",
-            "Attack with all battleships",
-            "Attack with all ships except explorers"
+//            "Attack with all corvettes",
+//            "Attack with all battleships",
+//            "Attack with all ships except explorers"
     };
     
     private final String MISSION_EXPLORE = "Explore";
@@ -348,6 +357,13 @@ public class PanelFleet extends JPanel {
         textFieldResourcesCoal.setColumns(10);
         
         textFieldResourcesShipCoal = new JTextField();
+        textFieldResourcesShipCoal.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent arg0) {
+                actionPerformed_Ressources();
+            }
+        });
+        textFieldResourcesShipCoal.setText("0");
         GridBagConstraints gbc_textFieldResourcesShipCoal = new GridBagConstraints();
         gbc_textFieldResourcesShipCoal.insets = new Insets(0, 0, 5, 0);
         gbc_textFieldResourcesShipCoal.fill = GridBagConstraints.HORIZONTAL;
@@ -375,6 +391,13 @@ public class PanelFleet extends JPanel {
         textFieldResourcesOre.setColumns(10);
         
         textFieldResourcesShipOre = new JTextField();
+        textFieldResourcesShipOre.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent arg0) {
+                actionPerformed_Ressources();
+            }
+        });
+        textFieldResourcesShipOre.setText("0");
         GridBagConstraints gbc_textFieldResourcesShipOre = new GridBagConstraints();
         gbc_textFieldResourcesShipOre.insets = new Insets(0, 0, 5, 0);
         gbc_textFieldResourcesShipOre.fill = GridBagConstraints.HORIZONTAL;
@@ -402,6 +425,13 @@ public class PanelFleet extends JPanel {
         textFieldResourcesCopper.setColumns(10);
         
         textFieldResourcesShipCopper = new JTextField();
+        textFieldResourcesShipCopper.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent arg0) {
+                actionPerformed_Ressources();
+            }
+        });
+        textFieldResourcesShipCopper.setText("0");
         GridBagConstraints gbc_textFieldResourcesShipCopper = new GridBagConstraints();
         gbc_textFieldResourcesShipCopper.insets = new Insets(0, 0, 5, 0);
         gbc_textFieldResourcesShipCopper.fill = GridBagConstraints.HORIZONTAL;
@@ -429,6 +459,13 @@ public class PanelFleet extends JPanel {
         textFieldResourcesUranium.setColumns(10);
         
         textFieldResourcesShipUranium = new JTextField();
+        textFieldResourcesShipUranium.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent arg0) {
+                actionPerformed_Ressources();
+            }
+        });
+        textFieldResourcesShipUranium.setText("0");
         GridBagConstraints gbc_textFieldResourcesShipUranium = new GridBagConstraints();
         gbc_textFieldResourcesShipUranium.insets = new Insets(0, 0, 5, 0);
         gbc_textFieldResourcesShipUranium.fill = GridBagConstraints.HORIZONTAL;
@@ -446,6 +483,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(lblResourcesShipTotal, gbc_lblResourcesShipTotal);
         
         textFieldResourcesShipTotal = new JTextField();
+        textFieldResourcesShipTotal.setText("0");
         textFieldResourcesShipTotal.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesShipTotal = new GridBagConstraints();
         gbc_textFieldResourcesShipTotal.insets = new Insets(0, 0, 5, 0);
@@ -511,6 +549,12 @@ public class PanelFleet extends JPanel {
                     model.removeRow(0);
                     for (Map.Entry<?,?> entry : mapShips.entrySet())
                         model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
+                    
+                    RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(planet.getName(), planet.getId());
+                    textFieldResourcesCoal.setText(String.format("%.0f", res.getCoal()));
+                    textFieldResourcesOre.setText(String.format("%.0f", res.getOre()));
+                    textFieldResourcesCopper.setText(String.format("%.0f", res.getCopper()));
+                    textFieldResourcesUranium.setText(String.format("%.0f", res.getUranium()));
 
                 } catch (JSONException | IOException e) {
                     lblStatus.setForeground(Color.RED);
@@ -562,10 +606,52 @@ public class PanelFleet extends JPanel {
             comboBoxMissionsStandard.setSelectedItem(MISSION_EXPLORE);
             break;
             
+            
+        // DEPLOY
+            
         case PREDEFINED_MISSION_DEPLOY_ALL:
-            for (int i = 0; i < model.getRowCount(); i++) {
+            for (int i = 0; i < model.getRowCount(); i++)
                 model.setValueAt(model.getValueAt(i, 1), i, 2);
-                //model.setValueAt(i, i, 3);
+            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
+            break;
+            
+        case PREDEFINED_MISSION_DEPLOY_ALL_EXP:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (ship.equalsIgnoreCase("explorership"))
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+            }
+            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
+            break;
+            
+        case PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (ship.equalsIgnoreCase("corvette") || ship.equalsIgnoreCase("corvette1"))
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+            }
+            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
+            break;
+            
+        case PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (!ship.equalsIgnoreCase("explorership") && 
+                        !ship.equalsIgnoreCase("explorership1") &&
+                        !ship.equalsIgnoreCase("transportship") &&
+                        !ship.equalsIgnoreCase("transportship1"))
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+            }
+            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
+            break;
+            
+        case PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (!ship.equalsIgnoreCase("explorership") && 
+                        !ship.equalsIgnoreCase("explorership1") &&
+                        !ship.equalsIgnoreCase("transportship1"))
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
             }
             comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
@@ -575,7 +661,6 @@ public class PanelFleet extends JPanel {
                 String ship = (String)model.getValueAt(i, 0);
                 if (!ship.equalsIgnoreCase("explorership") && !ship.equalsIgnoreCase("explorership1"))
                     model.setValueAt(model.getValueAt(i, 1), i, 2);
-                //model.setValueAt(i, i, 3);
             }
             comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
@@ -599,6 +684,15 @@ public class PanelFleet extends JPanel {
             }
             break;
         }
+    }
+    
+    private void actionPerformed_Ressources() {
+        int coal = Integer.parseInt(textFieldResourcesShipCoal.getText());
+        int ore = Integer.parseInt(textFieldResourcesShipOre.getText());
+        int copper = Integer.parseInt(textFieldResourcesShipCopper.getText());
+        int uranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
+        int total = coal + ore + copper + uranium;
+        textFieldResourcesShipTotal.setText(Integer.toString(total));
     }
     
     private HashMap<String, Integer> getMapOfShips() {

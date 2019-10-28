@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 
 import org.json.JSONException;
 
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 
@@ -49,7 +50,9 @@ public class PopupMenuPlanet extends JPopupMenu {
         panelPlanetDetails.setLayout(gbl_panelPlanetDetails);
         
         JCheckBox chckbxMarkAsTarget = new JCheckBox("Mark as target");
-        chckbxMarkAsTarget.setSelected(panelPlanet.isMarked());
+        Planet planetMarked = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
+        boolean unselected = planetMarked == null || !planet.getId().equalsIgnoreCase(planetMarked.getId());
+        chckbxMarkAsTarget.setSelected(!unselected);
         chckbxMarkAsTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 panelPlanet.setMarked(chckbxMarkAsTarget.isSelected());
@@ -69,18 +72,6 @@ public class PopupMenuPlanet extends JPopupMenu {
         gbc_scrollPane.gridy = 1;
         panelPlanetDetails.add(scrollPane, gbc_scrollPane);
         
-//        JMenuItem mntmMarkAsTarget = new JMenuItem("Mark as target");
-//        GridBagConstraints gbc_mntmMarkAsTarget = new GridBagConstraints();
-//        gbc_mntmMarkAsTarget.insets = new Insets(0, 0, 5, 0);
-//        gbc_mntmMarkAsTarget.anchor = GridBagConstraints.NORTHWEST;
-//        gbc_mntmMarkAsTarget.gridx = 0;
-//        gbc_mntmMarkAsTarget.gridy = 0;
-//        panelPlanetDetails.add(mntmMarkAsTarget, gbc_mntmMarkAsTarget);
-//        mntmMarkAsTarget.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent arg0) {
-//                panelPlanet.setMarked(true);
-//            }
-//        });
         JList listShips = new JList(model);
         scrollPane.setViewportView(listShips);
         listShips.setVisibleRowCount(8);

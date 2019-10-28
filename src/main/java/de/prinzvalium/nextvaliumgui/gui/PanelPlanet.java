@@ -91,15 +91,26 @@ public class PanelPlanet extends JPanel {
         
         if (color.equals(Color.WHITE)) {
             g.setColor(Color.WHITE);
-            g.fillOval(0, 0, getWidth(), getHeight());
+            g.fillOval(0, 0, getWidth()-1, getHeight()-1);
             g.setColor(Color.RED);
-            g.drawOval(0+1, 0+1, getWidth()-2, getHeight()-2);
-            g.drawOval(0+3, 0+3, getWidth()-6, getHeight()-6);
-            g.drawOval(0+5, 0+5, getWidth()-10, getHeight()-10);
+            g.drawOval(0+0, 0+0, getWidth()-1, getHeight()-1);
+            g.drawOval(0+2, 0+2, getWidth()-5, getHeight()-5);
+            g.drawOval(0+4, 0+4, getWidth()-9, getHeight()-9);
             return;
         }
-        g.setColor(color.darker());
-        g.fillOval(0, 0, getWidth(), getHeight());
+        g.setColor(color);
+        
+        String selectedUser = NextValiumGui.getNextValiumGui().getSelectedUser();
+        if (selectedUser.equalsIgnoreCase(planet.getUserName())) {
+            g.setColor(Color.WHITE);
+            g.fillOval(1, 1, getWidth()-2, getHeight()-2);
+            g.setColor(Color.DARK_GRAY);
+            g.drawOval(1, 1, getWidth()-2, getHeight()-2);
+        }
+        else {
+            g.setColor(color);
+            g.fillOval(1, 1, getWidth()-2, getHeight()-2);
+        }
     }
     
     public void setMarked(boolean marked) {
@@ -111,10 +122,5 @@ public class PanelPlanet extends JPanel {
 
     public Planet getPlanet() {
         return planet;
-    }
-
-    public boolean isMarked() {
-        Planet planetTarget = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
-        return (planetTarget != null);
     }
 }

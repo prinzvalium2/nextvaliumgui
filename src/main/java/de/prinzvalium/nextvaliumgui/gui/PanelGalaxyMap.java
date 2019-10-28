@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.Galaxy;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
+import javax.swing.JLabel;
 
 public class PanelGalaxyMap extends JPanel {
     
@@ -30,7 +31,10 @@ public class PanelGalaxyMap extends JPanel {
         LOGGER.trace("PanelGalaxyMap()");
         
         setLayout(null);
-        //loadGalaxyMap(0, 0);
+        
+        JLabel lblNewLabel = new JLabel("Loading data...");
+        lblNewLabel.setBounds(0, 0, 80, 14);
+        add(lblNewLabel);
     }
     
     public void loadGalaxyMap(int x, int y) {
@@ -78,14 +82,14 @@ public class PanelGalaxyMap extends JPanel {
                 }
             }
             
+            g.setColor(color);
+            
             switch (status) {
             case "explore":
-                g.setColor(color.brighter());
                 g.fillOval(x-3, y-3, 6, 6);
                break;
             case "explored":
-                g.setColor(color);
-                g.fillOval(x-3, y-3, 6, 6);
+                g.drawOval(x-2, y-2, 4, 4);
                 break;
             }
         });

@@ -25,7 +25,6 @@ public class PanelPlanet extends JPanel {
     private Planet planet;
     private Color color;
     private PanelPlanet panelPlanet;
-    private boolean marked = false;
 
     public PanelPlanet(GalaxyMapValue value, HashMap<String, Color> mapUserColor) {
         
@@ -46,10 +45,7 @@ public class PanelPlanet extends JPanel {
             }
         });
         
-        if (marked)
-            color = Color.WHITE;
-        else
-            color = getUserColor(value, mapUserColor);
+        color = getUserColor(value, mapUserColor);
         
         if (color == null)
             color = Color.BLACK;
@@ -118,6 +114,7 @@ public class PanelPlanet extends JPanel {
     }
 
     public boolean isMarked() {
-        return marked;
+        Planet planetTarget = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
+        return (planetTarget != null);
     }
 }

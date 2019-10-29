@@ -688,10 +688,12 @@ public class PanelFleet extends JPanel {
                 int x = Integer.parseInt(textFieldTargetPositionX.getText());
                 int y = Integer.parseInt(textFieldTargetPositionY.getText());
                 CustomJson.deployShipsOfPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y);
+                lblStatus.setForeground(Color.GREEN);
+                lblStatus.setText("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
 
              } catch (SteemInvalidTransactionException | SteemCommunicationException | SteemResponseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                 lblStatus.setForeground(Color.RED);
+                 lblStatus.setText(e.getMessage());
             }
             break;
         }

@@ -85,13 +85,13 @@ public class PanelGalaxyMap extends JPanel {
                     int i = 0;
                     for (char c : s.toCharArray())  {
                         if (c >= 0x30 && c <= 0x39)
-                            colorValues[i] = (c - 0x30 + 10) * 10;
+                            colorValues[i++] = (c - 0x30) * 28;
                         else if (c >= 0x41 && c <= 0x5A)
-                            colorValues[i] = ((c - 0x41) / 2 + 8) * 10;
-                        if (++i > 2)
-                            break;;
+                            colorValues[i++] = (c - 0x41) * 10;
+                        if (i > 2)
+                            break;
                     }
-                        
+                       
                     color = new Color(colorValues[0], colorValues[1], colorValues[2]);
                     mapUserColor.put(userName, color);
                 }

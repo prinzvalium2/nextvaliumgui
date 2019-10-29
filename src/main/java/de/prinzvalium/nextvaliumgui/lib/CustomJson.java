@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 
+import de.prinzvalium.nextvaliumgui.nextcolony.Resources;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
 import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
@@ -15,7 +16,7 @@ public class CustomJson {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomJson.class);
     
-    public static void deployShipsOfPlanet(HashMap<String, Integer> mapNumberOfShipTypes, String userName, String planetId, int x, int y) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+    public static void deployShipsOfPlanet(HashMap<String, Integer> mapNumberOfShipTypes, String userName, String planetId, int x, int y, Resources resources) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         
         SteemUtil.setDefaultAccount(userName);
         
@@ -31,10 +32,10 @@ public class CustomJson {
         jsonCommand.addProperty("tr_var3", y);
 
         // Ressources
-        jsonCommand.addProperty("tr_var4", 0); 
-        jsonCommand.addProperty("tr_var5", 0);
-        jsonCommand.addProperty("tr_var6", 0);
-        jsonCommand.addProperty("tr_var7", 0);
+        jsonCommand.addProperty("tr_var4", resources.coal); 
+        jsonCommand.addProperty("tr_var5", resources.ore);
+        jsonCommand.addProperty("tr_var6", resources.copper);
+        jsonCommand.addProperty("tr_var7", resources.uranium);
         
         // Planet-ID from
         jsonCommand.addProperty("tr_var8", planetId);
@@ -42,6 +43,38 @@ public class CustomJson {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("username", userName);
         jsonObject.addProperty("type", "deploy");
+        jsonObject.add("command",  jsonCommand);
+        
+        broadcastJSONObjectToSteem(jsonObject);
+    }
+    
+    public static void transportToPlanet(HashMap<String, Integer> mapNumberOfShipTypes, String userName, String planetId, int x, int y, Resources resources) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+        
+        SteemUtil.setDefaultAccount(userName);
+        
+        JsonObject jsonCommand = new JsonObject();
+        
+        // Ships
+        JsonObject jsonShips = new JsonObject();
+        mapNumberOfShipTypes.forEach((shipType, num) -> jsonShips.addProperty(shipType, num.intValue()));
+        jsonCommand.add("tr_var1", jsonShips); 
+        
+        // Planet-ID from
+        jsonCommand.addProperty("tr_var2", planetId);
+        
+        // Destination
+        jsonCommand.addProperty("tr_var3", x);
+        jsonCommand.addProperty("tr_var4", y);
+
+        // Ressources
+        jsonCommand.addProperty("tr_var5", resources.coal); 
+        jsonCommand.addProperty("tr_var6", resources.ore);
+        jsonCommand.addProperty("tr_var7", resources.copper);
+        jsonCommand.addProperty("tr_var8", resources.uranium);
+        
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("username", userName);
+        jsonObject.addProperty("type", "transport");
         jsonObject.add("command",  jsonCommand);
         
         broadcastJSONObjectToSteem(jsonObject);

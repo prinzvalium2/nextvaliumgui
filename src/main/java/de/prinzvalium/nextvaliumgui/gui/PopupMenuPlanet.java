@@ -32,6 +32,7 @@ public class PopupMenuPlanet extends JPopupMenu {
     private static final long serialVersionUID = 1L;
     
     public PopupMenuPlanet(PanelPlanet panelPlanet) {
+        
         setPopupSize(new Dimension(200, 200));
         
         Planet planet = panelPlanet.getPlanet();

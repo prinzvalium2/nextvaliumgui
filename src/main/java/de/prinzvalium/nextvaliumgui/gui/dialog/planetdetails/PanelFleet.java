@@ -6,10 +6,12 @@ import org.json.JSONException;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.CustomJson;
+import de.prinzvalium.nextvaliumgui.lib.NextValiumException;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
+import de.prinzvalium.nextvaliumgui.nextcolony.Resources;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
@@ -77,7 +79,9 @@ public class PanelFleet extends JPanel {
     private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS = "Deploy all battleships";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER = "Deploy all battleships and transporter";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP = "Deploy all ships except explorers";
-    
+
+    private final String PREDEFINED_MISSION_TRANSPORT_FAST = "Transport fast with corvettes";
+
     private String[] predefinedMissions = {
             "",
 //            PREDEFINED_MISSION_EXPLORE_EXP,
@@ -88,6 +92,7 @@ public class PanelFleet extends JPanel {
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS,
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER,
             PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
+            PREDEFINED_MISSION_TRANSPORT_FAST
 //            "Attack with all corvettes",
 //            "Attack with all battleships",
 //            "Attack with all ships except explorers"
@@ -95,10 +100,13 @@ public class PanelFleet extends JPanel {
     
     private final String MISSION_EXPLORE = "Explore";
     private final String MISSION_DEPLOY = "Deploy";
+    private final String MISSION_TRANSPORT = "Transport";
+    
     private String[] missions = {
             "",
             MISSION_EXPLORE,
             MISSION_DEPLOY,
+            MISSION_TRANSPORT,
             "Attack",
             "Support",
             "Siege"
@@ -587,32 +595,28 @@ public class PanelFleet extends JPanel {
     }
     
     private void actionPerformed_comboBoxMissionsPredefined() {
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            model.setValueAt(null, i, 2);
+            model.setValueAt(null, i, 3);
+        }
+        
         switch ((String)comboBoxMissionsPredefined.getSelectedItem()) {
+        
+        // Explore
         
         case PREDEFINED_MISSION_EXPLORE_EXP:
             for (int i = 0; i < model.getRowCount(); i++) {
-                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership")) {
+                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership")) 
                     model.setValueAt(1, i, 2);
-                    //model.setValueAt(0, i, 3);
-                }
-                else {
-                    model.setValueAt(null, i, 2);
-                    //model.setValueAt(null, i, 3);
-                }
             }
             comboBoxMissionsStandard.setSelectedItem(MISSION_EXPLORE);
             break;
             
         case PREDEFINED_MISSION_EXPLORE_EXP2:
             for (int i = 0; i < model.getRowCount(); i++) {
-                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership1")) {
+                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership1"))
                     model.setValueAt(1, i, 2);
-                    //model.setValueAt(0, i, 3);
-                }
-                else {
-                    model.setValueAt(null, i, 2);
-                    //model.setValueAt(null, i, 3);
-                }
             }
             comboBoxMissionsStandard.setSelectedItem(MISSION_EXPLORE);
             break;
@@ -675,28 +679,56 @@ public class PanelFleet extends JPanel {
             }
             comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
+        
+        // Transport
+        
+        case PREDEFINED_MISSION_TRANSPORT_FAST:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (ship.equalsIgnoreCase("corvette") || ship.equalsIgnoreCase("corvette1"))
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+            }
+            comboBoxMissionsStandard.setSelectedItem(MISSION_TRANSPORT);
+            break;
+            
         }
     }
     
     private void actionPerformed_btnSendTransaction() {
         
-        switch ((String)comboBoxMissionsStandard.getSelectedItem()) {
+        int x = Integer.parseInt(textFieldTargetPositionX.getText());
+        int y = Integer.parseInt(textFieldTargetPositionY.getText());
         
-        case MISSION_DEPLOY:
-            
-             try {
-                int x = Integer.parseInt(textFieldTargetPositionX.getText());
-                int y = Integer.parseInt(textFieldTargetPositionY.getText());
-                CustomJson.deployShipsOfPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y);
-                lblStatus.setForeground(Color.GREEN);
-                lblStatus.setText("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
-
-             } catch (SteemInvalidTransactionException | SteemCommunicationException | SteemResponseException e) {
+        Resources resources = new Resources();
+        resources.coal = Integer.parseInt(textFieldResourcesShipCoal.getText());
+        resources.ore = Integer.parseInt(textFieldResourcesShipOre.getText());
+        resources.copper = Integer.parseInt(textFieldResourcesShipCopper.getText());
+        resources.uranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
+        
+        try {
+                
+            switch ((String)comboBoxMissionsStandard.getSelectedItem()) {
+             
+            case MISSION_DEPLOY:
+                CustomJson.deployShipsOfPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y, resources);
+                break;
+                
+            case MISSION_TRANSPORT:
+                CustomJson.transportToPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y, resources);
+                break;
+                
+            default:
+                throw new NextValiumException("not implemented"); 
+            }
+ 
+        } catch (SteemInvalidTransactionException | SteemCommunicationException | SteemResponseException | NextValiumException e) {
                  lblStatus.setForeground(Color.RED);
                  lblStatus.setText(e.getMessage());
-            }
-            break;
+                 return;
         }
+        
+        lblStatus.setForeground(Color.GREEN);
+        lblStatus.setText("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
     }
     
     private void actionPerformed_Ressources() {

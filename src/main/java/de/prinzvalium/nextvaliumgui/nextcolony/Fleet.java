@@ -50,7 +50,7 @@ public class Fleet {
         LOGGER.trace("reduceNumberOfExplorersInShipyard()");
         
         for (FleetShip s : getFleetShips()) {
-            if (s.type.equalsIgnoreCase("explorership")) {
+            if (s.getType().equalsIgnoreCase("explorership")) {
                 getFleetShips().remove(s);
                 break;
             }
@@ -61,7 +61,7 @@ public class Fleet {
         LOGGER.trace("reduceNumberOfExp2InShipyard()");
         
         for (FleetShip s : getFleetShips()) {
-            if (s.type.equalsIgnoreCase("explorership1")) {
+            if (s.getType().equalsIgnoreCase("explorership1")) {
                 getFleetShips().remove(s);
                 break;
             }
@@ -72,12 +72,20 @@ public class Fleet {
         
         int num = 0;
         for (FleetShip s : getFleetShips()) {
-            if (s.type.equalsIgnoreCase(shipType)) {
-                // if (s.hor == posX && s.ver == posY)
+            if (s.getType().equalsIgnoreCase(shipType)) {
                 num++;
             }
         }
         return num;
+    }
+    
+    public int getCapacityOfShip(String shipType) throws JSONException, IOException {
+        
+        for (FleetShip ship : getFleetShips()) {
+            if (ship.getType().equalsIgnoreCase(shipType))
+                return ship.getCapacity();
+        }
+        return -1;
     }
     
     public HashMap<String, Integer> getNumberOfShipTypesInShipyard() throws JSONException, IOException {
@@ -85,11 +93,11 @@ public class Fleet {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         
         for (FleetShip ship : getFleetShips()) {
-            Integer numShips = map.get(ship.type);
+            Integer numShips = map.get(ship.getType());
             if (numShips == null)
-                map.put(ship.type, 1);
+                map.put(ship.getType(), 1);
             else
-                map.put(ship.type, ++numShips);
+                map.put(ship.getType(), ++numShips);
         }
         return map;
     }

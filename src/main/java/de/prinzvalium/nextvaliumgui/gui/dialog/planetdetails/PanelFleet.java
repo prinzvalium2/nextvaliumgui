@@ -32,6 +32,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.UIManager;
 import java.awt.Color;
 import javax.swing.JComboBox;
@@ -64,6 +66,8 @@ public class PanelFleet extends JPanel {
     private HashMap<String, Planet> mapPlanets;
     private DefaultTableModel model;
     private Planet planet;
+    private Fleet fleet = null;
+    private JLabel lblStatus;
     
     private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with explorer";
     private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
@@ -141,6 +145,13 @@ public class PanelFleet extends JPanel {
                     return columnEditables[column];
                 }
         };
+        
+        model.addTableModelListener(new TableModelListener() {
+
+            @Override
+            public void tableChanged(TableModelEvent arg0) {
+                tableChanged_Fleet();
+            }});
         
         tableShips = new JTable();
         tableShips.setModel(model);
@@ -474,7 +485,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(textFieldResourcesShipUranium, gbc_textFieldResourcesShipUranium);
         textFieldResourcesShipUranium.setColumns(10);
         
-        JLabel lblResourcesShipTotal = new JLabel("Total:");
+        JLabel lblResourcesShipTotal = new JLabel("Resources total:");
         GridBagConstraints gbc_lblResourcesShipTotal = new GridBagConstraints();
         gbc_lblResourcesShipTotal.insets = new Insets(0, 0, 5, 5);
         gbc_lblResourcesShipTotal.anchor = GridBagConstraints.EAST;
@@ -493,7 +504,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(textFieldResourcesShipTotal, gbc_textFieldResourcesShipTotal);
         textFieldResourcesShipTotal.setColumns(10);
         
-        JLabel lblResourcesFleetMax = new JLabel("Max:");
+        JLabel lblResourcesFleetMax = new JLabel("Capacity max:");
         GridBagConstraints gbc_lblResourcesFleetMax = new GridBagConstraints();
         gbc_lblResourcesFleetMax.anchor = GridBagConstraints.EAST;
         gbc_lblResourcesFleetMax.insets = new Insets(0, 0, 0, 5);
@@ -522,7 +533,7 @@ public class PanelFleet extends JPanel {
         gbc_btnSendTransaction.gridy = 3;
         add(btnSendTransaction, gbc_btnSendTransaction);
         
-        JLabel lblStatus = new JLabel("");
+        lblStatus = new JLabel("");
         GridBagConstraints gbc_lblStatus = new GridBagConstraints();
         gbc_lblStatus.anchor = GridBagConstraints.WEST;
         gbc_lblStatus.gridwidth = 2;
@@ -544,7 +555,7 @@ public class PanelFleet extends JPanel {
             @Override
             public void run() {
                 try {
-                    Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
+                    fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
                     HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
                     model.removeRow(0);
                     for (Map.Entry<?,?> entry : mapShips.entrySet())
@@ -706,5 +717,31 @@ public class PanelFleet extends JPanel {
         }
         
         return mapNumberOfShipTypes;
+    }
+    
+    private void tableChanged_Fleet() {
+        
+        int total = 0;
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String ship = (String)model.getValueAt(i, 0);
+            Integer number = (Integer)model.getValueAt(i, 2);
+            
+            if (number == null)
+                number = 0;
+            
+            Integer capacity = 0;
+            try {
+                capacity = fleet.getCapacityOfShip(ship);
+            } catch (JSONException | IOException e) {
+                lblStatus.setForeground(Color.RED);
+                lblStatus.setText(e.getMessage());
+                return;
+            }
+            
+            total += number * capacity;
+        }
+        
+        textFieldResourcesFleetMax.setText(Integer.toString(total));
     }
 }

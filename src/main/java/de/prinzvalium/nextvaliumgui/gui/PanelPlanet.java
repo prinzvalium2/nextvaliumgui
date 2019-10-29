@@ -63,9 +63,6 @@ public class PanelPlanet extends JPanel {
             
             String userName = planet.getUserName();
             
-            // Tooltips are soooo slow.... -> remove it
-            //setToolTipText("<html>" + userName + "<br>" + planet.getName() + "</html>");
-            
             Planet planetTarget = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
             if (planetTarget != null && planetTarget.getId().equalsIgnoreCase(planetId))
                 return Color.WHITE;
@@ -73,10 +70,26 @@ public class PanelPlanet extends JPanel {
             color = mapUserColor.get(userName);
             
             if (color == null) {
-                int red = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                int green = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                int blue = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                color = new Color(red, green, blue);
+                
+                int[] colorValues = new int[3];
+
+                colorValues[0] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                colorValues[1] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                colorValues[2] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                
+                String s = userName.toUpperCase();
+                
+                int i = 0;
+                for (char c : s.toCharArray())  {
+                    if (c >= 0x30 && c <= 0x39)
+                        colorValues[i] = (c - 0x30 + 10) * 10;
+                    else if (c >= 0x41 && c <= 0x5A)
+                        colorValues[i] = ((c - 0x41) / 2 + 8) * 10;
+                    if (++i > 2)
+                        break;;
+                }
+                    
+                color = new Color(colorValues[0], colorValues[1], colorValues[2]);
                 mapUserColor.put(userName, color);
             }
             
@@ -103,13 +116,14 @@ public class PanelPlanet extends JPanel {
         String selectedUser = NextValiumGui.getNextValiumGui().getSelectedUser();
         if (selectedUser.equalsIgnoreCase(planet.getUserName())) {
             g.setColor(Color.WHITE);
-            g.fillOval(1, 1, getWidth()-2, getHeight()-2);
+            g.fillOval(0, 0, getWidth()-1, getHeight()-1);
             g.setColor(Color.DARK_GRAY);
-            g.drawOval(1, 1, getWidth()-2, getHeight()-2);
+            g.drawOval(0, 0, getWidth()-1, getHeight()-1);
         }
         else {
             g.setColor(color);
-            g.fillOval(1, 1, getWidth()-2, getHeight()-2);
+            g.fillOval(1, 1, getWidth()-3, getHeight()-3);
+            g.drawOval(1, 1, getWidth()-3, getHeight()-3);
         }
     }
     

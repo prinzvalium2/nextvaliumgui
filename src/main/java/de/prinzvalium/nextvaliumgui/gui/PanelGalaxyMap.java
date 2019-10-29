@@ -55,7 +55,6 @@ public class PanelGalaxyMap extends JPanel {
 
     @Override 
     protected void paintComponent(Graphics g) {
-        LOGGER.trace("paintComponent()");
         
         if (galaxyMap == null)
             return;
@@ -74,21 +73,38 @@ public class PanelGalaxyMap extends JPanel {
                 color = mapUserColor.get(userName);
                 
                 if (color == null) {
-                    int red = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    int green = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    int blue = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    color = new Color(red, green, blue);
+                    
+                    int[] colorValues = new int[3];
+
+                    colorValues[0] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                    colorValues[1] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                    colorValues[2] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+                    
+                    String s = userName.toUpperCase();
+                    
+                    int i = 0;
+                    for (char c : s.toCharArray())  {
+                        if (c >= 0x30 && c <= 0x39)
+                            colorValues[i] = (c - 0x30 + 10) * 10;
+                        else if (c >= 0x41 && c <= 0x5A)
+                            colorValues[i] = ((c - 0x41) / 2 + 8) * 10;
+                        if (++i > 2)
+                            break;;
+                    }
+                        
+                    color = new Color(colorValues[0], colorValues[1], colorValues[2]);
                     mapUserColor.put(userName, color);
                 }
             }
             
-            g.setColor(color);
             
             switch (status) {
             case "explore":
+                g.setColor(color);
                 g.fillOval(x-3, y-3, 6, 6);
                break;
             case "explored":
+                g.setColor(color);
                 g.drawOval(x-2, y-2, 4, 4);
                 break;
             }

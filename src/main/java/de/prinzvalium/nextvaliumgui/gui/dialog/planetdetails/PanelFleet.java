@@ -2,8 +2,6 @@ package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 
 import javax.swing.JPanel;
 
-import org.json.JSONException;
-
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.NextValiumException;
@@ -17,7 +15,6 @@ import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
 import de.prinzvalium.nextvaliumgui.nextcolony.Skills;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -232,6 +229,11 @@ public class PanelFleet extends JPanel {
         panelMissions.add(lblMissionsStandard, gbc_lblMissionsStandard);
         
         comboBoxMissionsStandard = new JComboBox(missions);
+        comboBoxMissionsStandard.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                tableChanged_Fleet();
+            }
+        });
         GridBagConstraints gbc_comboBoxMissionsStandard = new GridBagConstraints();
         gbc_comboBoxMissionsStandard.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsStandard.gridx = 1;
@@ -280,8 +282,9 @@ public class PanelFleet extends JPanel {
                     comboBoxTargetPlanet.removeAllItems();
                     list.forEach(planetName -> comboBoxTargetPlanet.addItem(planetName));
                     
-                } catch (JSONException | IOException e1) {
-                    e1.printStackTrace();
+                } catch (Exception e1) {
+                    lblStatus.setForeground(Color.RED);
+                    lblStatus.setText(e1.getClass().getSimpleName() + ": " + e1.getMessage());
                 }
             }
         });
@@ -822,7 +825,8 @@ public class PanelFleet extends JPanel {
             Integer number = (Integer)model.getValueAt(i, 2);
             
             if (number == null)
-                number = 0;
+                //number = 0;
+                continue;
             
             Integer capacity = 0;
             double consumption = 0;
@@ -854,11 +858,16 @@ public class PanelFleet extends JPanel {
             int distY = Math.abs(targetY - planetY);
             
             double distance = Math.sqrt(distX*distX + distY*distY);
+            
+            String selectedMission = (String)comboBoxMissionsStandard.getSelectedItem();
+            if (selectedMission.equalsIgnoreCase(MISSION_TRANSPORT))
+                distance += distance;
+            
             textFieldUraniumConsumption.setText(String.format("%.3f", distance * consumptionTotal));
             
         }
         catch (Exception e) {
-            textFieldUraniumConsumption.setText(Double.toString(consumptionTotal) + " / per tile");
+            textFieldUraniumConsumption.setText(String.format("%.3f", consumptionTotal) + " / per tile");
         }
     }
 }

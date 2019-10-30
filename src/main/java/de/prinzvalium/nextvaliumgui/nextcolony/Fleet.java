@@ -88,6 +88,15 @@ public class Fleet {
         return -1;
     }
     
+    public double getConsumptionOfShip(String shipType) throws JSONException, IOException {
+        
+        for (FleetShip ship : getFleetShips()) {
+            if (ship.getType().equalsIgnoreCase(shipType))
+                return ship.getConsumption();
+        }
+        return -1;
+    }
+    
     public HashMap<String, Integer> getNumberOfShipTypesInShipyard() throws JSONException, IOException {
         
         HashMap<String, Integer> map = new HashMap<String, Integer>();

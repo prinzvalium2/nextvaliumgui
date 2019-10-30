@@ -7,6 +7,7 @@ public class FleetShip {
     //long busy;
     private String type;
     private int capacity;
+    private double consumption;
     //int hor;
     //int ver;
 
@@ -14,6 +15,8 @@ public class FleetShip {
         //busy = jsonShip.getLong("busy");
         type = jsonShip.getString("type");
         capacity = jsonShip.getInt("capacity");
+        consumption = jsonShip.getDouble("cons");
+        
         //hor = jsonShip.getInt("hor");
         //ver = jsonShip.getInt("ver");
     }
@@ -24,5 +27,9 @@ public class FleetShip {
 
     public String getType() {
         return type;
+    }
+
+    public double getConsumption() {
+        return consumption;
     }
 }

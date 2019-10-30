@@ -9,14 +9,13 @@ import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.NextValiumException;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
+import de.prinzvalium.nextvaliumgui.nextcolony.MissionsUser;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.Resources;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
-import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
-import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
-import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
+import de.prinzvalium.nextvaliumgui.nextcolony.Skills;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -104,13 +103,15 @@ public class PanelFleet extends JPanel {
     
     private String[] missions = {
             "",
-            MISSION_EXPLORE,
+//            MISSION_EXPLORE,
             MISSION_DEPLOY,
             MISSION_TRANSPORT,
-            "Attack",
-            "Support",
-            "Siege"
+//            "Attack",
+//            "Support",
+//            "Siege"
     };
+    private JTextField textFieldFreeMissions;
+    private JTextField textFieldUraniumConsumption;
     
     public PanelFleet(Planet planet) {
         
@@ -182,12 +183,30 @@ public class PanelFleet extends JPanel {
         gbl_panelMissions.columnWeights = new double[]{0.0, 1.0};
         panelMissions.setLayout(gbl_panelMissions);
         
+        JLabel lblFreeMissions = new JLabel("Available:");
+        GridBagConstraints gbc_lblFreeMissions = new GridBagConstraints();
+        gbc_lblFreeMissions.anchor = GridBagConstraints.EAST;
+        gbc_lblFreeMissions.insets = new Insets(0, 0, 5, 5);
+        gbc_lblFreeMissions.gridx = 0;
+        gbc_lblFreeMissions.gridy = 0;
+        panelMissions.add(lblFreeMissions, gbc_lblFreeMissions);
+        
+        textFieldFreeMissions = new JTextField();
+        textFieldFreeMissions.setEditable(false);
+        GridBagConstraints gbc_textFieldFreeMissions = new GridBagConstraints();
+        gbc_textFieldFreeMissions.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldFreeMissions.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldFreeMissions.gridx = 1;
+        gbc_textFieldFreeMissions.gridy = 0;
+        panelMissions.add(textFieldFreeMissions, gbc_textFieldFreeMissions);
+        textFieldFreeMissions.setColumns(10);
+        
         JLabel lblMissionsPredefined = new JLabel("Predefined:");
         GridBagConstraints gbc_lblMissionsPredefined = new GridBagConstraints();
         gbc_lblMissionsPredefined.anchor = GridBagConstraints.EAST;
         gbc_lblMissionsPredefined.insets = new Insets(0, 0, 5, 5);
         gbc_lblMissionsPredefined.gridx = 0;
-        gbc_lblMissionsPredefined.gridy = 0;
+        gbc_lblMissionsPredefined.gridy = 1;
         panelMissions.add(lblMissionsPredefined, gbc_lblMissionsPredefined);
         
         comboBoxMissionsPredefined = new JComboBox(predefinedMissions);
@@ -201,7 +220,7 @@ public class PanelFleet extends JPanel {
         gbc_comboBoxMissionsPredefined.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsPredefined.insets = new Insets(0, 0, 5, 0);
         gbc_comboBoxMissionsPredefined.gridx = 1;
-        gbc_comboBoxMissionsPredefined.gridy = 0;
+        gbc_comboBoxMissionsPredefined.gridy = 1;
         panelMissions.add(comboBoxMissionsPredefined, gbc_comboBoxMissionsPredefined);
         
         JLabel lblMissionsStandard = new JLabel("Type:");
@@ -209,14 +228,14 @@ public class PanelFleet extends JPanel {
         gbc_lblMissionsStandard.anchor = GridBagConstraints.EAST;
         gbc_lblMissionsStandard.insets = new Insets(0, 0, 0, 5);
         gbc_lblMissionsStandard.gridx = 0;
-        gbc_lblMissionsStandard.gridy = 1;
+        gbc_lblMissionsStandard.gridy = 2;
         panelMissions.add(lblMissionsStandard, gbc_lblMissionsStandard);
         
         comboBoxMissionsStandard = new JComboBox(missions);
         GridBagConstraints gbc_comboBoxMissionsStandard = new GridBagConstraints();
         gbc_comboBoxMissionsStandard.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsStandard.gridx = 1;
-        gbc_comboBoxMissionsStandard.gridy = 1;
+        gbc_comboBoxMissionsStandard.gridy = 2;
         panelMissions.add(comboBoxMissionsStandard, gbc_comboBoxMissionsStandard);
         
         JPanel panelTarget = new JPanel();
@@ -295,6 +314,7 @@ public class PanelFleet extends JPanel {
                         textFieldTargetPositionY.setText(Integer.toString(planet.getPosY()));
                     }
                 });
+                tableChanged_Fleet();
             }
         });
         
@@ -318,6 +338,12 @@ public class PanelFleet extends JPanel {
         panelTargetPosition.add(lblTargetPositionX);
         
         textFieldTargetPositionX = new JTextField();
+        textFieldTargetPositionX.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent arg0) {
+                tableChanged_Fleet();
+            }
+        });
         panelTargetPosition.add(textFieldTargetPositionX);
         textFieldTargetPositionX.setColumns(10);
         
@@ -325,6 +351,12 @@ public class PanelFleet extends JPanel {
         panelTargetPosition.add(lblTargetPositionY);
         
         textFieldTargetPositionY = new JTextField();
+        textFieldTargetPositionY.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                tableChanged_Fleet();
+            }
+        });
         panelTargetPosition.add(textFieldTargetPositionY);
         textFieldTargetPositionY.setColumns(10);
         
@@ -338,9 +370,9 @@ public class PanelFleet extends JPanel {
         add(panelResources, gbc_panelResources);
         GridBagLayout gbl_panelResources = new GridBagLayout();
         gbl_panelResources.columnWidths = new int[]{70, 0, 0, 0};
-        gbl_panelResources.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panelResources.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panelResources.columnWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
-        gbl_panelResources.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelResources.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         panelResources.setLayout(gbl_panelResources);
         
         JLabel lblPlanet = new JLabel("Planet");
@@ -515,7 +547,7 @@ public class PanelFleet extends JPanel {
         JLabel lblResourcesFleetMax = new JLabel("Capacity max:");
         GridBagConstraints gbc_lblResourcesFleetMax = new GridBagConstraints();
         gbc_lblResourcesFleetMax.anchor = GridBagConstraints.EAST;
-        gbc_lblResourcesFleetMax.insets = new Insets(0, 0, 0, 5);
+        gbc_lblResourcesFleetMax.insets = new Insets(0, 0, 5, 5);
         gbc_lblResourcesFleetMax.gridx = 1;
         gbc_lblResourcesFleetMax.gridy = 6;
         panelResources.add(lblResourcesFleetMax, gbc_lblResourcesFleetMax);
@@ -523,11 +555,29 @@ public class PanelFleet extends JPanel {
         textFieldResourcesFleetMax = new JTextField();
         textFieldResourcesFleetMax.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesFleetMax = new GridBagConstraints();
+        gbc_textFieldResourcesFleetMax.insets = new Insets(0, 0, 5, 0);
         gbc_textFieldResourcesFleetMax.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldResourcesFleetMax.gridx = 2;
         gbc_textFieldResourcesFleetMax.gridy = 6;
         panelResources.add(textFieldResourcesFleetMax, gbc_textFieldResourcesFleetMax);
         textFieldResourcesFleetMax.setColumns(10);
+        
+        JLabel lblUramiumConsumption = new JLabel("Uranium consumption:");
+        GridBagConstraints gbc_lblUramiumConsumption = new GridBagConstraints();
+        gbc_lblUramiumConsumption.insets = new Insets(0, 0, 0, 5);
+        gbc_lblUramiumConsumption.anchor = GridBagConstraints.EAST;
+        gbc_lblUramiumConsumption.gridx = 1;
+        gbc_lblUramiumConsumption.gridy = 7;
+        panelResources.add(lblUramiumConsumption, gbc_lblUramiumConsumption);
+        
+        textFieldUraniumConsumption = new JTextField();
+        textFieldUraniumConsumption.setEditable(false);
+        GridBagConstraints gbc_textFieldUraniumConsumption = new GridBagConstraints();
+        gbc_textFieldUraniumConsumption.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldUraniumConsumption.gridx = 2;
+        gbc_textFieldUraniumConsumption.gridy = 7;
+        panelResources.add(textFieldUraniumConsumption, gbc_textFieldUraniumConsumption);
+        textFieldUraniumConsumption.setColumns(10);
         
         JButton btnSendTransaction = new JButton("Send transaction to Steem");
         btnSendTransaction.addActionListener(new ActionListener() {
@@ -563,21 +613,31 @@ public class PanelFleet extends JPanel {
             @Override
             public void run() {
                 try {
-                    fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
+                    String userName = planet.getUserName();
+                    String planetId = planet.getId();
+                    String planetName = planet.getName();
+                    
+                    fleet = new Fleet(userName, planetName, planetId);
                     HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
                     model.removeRow(0);
                     for (Map.Entry<?,?> entry : mapShips.entrySet())
                         model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
                     
-                    RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(planet.getName(), planet.getId());
+                    RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(planetName, planetId);
                     textFieldResourcesCoal.setText(String.format("%.0f", res.getCoal()));
                     textFieldResourcesOre.setText(String.format("%.0f", res.getOre()));
                     textFieldResourcesCopper.setText(String.format("%.0f", res.getCopper()));
                     textFieldResourcesUranium.setText(String.format("%.0f", res.getUranium()));
+                    
+                    int starter = planet.isStarter() ? 1 : 0;
+                    int missionsActive = MissionsUser.loadAllActiveUserMissions(userName).size();
+                    int missionsMax = new Skills(userName).getMissionControlLevel() * 2 + starter;
+                    int missionsAvailable = missionsMax - missionsActive;
+                    textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
 
-                } catch (JSONException | IOException e) {
+                } catch (Exception e) {
                     lblStatus.setForeground(Color.RED);
-                    lblStatus.setText(e.getMessage());
+                    lblStatus.setText(e.getClass().getSimpleName() + ": " + e.getMessage());
                 }
             }
         }).start();
@@ -696,17 +756,17 @@ public class PanelFleet extends JPanel {
     
     private void actionPerformed_btnSendTransaction() {
         
-        int x = Integer.parseInt(textFieldTargetPositionX.getText());
-        int y = Integer.parseInt(textFieldTargetPositionY.getText());
-        
-        Resources resources = new Resources();
-        resources.coal = Integer.parseInt(textFieldResourcesShipCoal.getText());
-        resources.ore = Integer.parseInt(textFieldResourcesShipOre.getText());
-        resources.copper = Integer.parseInt(textFieldResourcesShipCopper.getText());
-        resources.uranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
-        
         try {
                 
+            int x = Integer.parseInt(textFieldTargetPositionX.getText());
+            int y = Integer.parseInt(textFieldTargetPositionY.getText());
+            
+            Resources resources = new Resources();
+            resources.coal = Integer.parseInt(textFieldResourcesShipCoal.getText());
+            resources.ore = Integer.parseInt(textFieldResourcesShipOre.getText());
+            resources.copper = Integer.parseInt(textFieldResourcesShipCopper.getText());
+            resources.uranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
+            
             switch ((String)comboBoxMissionsStandard.getSelectedItem()) {
              
             case MISSION_DEPLOY:
@@ -720,15 +780,14 @@ public class PanelFleet extends JPanel {
             default:
                 throw new NextValiumException("not implemented"); 
             }
- 
-        } catch (SteemInvalidTransactionException | SteemCommunicationException | SteemResponseException | NextValiumException e) {
-                 lblStatus.setForeground(Color.RED);
-                 lblStatus.setText(e.getMessage());
-                 return;
+            
+            lblStatus.setForeground(Color.GREEN);
+            lblStatus.setText("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+
+        } catch (Exception e) {
+             lblStatus.setForeground(Color.RED);
+             lblStatus.setText(e.getClass().getSimpleName() + ": " + e.getMessage());
         }
-        
-        lblStatus.setForeground(Color.GREEN);
-        lblStatus.setText("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
     }
     
     private void actionPerformed_Ressources() {
@@ -755,7 +814,8 @@ public class PanelFleet extends JPanel {
     
     private void tableChanged_Fleet() {
         
-        int total = 0;
+        int capacityTotal = 0;
+        double consumptionTotal = 0;
         
         for (int i = 0; i < model.getRowCount(); i++) {
             String ship = (String)model.getValueAt(i, 0);
@@ -765,17 +825,40 @@ public class PanelFleet extends JPanel {
                 number = 0;
             
             Integer capacity = 0;
+            double consumption = 0;
+            
             try {
                 capacity = fleet.getCapacityOfShip(ship);
-            } catch (JSONException | IOException e) {
+                consumption = fleet.getConsumptionOfShip(ship);
+                
+            } catch (Exception e) {
                 lblStatus.setForeground(Color.RED);
-                lblStatus.setText(e.getMessage());
+                lblStatus.setText(e.getClass().getSimpleName() + ": " + e.getMessage());
                 return;
             }
             
-            total += number * capacity;
+            capacityTotal += number * capacity;
+            consumptionTotal += number * consumption;
         }
         
-        textFieldResourcesFleetMax.setText(Integer.toString(total));
+        textFieldResourcesFleetMax.setText(Integer.toString(capacityTotal));
+        
+        try {
+            int targetX = Integer.parseInt(textFieldTargetPositionX.getText());
+            int planetX = planet.getPosX();
+            
+            int targetY = Integer.parseInt(textFieldTargetPositionY.getText());
+            int planetY = planet.getPosY();
+            
+            int distX = Math.abs(targetX - planetX);
+            int distY = Math.abs(targetY - planetY);
+            
+            double distance = Math.sqrt(distX*distX + distY*distY);
+            textFieldUraniumConsumption.setText(String.format("%.3f", distance * consumptionTotal));
+            
+        }
+        catch (Exception e) {
+            textFieldUraniumConsumption.setText(Double.toString(consumptionTotal) + " / per tile");
+        }
     }
 }

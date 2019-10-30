@@ -135,7 +135,9 @@ public class PanelPlanet extends JPanel {
         g.setColor(color);
         
         String selectedUser = NextValiumGui.getNextValiumGui().getSelectedUser();
-        if (selectedUser.equalsIgnoreCase(planet.getUserName())) {
+        String planetUser = planet.getUserName();
+        
+        if (selectedUser != null && planetUser != null && selectedUser.equalsIgnoreCase(planetUser)) {
             g.setColor(Color.WHITE);
             g.fillOval(0, 0, getWidth()-1, getHeight()-1);
             g.setColor(Color.DARK_GRAY);

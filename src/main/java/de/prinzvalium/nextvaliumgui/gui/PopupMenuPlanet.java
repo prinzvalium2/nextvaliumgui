@@ -26,12 +26,17 @@ import java.awt.SystemColor;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PopupMenuPlanet extends JPopupMenu {
     
     private static final long serialVersionUID = 1L;
+    private PopupMenuPlanet popupMenuPlanet;
     
     public PopupMenuPlanet(PanelPlanet panelPlanet) {
+        
+        popupMenuPlanet = this;
         
         setPopupSize(new Dimension(200, 200));
         
@@ -57,6 +62,18 @@ public class PopupMenuPlanet extends JPopupMenu {
         chckbxMarkAsTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 panelPlanet.setMarked(chckbxMarkAsTarget.isSelected());
+                
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(250);
+                            popupMenuPlanet.setVisible(false);
+                        } catch (InterruptedException e) {
+                        }
+                        
+                    }}).start();
             }
         });
         GridBagConstraints gbc_chckbxMarkAsTarget = new GridBagConstraints();

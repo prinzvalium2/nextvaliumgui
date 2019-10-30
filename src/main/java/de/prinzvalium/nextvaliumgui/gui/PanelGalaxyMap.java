@@ -105,6 +105,7 @@ public class PanelGalaxyMap extends JPanel {
                break;
             case "explored":
                 g.setColor(color);
+                g.drawOval(x-1, y-1, 2, 2);
                 g.drawOval(x-2, y-2, 4, 4);
                 break;
             }

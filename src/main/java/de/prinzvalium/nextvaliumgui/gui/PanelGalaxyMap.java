@@ -91,7 +91,28 @@ public class PanelGalaxyMap extends JPanel {
                         if (i > 2)
                             break;
                     }
-                       
+                    int maxBrightness = 230;
+                    
+                    int max = 0;
+                    if (colorValues[0] >= colorValues[1] && colorValues[0] >= colorValues[2])
+                        max = colorValues[0];
+                    if (colorValues[1] >= colorValues[0] && colorValues[1] >= colorValues[2])
+                        max = colorValues[1];
+                    if (colorValues[2] >= colorValues[0] && colorValues[2] >= colorValues[1])
+                        max = colorValues[2];
+                    
+                    int brighter = maxBrightness - max;
+                    colorValues[0] += brighter;
+                    colorValues[1] += brighter;
+                    colorValues[2] += brighter;
+                    
+                    for (int j = 0; j < 3; j++) {
+                        if (colorValues[j] < 0)
+                            colorValues[j] = 0;
+                        if (colorValues[j] > maxBrightness)
+                            colorValues[j] = maxBrightness;
+                    }
+                      
                     color = new Color(colorValues[0], colorValues[1], colorValues[2]);
                     mapUserColor.put(userName, color);
                 }

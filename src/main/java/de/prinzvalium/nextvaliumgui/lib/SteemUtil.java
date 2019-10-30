@@ -75,7 +75,12 @@ public class SteemUtil {
         LOGGER.trace("setDefaultAccount()");
         
         SteemJConfig myConfig = SteemJConfig.getInstance();
-        myConfig.setDefaultAccount(new AccountName(userName));
+        
+        AccountName accountName = getAccount(userName);
+        if (accountName == null)
+            accountName = new AccountName(userName);
+        
+        myConfig.setDefaultAccount(accountName);
     }
     
     public static boolean isAccountRegistered(String userName) {

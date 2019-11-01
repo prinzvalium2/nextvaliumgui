@@ -22,6 +22,10 @@ public class Planets {
             mapAllPlanets = loadAllPlanets();
         return mapAllPlanets;
     }
+    
+    public static void clearAllPlanets() {
+        mapAllPlanets = null;
+    }
 
     private static HashMap<String, Planet> loadAllPlanets() throws JSONException, IOException {
         LOGGER.trace("loadAllPlanets()");

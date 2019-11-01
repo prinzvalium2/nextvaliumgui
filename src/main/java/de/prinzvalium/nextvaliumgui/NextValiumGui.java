@@ -210,6 +210,7 @@ public class NextValiumGui {
         panelUserPlanet.add(btnRefresh, gbc_btnRefresh);
         btnRefresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                Planets.clearAllPlanets();
                 int x = Integer.parseInt(textFieldPosX.getText());
                 int y = Integer.parseInt(textFieldPosY.getText());
                 panelGalaxyMap.loadGalaxyMap(x, y);

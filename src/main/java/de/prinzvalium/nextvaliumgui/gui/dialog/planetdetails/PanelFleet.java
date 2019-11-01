@@ -61,12 +61,19 @@ public class PanelFleet extends JPanel {
     private JComboBox<String> comboBoxTargetPlanet;
     private JComboBox comboBoxMissionsPredefined;
     private JComboBox comboBoxMissionsStandard;
+    private JButton btnSendTransaction;
     private HashMap<String, Planet> mapPlanets;
     private DefaultTableModel model;
     private Planet planet;
+    private Planet targetPlanet = null;
+    private DialogPlanet dialogPlanet;
     private Fleet fleet = null;
-    private JLabel lblStatus;
+    private boolean predefinedMissionSelected = false;
+    private int missionsAvailable = 0;
+    private double doubleConsumption = 0;
+    private int numberOfShips = 0;
     
+    private final String PREDEFINED_MISSION_NONE = "";
     private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with explorer";
     private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
     private final String PREDEFINED_MISSION_DEPLOY_ALL = "Deploy all ships";
@@ -79,7 +86,7 @@ public class PanelFleet extends JPanel {
     private final String PREDEFINED_MISSION_TRANSPORT_FAST = "Transport fast with corvettes";
 
     private String[] predefinedMissions = {
-            "",
+            PREDEFINED_MISSION_NONE,
 //            PREDEFINED_MISSION_EXPLORE_EXP,
 //            PREDEFINED_MISSION_EXPLORE_EXP2,
             PREDEFINED_MISSION_DEPLOY_ALL, 
@@ -94,12 +101,13 @@ public class PanelFleet extends JPanel {
 //            "Attack with all ships except explorers"
     };
     
+    private final String MISSION_NONE = "";
     private final String MISSION_EXPLORE = "Explore";
     private final String MISSION_DEPLOY = "Deploy";
     private final String MISSION_TRANSPORT = "Transport";
     
     private String[] missions = {
-            "",
+            MISSION_NONE,
 //            MISSION_EXPLORE,
             MISSION_DEPLOY,
             MISSION_TRANSPORT,
@@ -110,17 +118,19 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldFreeMissions;
     private JTextField textFieldUraniumConsumption;
     
-    public PanelFleet(Planet planet) {
+    public PanelFleet(DialogPlanet dialogPlanet, Planet planet) {
         
+        this.dialogPlanet = dialogPlanet;
         this.planet = planet;
         
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
-        gridBagLayout.columnWeights = new double[]{0.0, 1.0};
+        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0};
+        gridBagLayout.columnWeights = new double[]{1.0, 0.0};
         gridBagLayout.columnWidths = new int[]{189, 0};
         setLayout(gridBagLayout);
         
         JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
         gbc_scrollPane.gridheight = 4;
         gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
@@ -157,6 +167,7 @@ public class PanelFleet extends JPanel {
             @Override
             public void tableChanged(TableModelEvent arg0) {
                 tableChanged_Fleet();
+                checkPreconditionSendToSteemButton();
             }});
         
         tableShips = new JTable();
@@ -209,7 +220,8 @@ public class PanelFleet extends JPanel {
         comboBoxMissionsPredefined = new JComboBox(predefinedMissions);
         comboBoxMissionsPredefined.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                actionPerformed_comboBoxMissionsPredefined();
+                if (!((String)comboBoxMissionsPredefined.getSelectedItem()).equalsIgnoreCase(PREDEFINED_MISSION_NONE))
+                    actionPerformed_comboBoxMissionsPredefined();
             }
         });
         
@@ -231,7 +243,14 @@ public class PanelFleet extends JPanel {
         comboBoxMissionsStandard = new JComboBox(missions);
         comboBoxMissionsStandard.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+                if (predefinedMissionSelected) {
+                    predefinedMissionSelected = false;
+                } else {
+                    if (!((String)comboBoxMissionsPredefined.getSelectedItem()).equalsIgnoreCase(PREDEFINED_MISSION_NONE))
+                        comboBoxMissionsPredefined.setSelectedItem(PREDEFINED_MISSION_NONE);
+                }
                 tableChanged_Fleet();
+                checkPreconditionSendToSteemButton();
             }
         });
         GridBagConstraints gbc_comboBoxMissionsStandard = new GridBagConstraints();
@@ -275,16 +294,19 @@ public class PanelFleet extends JPanel {
         textFieldTargetUser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
+                    comboBoxTargetPlanet.removeAllItems();
+                    String userTarget = textFieldTargetUser.getText();
+                    if (userTarget == null || userTarget.isEmpty())
+                        return;
+
+                    mapPlanets = Planets.loadUserPlanets(userTarget);
                     ArrayList<String> list = new ArrayList<String>();
-                    mapPlanets = Planets.loadUserPlanets(textFieldTargetUser.getText());
                     mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
                     Collections.sort(list);
-                    comboBoxTargetPlanet.removeAllItems();
                     list.forEach(planetName -> comboBoxTargetPlanet.addItem(planetName));
                     
                 } catch (Exception e1) {
-                    lblStatus.setForeground(Color.RED);
-                    lblStatus.setText(e1.getClass().getSimpleName() + ": " + e1.getMessage());
+                    dialogPlanet.setStatusError(e1.getClass().getSimpleName() + ": " + e1.getMessage());
                 }
             }
         });
@@ -313,6 +335,7 @@ public class PanelFleet extends JPanel {
                 String planetName = comboBoxTargetPlanet.getSelectedItem().toString();
                 mapPlanets.forEach((planetId, planet) -> {
                     if (planet.getName().equalsIgnoreCase(planetName)) {
+                        targetPlanet = planet;
                         textFieldTargetPositionX.setText(Integer.toString(planet.getPosX()));
                         textFieldTargetPositionY.setText(Integer.toString(planet.getPosY()));
                     }
@@ -344,7 +367,13 @@ public class PanelFleet extends JPanel {
         textFieldTargetPositionX.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
+                if (targetPlanet.getPosX() != Integer.parseInt(textFieldTargetPositionX.getText())) {
+                    textFieldTargetUser.setText("");
+                    comboBoxTargetPlanet.removeAllItems();
+                }
+                    
                 tableChanged_Fleet();
+                checkPreconditionSendToSteemButton();
             }
         });
         panelTargetPosition.add(textFieldTargetPositionX);
@@ -357,7 +386,12 @@ public class PanelFleet extends JPanel {
         textFieldTargetPositionY.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
+                if (targetPlanet.getPosY() != Integer.parseInt(textFieldTargetPositionY.getText())) {
+                    textFieldTargetUser.setText("");
+                    comboBoxTargetPlanet.removeAllItems();
+                }
                 tableChanged_Fleet();
+                checkPreconditionSendToSteemButton();
             }
         });
         panelTargetPosition.add(textFieldTargetPositionY);
@@ -415,6 +449,7 @@ public class PanelFleet extends JPanel {
             @Override
             public void focusLost(FocusEvent arg0) {
                 actionPerformed_Ressources();
+                checkPreconditionSendToSteemButton();
             }
         });
         textFieldResourcesShipCoal.setText("0");
@@ -449,6 +484,7 @@ public class PanelFleet extends JPanel {
             @Override
             public void focusLost(FocusEvent arg0) {
                 actionPerformed_Ressources();
+                checkPreconditionSendToSteemButton();
             }
         });
         textFieldResourcesShipOre.setText("0");
@@ -483,6 +519,7 @@ public class PanelFleet extends JPanel {
             @Override
             public void focusLost(FocusEvent arg0) {
                 actionPerformed_Ressources();
+                checkPreconditionSendToSteemButton();
             }
         });
         textFieldResourcesShipCopper.setText("0");
@@ -517,6 +554,7 @@ public class PanelFleet extends JPanel {
             @Override
             public void focusLost(FocusEvent arg0) {
                 actionPerformed_Ressources();
+                checkPreconditionSendToSteemButton();
             }
         });
         textFieldResourcesShipUranium.setText("0");
@@ -582,7 +620,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(textFieldUraniumConsumption, gbc_textFieldUraniumConsumption);
         textFieldUraniumConsumption.setColumns(10);
         
-        JButton btnSendTransaction = new JButton("Send transaction to Steem");
+        btnSendTransaction = new JButton("Send transaction to Steem");
         btnSendTransaction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionPerformed_btnSendTransaction();
@@ -594,22 +632,9 @@ public class PanelFleet extends JPanel {
         gbc_btnSendTransaction.gridy = 3;
         add(btnSendTransaction, gbc_btnSendTransaction);
         
-        lblStatus = new JLabel("");
-        GridBagConstraints gbc_lblStatus = new GridBagConstraints();
-        gbc_lblStatus.anchor = GridBagConstraints.WEST;
-        gbc_lblStatus.gridwidth = 2;
-        gbc_lblStatus.insets = new Insets(0, 0, 0, 5);
-        gbc_lblStatus.gridx = 0;
-        gbc_lblStatus.gridy = 4;
-        add(lblStatus, gbc_lblStatus);
-        
-        if (!SteemUtil.isAccountRegistered(planet.getUserName())) {
-            lblStatus.setForeground(Color.RED);
-            lblStatus.setText("Private posting key of user " + planet.getUserName() + " not in nextvaliumgui.ini -> Button <send transaction to Steem> disabled");
-            btnSendTransaction.setEnabled(false);
-        }
-        
         setTarget();
+        
+        checkPreconditionSendToSteemButton();
         
         new Thread(new Runnable() {
 
@@ -635,12 +660,11 @@ public class PanelFleet extends JPanel {
                     int starter = planet.isStarter() ? 1 : 0;
                     int missionsActive = MissionsUser.loadAllActiveUserMissions(userName).size();
                     int missionsMax = new Skills(userName).getMissionControlLevel() * 2 + starter;
-                    int missionsAvailable = missionsMax - missionsActive;
+                    missionsAvailable = missionsMax - missionsActive;
                     textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
 
                 } catch (Exception e) {
-                    lblStatus.setForeground(Color.RED);
-                    lblStatus.setText(e.getClass().getSimpleName() + ": " + e.getMessage());
+                    dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
                 }
             }
         }).start();
@@ -659,6 +683,9 @@ public class PanelFleet extends JPanel {
     
     private void actionPerformed_comboBoxMissionsPredefined() {
         
+        predefinedMissionSelected = true;
+        
+        // Reset all values in table
         for (int i = 0; i < model.getRowCount(); i++) {
             model.setValueAt(null, i, 2);
             model.setValueAt(null, i, 3);
@@ -784,12 +811,10 @@ public class PanelFleet extends JPanel {
                 throw new NextValiumException("not implemented"); 
             }
             
-            lblStatus.setForeground(Color.GREEN);
-            lblStatus.setText("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+            dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
 
         } catch (Exception e) {
-             lblStatus.setForeground(Color.RED);
-             lblStatus.setText(e.getClass().getSimpleName() + ": " + e.getMessage());
+            dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
     
@@ -819,14 +844,19 @@ public class PanelFleet extends JPanel {
         
         int capacityTotal = 0;
         double consumptionTotal = 0;
+        numberOfShips = 0;
         
         for (int i = 0; i < model.getRowCount(); i++) {
             String ship = (String)model.getValueAt(i, 0);
             Integer number = (Integer)model.getValueAt(i, 2);
             
             if (number == null)
-                //number = 0;
                 continue;
+            
+            if (number <= 0) {
+                model.setValueAt(null, i, 2);
+                continue;
+            }
             
             Integer capacity = 0;
             double consumption = 0;
@@ -836,13 +866,14 @@ public class PanelFleet extends JPanel {
                 consumption = fleet.getConsumptionOfShip(ship);
                 
             } catch (Exception e) {
-                lblStatus.setForeground(Color.RED);
-                lblStatus.setText(e.getClass().getSimpleName() + ": " + e.getMessage());
+                
+                dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
                 return;
             }
             
             capacityTotal += number * capacity;
             consumptionTotal += number * consumption;
+            numberOfShips += number;
         }
         
         textFieldResourcesFleetMax.setText(Integer.toString(capacityTotal));
@@ -863,11 +894,82 @@ public class PanelFleet extends JPanel {
             if (selectedMission.equalsIgnoreCase(MISSION_TRANSPORT))
                 distance += distance;
             
-            textFieldUraniumConsumption.setText(String.format("%.3f", distance * consumptionTotal));
+            doubleConsumption = distance * consumptionTotal;
+            textFieldUraniumConsumption.setText(String.format("%.3f", doubleConsumption));
             
         }
         catch (Exception e) {
             textFieldUraniumConsumption.setText(String.format("%.3f", consumptionTotal) + " / per tile");
         }
+    }
+    
+    private void checkPreconditionSendToSteemButton() {
+        String but = "";
+        
+        if (!SteemUtil.isAccountRegistered(planet.getUserName())) {
+            dialogPlanet.setStatusError(but + "Private posting key of user " + planet.getUserName() + " not in nextvaliumgui.ini -> Button <send transaction to Steem> disabled");
+            btnSendTransaction.setEnabled(false);
+            return;
+        }
+        
+        if(((String)comboBoxMissionsStandard.getSelectedItem()).equalsIgnoreCase(MISSION_NONE)) {
+            dialogPlanet.setStatusError(but + "No mission selected");
+            btnSendTransaction.setEnabled(false);
+            return;
+        }
+        
+        if (missionsAvailable <= 0) {
+            dialogPlanet.setStatusError(but + "No mission slot available");
+            btnSendTransaction.setEnabled(false);
+            return;
+        }
+        
+        try {
+            Integer.parseInt(textFieldTargetPositionX.getText());
+            Integer.parseInt(textFieldTargetPositionY.getText());
+        }
+        catch (Exception e) {
+            dialogPlanet.setStatusError(but + "No target X/Y coordinates");
+            btnSendTransaction.setEnabled(false);
+            return;
+        }
+        
+        if (numberOfShips <= 0) {
+            dialogPlanet.setStatusError(but + "No ships selected");
+            btnSendTransaction.setEnabled(false);
+            return;
+        }
+        
+        try {
+            int shipCoal = Integer.parseInt(textFieldResourcesShipCoal.getText());
+            int shipOre = Integer.parseInt(textFieldResourcesShipOre.getText());
+            int shipCopper = Integer.parseInt(textFieldResourcesShipCopper.getText());
+            int shipUranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
+
+            int coal = Integer.parseInt(textFieldResourcesCoal.getText());
+            int ore = Integer.parseInt(textFieldResourcesOre.getText());
+            int copper = Integer.parseInt(textFieldResourcesCopper.getText());
+            int uranium = Integer.parseInt(textFieldResourcesUranium.getText());
+            
+            int resourcesShipTotal = Integer.parseInt(textFieldResourcesShipTotal.getText());
+            int resourcesFleetMax = Integer.parseInt(textFieldResourcesFleetMax.getText());
+            
+            int consumption = new Double(doubleConsumption).intValue() + 1;
+            
+            if (shipCoal > coal || 
+                    shipOre > ore || 
+                    shipCopper > copper || 
+                    (shipUranium + consumption) > uranium ||
+                    resourcesShipTotal > resourcesFleetMax)
+                throw new NextValiumException("");
+        }
+        catch (Exception e) {
+            dialogPlanet.setStatusError("Check resources");
+            btnSendTransaction.setEnabled(false);
+            return;
+        }
+        
+        dialogPlanet.setStatusOk("Ok");
+        btnSendTransaction.setEnabled(true);
     }
 }

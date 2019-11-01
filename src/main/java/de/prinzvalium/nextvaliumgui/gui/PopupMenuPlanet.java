@@ -3,14 +3,12 @@ package de.prinzvalium.nextvaliumgui.gui;
 import javax.swing.JPopupMenu;
 
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
-
-import org.json.JSONException;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
@@ -25,9 +23,7 @@ import java.awt.Dimension;
 import java.awt.SystemColor;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.SwingWorker;
 
 public class PopupMenuPlanet extends JPopupMenu {
     
@@ -98,26 +94,32 @@ public class PopupMenuPlanet extends JPopupMenu {
         
         model.addElement("Loading ships...");
         
-        new Thread(new Runnable() {
+        new SwingWorker<HashMap<String, Integer>, Object>() {
 
             @Override
-            public void run() {
+            protected HashMap<String, Integer> doInBackground() throws Exception {
+                Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
+                return fleet.getNumberOfShipTypesInShipyard();
+            }
+            
+            @Override
+            protected void done() {
                 try {
-                    Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
-                    HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
+                    HashMap<String, Integer> mapShips = get();
+                    model.removeAllElements();
                     
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            model.removeAllElements();
-                            for (Map.Entry<?,?> entry : mapShips.entrySet())
-                                model.addElement(entry.getKey() + ": " + entry.getValue());
-                        }});
-
-                } catch (JSONException | IOException e) {
+                    if (mapShips.isEmpty()) {
+                        model.addElement("No ships");
+                        return;
+                    }
+                        
+                    for (Map.Entry<String,Integer> entry : mapShips.entrySet())
+                        model.addElement(entry.getKey() + ": " + entry.getValue());
+                    
+                } catch (InterruptedException | ExecutionException e) {
                     model.addElement(e.getMessage());
                 }
-            }}).start();
+            }
+        }.execute();
     }
 }

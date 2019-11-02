@@ -1,2 +1,2 @@
 # nextvaliumgui
-Management GUI for NextColony
+Multi user management GUI for NextColony

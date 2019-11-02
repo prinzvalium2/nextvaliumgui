@@ -58,6 +58,8 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldResourcesShipUranium;
     private JTextField textFieldResourcesShipTotal;
     private JTextField textFieldResourcesFleetMax;
+    private JTextField textFieldFreeMissions;
+    private JTextField textFieldUraniumConsumption;
     private JComboBox<String> comboBoxTargetPlanet;
     private JComboBox comboBoxMissionsPredefined;
     private JComboBox comboBoxMissionsStandard;
@@ -74,55 +76,50 @@ public class PanelFleet extends JPanel {
     private int numberOfShips = 0;
     
     private final String PREDEFINED_MISSION_NONE = "";
-    
     private final String PREDEFINED_MISSION_TRANSPORT_FAST = "Transport fast with corvettes";
-    
+    private final String PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES = "Attack with all corvettes";
     private final String PREDEFINED_MISSION_DEPLOY_ALL = "Deploy all ships";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXP = "Deploy all explorers";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES = "Deploy all corvettes";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS = "Deploy all battleships";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER = "Deploy all battleships and transporter";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP = "Deploy all ships except explorers";
-
     private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with Explorer";
-
-    
-    private final String PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES = "Attack with all corvettes";
     private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
-    
 
     private String[] predefinedMissions = {
             PREDEFINED_MISSION_NONE,
             PREDEFINED_MISSION_TRANSPORT_FAST,
+            PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES,
             PREDEFINED_MISSION_DEPLOY_ALL, 
             PREDEFINED_MISSION_DEPLOY_ALL_EXP,
             PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES,
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS,
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER,
             PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
-//            PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES,
             PREDEFINED_MISSION_EXPLORE_EXP,
             PREDEFINED_MISSION_EXPLORE_EXP2
     };
     
     private final String MISSION_NONE = "";
-    private final String MISSION_TRANSPORT = "Transport";
     private final String MISSION_DEPLOY = "Deploy";
+    private final String MISSION_TRANSPORT = "Transport";
     private final String MISSION_ATTACK = "Attack";
+    private final String MISSION_SUPPORT = "Support";
+    private final String MISSION_SIEGE = "Siege";
+    private final String MISSION_BREAKSIEGE = "Break siege";
     private final String MISSION_EXPLORE = "Explore";
     
     private String[] missions = {
             MISSION_NONE,
             MISSION_DEPLOY,
             MISSION_TRANSPORT,
-//            MISSION_ATTACK,
-//            "Support",
-//            "Siege"
-//          "Break Siege"
+            MISSION_ATTACK,
+            MISSION_SUPPORT,
+            MISSION_SIEGE,
+            MISSION_BREAKSIEGE,
             MISSION_EXPLORE
     };
-    private JTextField textFieldFreeMissions;
-    private JTextField textFieldUraniumConsumption;
     
     public PanelFleet(DialogPlanet dialogPlanet, Planet planet) {
         
@@ -349,7 +346,6 @@ public class PanelFleet extends JPanel {
                 tableChanged_Fleet();
             }
         });
-        
         
         JLabel lblTargetPosition = new JLabel("Position:");
         GridBagConstraints gbc_lblTargetPosition = new GridBagConstraints();
@@ -806,6 +802,22 @@ public class PanelFleet extends JPanel {
             comboBoxMissionsStandard.setSelectedItem(MISSION_TRANSPORT);
             break;
             
+        // Attack
+        
+        case PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (ship.equalsIgnoreCase("corvette")) {
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+                    model.setValueAt(1, i, 3);
+                }
+                if (ship.equalsIgnoreCase("corvette1")) {
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+                    model.setValueAt(2, i, 3);
+                }
+            }
+            comboBoxMissionsStandard.setSelectedItem(MISSION_ATTACK);
+            break;
         }
     }
     
@@ -844,6 +856,19 @@ public class PanelFleet extends JPanel {
                 break;
                 
             case MISSION_ATTACK:
+                CustomJson.fightingAction("attack", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
+                break;
+                
+            case MISSION_SUPPORT:
+                CustomJson.fightingAction("support", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
+                break;
+                
+            case MISSION_SIEGE:
+                CustomJson.fightingAction("siege", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
+                break;
+                
+            case MISSION_BREAKSIEGE:
+                CustomJson.fightingAction("breaksiege", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
                 break;
                 
             default:
@@ -874,6 +899,22 @@ public class PanelFleet extends JPanel {
             Integer number = (Integer)model.getValueAt(i, 2);
             if (number != null && number > 0)
                 mapNumberOfShipTypes.put(ship, number);
+        }
+        return mapNumberOfShipTypes;
+    }
+    
+    private HashMap<String, FleetTableValues> getMapOfShipsWithAllValues() {
+        
+        HashMap<String, FleetTableValues> mapNumberOfShipTypes = new HashMap<String, FleetTableValues>();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String ship = (String)model.getValueAt(i, 0);
+            Integer numberPlanet = (Integer)model.getValueAt(i, 1);
+            Integer numberFleet = (Integer)model.getValueAt(i, 2);
+            Integer position = (Integer)model.getValueAt(i, 3);
+            if (numberFleet != null && numberFleet > 0) {
+                FleetTableValues ftv = new FleetTableValues(ship, numberPlanet, numberFleet, position);
+                mapNumberOfShipTypes.put(ship, ftv);
+            }
         }
         return mapNumberOfShipTypes;
     }

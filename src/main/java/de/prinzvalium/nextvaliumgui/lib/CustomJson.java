@@ -1,12 +1,14 @@
 package de.prinzvalium.nextvaliumgui.lib;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 
+import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.FleetTableValues;
 import de.prinzvalium.nextvaliumgui.nextcolony.Resources;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
@@ -98,50 +100,35 @@ public class CustomJson {
         broadcastJSONObjectToSteem(jsonObject);
     }
     
-    public boolean fullAttack(HashMap<String, Integer> map, String userName, String planetId, int x, int y, boolean fast) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+    public static void fightingAction(String type, HashMap<String, FleetTableValues> map, String userName, String planetId, int x, int y) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         
-        String[] shipTypeAndPosition;
-        
-        if (fast) {
-            shipTypeAndPosition = new String[] {
-                    "corvette1",
-                    "corvette",
-                    };
-        }
-        else {
-            shipTypeAndPosition = new String[] {
-                    "transportship",
-                    "carrier",
-                    "carrier1",
-                    "destroyer",
-                    "destroyer1",
-                    "frigate",
-                    "frigate1",
-                    "corvette1",
-                    "corvette",
-                    };
-        }
+        SteemUtil.setDefaultAccount(userName);
         
         int pos = 1;
         
         // Ships
         JsonObject jsonShips = new JsonObject();
         
-        for (String shipType : shipTypeAndPosition) {
-            
-            Integer num = map.get(shipType);
-            if (num == null  || num <= 0)
-                continue;
+        while (map.size() > 0 ) {
+            Entry<String, FleetTableValues> smallestEntry = null;
+            for (Entry<String, FleetTableValues> entry : map.entrySet()) {
+                if (smallestEntry == null) {
+                    smallestEntry = entry;
+                    continue;
+                }
+                
+                if (entry.getValue().getPosition() == null)
+                    continue;
+                
+                if (entry.getValue().getPosition() < smallestEntry.getValue().getPosition())
+                    smallestEntry = entry;
+            }
             
             JsonObject posAndNum = new JsonObject();
             posAndNum.addProperty("pos", pos++);
-            posAndNum.addProperty("n",  num);
-            jsonShips.add(shipType, posAndNum);
-        }
-        
-        if (jsonShips.size() < 1) {
-            LOGGER.info("    No attack -> no ships in shipyard");
-            return false;
+            posAndNum.addProperty("n",  smallestEntry.getValue().getNumberFleet());
+            jsonShips.add(smallestEntry.getKey(), posAndNum);
+            map.remove(smallestEntry.getKey());
         }
         
         // Command
@@ -158,13 +145,10 @@ public class CustomJson {
         
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("username", userName);
-        jsonObject.addProperty("type", "attack");
+        jsonObject.addProperty("type", type);
         jsonObject.add("command",  jsonCommand);
         
         broadcastJSONObjectToSteem(jsonObject);
-        
-        LOGGER.info("    fullAttack: " + (fast ? "fast" : "slow"));
-        return true;
     }
     
     public static void broadcastJSONObjectToSteem(JsonObject jsonObject) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {

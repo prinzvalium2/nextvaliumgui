@@ -74,6 +74,9 @@ public class PanelFleet extends JPanel {
     private int numberOfShips = 0;
     
     private final String PREDEFINED_MISSION_NONE = "";
+    
+    private final String PREDEFINED_MISSION_TRANSPORT_FAST = "Transport fast with corvettes";
+    
     private final String PREDEFINED_MISSION_DEPLOY_ALL = "Deploy all ships";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXP = "Deploy all explorers";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES = "Deploy all corvettes";
@@ -81,9 +84,10 @@ public class PanelFleet extends JPanel {
     private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER = "Deploy all battleships and transporter";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP = "Deploy all ships except explorers";
 
-    private final String PREDEFINED_MISSION_TRANSPORT_FAST = "Transport fast with corvettes";
-    
     private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with Explorer";
+
+    
+    private final String PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES = "Attack with all corvettes";
     private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
     
 
@@ -96,25 +100,25 @@ public class PanelFleet extends JPanel {
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS,
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER,
             PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
-//            "Attack with all corvettes",
-//            "Attack with all battleships",
-//            "Attack with all ships except explorers"
+            PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES,
             PREDEFINED_MISSION_EXPLORE_EXP,
             PREDEFINED_MISSION_EXPLORE_EXP2
     };
     
     private final String MISSION_NONE = "";
-    private final String MISSION_EXPLORE = "Explore";
-    private final String MISSION_DEPLOY = "Deploy";
     private final String MISSION_TRANSPORT = "Transport";
+    private final String MISSION_DEPLOY = "Deploy";
+    private final String MISSION_ATTACK = "Attack";
+    private final String MISSION_EXPLORE = "Explore";
     
     private String[] missions = {
             MISSION_NONE,
             MISSION_DEPLOY,
             MISSION_TRANSPORT,
-//            "Attack",
+            MISSION_ATTACK,
 //            "Support",
 //            "Siege"
+//          "Break Siege"
             MISSION_EXPLORE
     };
     private JTextField textFieldFreeMissions;
@@ -839,6 +843,9 @@ public class PanelFleet extends JPanel {
                     CustomJson.explore(planet.getUserName(), planet.getId(), x, y, "explorership1");
                 break;
                 
+            case MISSION_ATTACK:
+                break;
+                
             default:
                 throw new NextValiumException("not implemented"); 
             }
@@ -868,7 +875,6 @@ public class PanelFleet extends JPanel {
             if (number != null && number > 0)
                 mapNumberOfShipTypes.put(ship, number);
         }
-        
         return mapNumberOfShipTypes;
     }
     

@@ -42,7 +42,7 @@ import java.awt.Insets;
 public class NextValiumGui {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
-    private static final String version = "0.1.0";
+    private static final String version = "0.1.1-SNAPSHOT";
     private static NextValiumGui nextValiumGui = null;
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;

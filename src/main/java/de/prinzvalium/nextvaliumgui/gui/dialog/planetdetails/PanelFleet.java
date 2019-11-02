@@ -380,6 +380,7 @@ public class PanelFleet extends JPanel {
                     if (planetX != targetX) {
                         textFieldTargetUser.setText("");
                         comboBoxTargetPlanet.removeAllItems();
+                        targetPlanet = null;
                     }
                 }
                 tableChanged_Fleet();
@@ -407,6 +408,7 @@ public class PanelFleet extends JPanel {
                     if (planetY != targetY) {
                         textFieldTargetUser.setText("");
                         comboBoxTargetPlanet.removeAllItems();
+                        targetPlanet = null;
                     }
                 }
                 tableChanged_Fleet();

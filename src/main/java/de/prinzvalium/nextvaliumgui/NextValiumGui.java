@@ -42,6 +42,7 @@ import java.awt.Insets;
 public class NextValiumGui {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
+    private static final String version = "0.0.1-SNAPSHOT";
     private static NextValiumGui nextValiumGui = null;
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;
@@ -107,7 +108,7 @@ public class NextValiumGui {
         PanelGalaxyMap panelGalaxyMap = new PanelGalaxyMap();
         
         frmNextvaliumManagementGui = new JFrame();
-        frmNextvaliumManagementGui.setTitle("NextValium GUI - Multi user management GUI for NextColony");
+        frmNextvaliumManagementGui.setTitle("NextValium GUI " + version + " - Multi user management GUI for NextColony");
         frmNextvaliumManagementGui.setBounds(10, 10, 1250, 900);
         frmNextvaliumManagementGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         

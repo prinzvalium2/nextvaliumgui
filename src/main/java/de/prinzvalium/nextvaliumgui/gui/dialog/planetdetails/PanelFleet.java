@@ -74,8 +74,6 @@ public class PanelFleet extends JPanel {
     private int numberOfShips = 0;
     
     private final String PREDEFINED_MISSION_NONE = "";
-    private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with explorer";
-    private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
     private final String PREDEFINED_MISSION_DEPLOY_ALL = "Deploy all ships";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXP = "Deploy all explorers";
     private final String PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES = "Deploy all corvettes";
@@ -84,21 +82,25 @@ public class PanelFleet extends JPanel {
     private final String PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP = "Deploy all ships except explorers";
 
     private final String PREDEFINED_MISSION_TRANSPORT_FAST = "Transport fast with corvettes";
+    
+    private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with Explorer";
+    private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
+    
 
     private String[] predefinedMissions = {
             PREDEFINED_MISSION_NONE,
-//            PREDEFINED_MISSION_EXPLORE_EXP,
-//            PREDEFINED_MISSION_EXPLORE_EXP2,
+            PREDEFINED_MISSION_TRANSPORT_FAST,
             PREDEFINED_MISSION_DEPLOY_ALL, 
             PREDEFINED_MISSION_DEPLOY_ALL_EXP,
             PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES,
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS,
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER,
             PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
-            PREDEFINED_MISSION_TRANSPORT_FAST
 //            "Attack with all corvettes",
 //            "Attack with all battleships",
 //            "Attack with all ships except explorers"
+            PREDEFINED_MISSION_EXPLORE_EXP,
+            PREDEFINED_MISSION_EXPLORE_EXP2
     };
     
     private final String MISSION_NONE = "";
@@ -108,12 +110,12 @@ public class PanelFleet extends JPanel {
     
     private String[] missions = {
             MISSION_NONE,
-//            MISSION_EXPLORE,
             MISSION_DEPLOY,
             MISSION_TRANSPORT,
 //            "Attack",
 //            "Support",
 //            "Siege"
+            MISSION_EXPLORE
     };
     private JTextField textFieldFreeMissions;
     private JTextField textFieldUraniumConsumption;
@@ -367,11 +369,19 @@ public class PanelFleet extends JPanel {
         textFieldTargetPositionX.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
-                if (targetPlanet.getPosX() != Integer.parseInt(textFieldTargetPositionX.getText())) {
-                    textFieldTargetUser.setText("");
-                    comboBoxTargetPlanet.removeAllItems();
+                if (targetPlanet != null) {
+                    int planetX = targetPlanet.getPosX();
+                    int targetX = 0;
+                    try {
+                        targetX = Integer.parseInt(textFieldTargetPositionX.getText());
+                    }
+                    catch (Exception e) {
+                    }
+                    if (planetX != targetX) {
+                        textFieldTargetUser.setText("");
+                        comboBoxTargetPlanet.removeAllItems();
+                    }
                 }
-                    
                 tableChanged_Fleet();
                 checkPreconditionSendToSteemButton();
             }
@@ -385,10 +395,19 @@ public class PanelFleet extends JPanel {
         textFieldTargetPositionY = new JTextField();
         textFieldTargetPositionY.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusLost(FocusEvent e) {
-                if (targetPlanet.getPosY() != Integer.parseInt(textFieldTargetPositionY.getText())) {
-                    textFieldTargetUser.setText("");
-                    comboBoxTargetPlanet.removeAllItems();
+            public void focusLost(FocusEvent arg0) {
+                if (targetPlanet != null) {
+                    int planetY = targetPlanet.getPosY();
+                    int targetY = 0;
+                    try {
+                        targetY = Integer.parseInt(textFieldTargetPositionY.getText());
+                    }
+                    catch (Exception e) {
+                    }
+                    if (planetY != targetY) {
+                        textFieldTargetUser.setText("");
+                        comboBoxTargetPlanet.removeAllItems();
+                    }
                 }
                 tableChanged_Fleet();
                 checkPreconditionSendToSteemButton();
@@ -805,6 +824,17 @@ public class PanelFleet extends JPanel {
                 
             case MISSION_TRANSPORT:
                 CustomJson.transportToPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y, resources);
+                break;
+                
+            case MISSION_EXPLORE:
+                Integer numExp = getMapOfShips().get("explorership");
+                if (numExp != null && numExp > 0) {
+                    CustomJson.explore(planet.getUserName(), planet.getId(), x, y, "explorership");
+                    break;
+                }
+                Integer numExp2 = getMapOfShips().get("explorership1");
+                if (numExp2 != null && numExp2 > 0)
+                    CustomJson.explore(planet.getUserName(), planet.getId(), x, y, "explorership1");
                 break;
                 
             default:

@@ -80,6 +80,24 @@ public class CustomJson {
         broadcastJSONObjectToSteem(jsonObject);
     }
     
+    public static void explore(String userName, String planetId, int x, int y, String shipType) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+        
+        SteemUtil.setDefaultAccount(userName);
+        
+        JsonObject jsonCommand = new JsonObject();
+        jsonCommand.addProperty("tr_var1", planetId); 
+        jsonCommand.addProperty("tr_var2", x);
+        jsonCommand.addProperty("tr_var3", y);
+        jsonCommand.addProperty("tr_var4", shipType);
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("username", userName);
+        jsonObject.addProperty("type", "explorespace");
+        jsonObject.add("command",  jsonCommand);
+        
+        broadcastJSONObjectToSteem(jsonObject);
+    }
+    
     public boolean fullAttack(HashMap<String, Integer> map, String userName, String planetId, int x, int y, boolean fast) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         
         String[] shipTypeAndPosition;

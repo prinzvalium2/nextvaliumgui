@@ -100,7 +100,7 @@ public class PanelFleet extends JPanel {
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS,
             PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER,
             PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
-            PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES,
+//            PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES,
             PREDEFINED_MISSION_EXPLORE_EXP,
             PREDEFINED_MISSION_EXPLORE_EXP2
     };
@@ -115,7 +115,7 @@ public class PanelFleet extends JPanel {
             MISSION_NONE,
             MISSION_DEPLOY,
             MISSION_TRANSPORT,
-            MISSION_ATTACK,
+//            MISSION_ATTACK,
 //            "Support",
 //            "Siege"
 //          "Break Siege"

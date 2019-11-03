@@ -970,7 +970,7 @@ public class PanelFleet extends JPanel {
             double distance = Math.sqrt(distX*distX + distY*distY);
             
             String selectedMission = (String)comboBoxMissionsStandard.getSelectedItem();
-            if (!selectedMission.equalsIgnoreCase(MISSION_EXPLORE))
+            if (!selectedMission.equalsIgnoreCase(MISSION_DEPLOY))
                 distance += distance;
             
             doubleConsumption = distance * consumptionTotal;

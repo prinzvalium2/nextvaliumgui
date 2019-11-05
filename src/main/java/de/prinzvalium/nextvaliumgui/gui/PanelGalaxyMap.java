@@ -134,9 +134,10 @@ public class PanelGalaxyMap extends JPanel {
         
         removeAll();
         paintPlanets();
+        paintFlightRadar();
     }
     
-    public void paintPlanets() {
+    private void paintPlanets() {
         LOGGER.trace("paintPlanets() - start");
         
         galaxyMap.forEach((galaxyMapKey, galaxyMapValue) -> {
@@ -153,5 +154,12 @@ public class PanelGalaxyMap extends JPanel {
         });
         
         LOGGER.trace("paintPlanets() - end");
+    }
+    
+    private void paintFlightRadar() {
+        
+        PanelFlightRadar panelFlighRadar = new PanelFlightRadar(galaxyMap, locationX, locationY);
+        panelFlighRadar.setBounds(0, 0, getWidth(), getHeight());
+        add(panelFlighRadar);
     }
 }

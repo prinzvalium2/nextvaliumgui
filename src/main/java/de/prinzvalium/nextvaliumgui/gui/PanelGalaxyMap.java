@@ -26,6 +26,7 @@ public class PanelGalaxyMap extends JPanel {
     private int locationY;
     private Color color = null;
     private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
+    private PanelFlightRadar panelFlighRadar;
     
     public PanelGalaxyMap()  {
         LOGGER.trace("PanelGalaxyMap()");
@@ -46,6 +47,9 @@ public class PanelGalaxyMap extends JPanel {
             galaxyMap = Galaxy.loadGalaxyMap(locationX-50, locationY, 100, 125);
             galaxyMap.putAll(Galaxy.loadGalaxyMap(locationX+50, locationY, 100, 125));
            
+//            panelFlighRadar = new PanelFlightRadar(galaxyMap, locationX, locationY);
+//            panelFlighRadar.setBounds(0, 0, getWidth(), getHeight());
+            
         } catch (JSONException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -55,6 +59,7 @@ public class PanelGalaxyMap extends JPanel {
 
     @Override 
     protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         
         if (galaxyMap == null)
             return;
@@ -118,7 +123,6 @@ public class PanelGalaxyMap extends JPanel {
                 }
             }
             
-            
             switch (status) {
             case "explore":
                 g.setColor(color);
@@ -133,8 +137,8 @@ public class PanelGalaxyMap extends JPanel {
         });
         
         removeAll();
+        //add(panelFlighRadar);
         paintPlanets();
-        paintFlightRadar();
     }
     
     private void paintPlanets() {
@@ -154,12 +158,5 @@ public class PanelGalaxyMap extends JPanel {
         });
         
         LOGGER.trace("paintPlanets() - end");
-    }
-    
-    private void paintFlightRadar() {
-        
-        PanelFlightRadar panelFlighRadar = new PanelFlightRadar(galaxyMap, locationX, locationY);
-        panelFlighRadar.setBounds(0, 0, getWidth(), getHeight());
-        add(panelFlighRadar);
     }
 }

@@ -7,7 +7,7 @@ import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.NextValiumException;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
-import de.prinzvalium.nextvaliumgui.nextcolony.MissionsUser;
+import de.prinzvalium.nextvaliumgui.nextcolony.Missions;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.Resources;
@@ -679,7 +679,7 @@ public class PanelFleet extends JPanel {
                     textFieldResourcesUranium.setText(String.format("%.0f", res.getUranium()));
                     
                     int starter = planet.isStarter() ? 1 : 0;
-                    int missionsActive = MissionsUser.loadAllActiveUserMissions(userName).size();
+                    int missionsActive = Missions.loadAllActiveUserMissions(userName).size();
                     int missionsMax = new Skills(userName).getMissionControlLevel() * 2 + starter;
                     missionsAvailable = missionsMax - missionsActive;
                     textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);

@@ -14,11 +14,21 @@ public class Mission {
     private String toPlanetName;
     private String toPlanetId;
     private String fromPlanetName;
+    private String fromPlanetId;
     private String cancel_trx;
+    private int start_x;
+    private int start_y;
+    private int end_x;
+    private int end_y;
     
     Mission(JSONObject jsonMission) {
         
         user = jsonMission.getString("user"); 
+        
+        start_x = jsonMission.getInt("start_x");
+        start_y = jsonMission.getInt("start_y");
+        end_x = jsonMission.getInt("end_x");
+        end_y = jsonMission.getInt("end_y");
         
         try {
             cancel_trx = jsonMission.getString("cancel_trx");
@@ -49,6 +59,7 @@ public class Mission {
         try {
             JSONObject jsonFromPlanet = jsonMission.getJSONObject("from_planet");
             fromPlanetName = jsonFromPlanet.getString("name");
+            fromPlanetId = jsonFromPlanet.getString("id");
         }
         catch(JSONException e) {
             fromPlanetName = "<not set>";
@@ -88,7 +99,27 @@ public class Mission {
         return fromPlanetName;
     }
 
+    public String getFromPlanetId() {
+        return fromPlanetId;
+    }
+
     public String getCancel_trx() {
         return cancel_trx;
+    }
+
+    public int getStart_x() {
+        return start_x;
+    }
+
+    public int getStart_y() {
+        return start_y;
+    }
+
+    public int getEnd_x() {
+        return end_x;
+    }
+
+    public int getEnd_y() {
+        return end_y;
     }
 }

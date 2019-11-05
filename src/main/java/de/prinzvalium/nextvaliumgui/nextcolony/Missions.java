@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.lib.Util;
 
-public class MissionsUser {
+public class Missions {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(MissionsUser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Missions.class);
 
     public int getNumberOfActiveUserMissions(String userName) throws JSONException, IOException {
         return loadAllActiveUserMissions(userName).size();
@@ -26,6 +26,18 @@ public class MissionsUser {
         return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=0");
     }
     
+    public static Vector<Mission> loadAllActiveMissions(String userName, String planetId) throws JSONException, IOException {
+        return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=0&planetid=" + planetId);
+    }
+    
+    public static Vector<Mission> loadAllActiveUserMissions(String userName, String planetId) throws JSONException, IOException {
+        return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=1&planetid=" + planetId);
+    }
+
+    public static Vector<Mission> loadAllUserMissions(String userName, String planetId) throws JSONException, IOException {
+        return loadMissionsOfUserWithFilter(userName, "&onlyuser=1&planetid=" + planetId);
+    }
+
     public static Vector<Mission> loadMissionsOfUserWithFilter(String userName, String filter) throws JSONException, IOException {
         LOGGER.trace("loadMissionsOfUserWithFilter()");
         LOGGER.debug("    LOADING missions of " + userName + " (" + filter + "). Please wait...");

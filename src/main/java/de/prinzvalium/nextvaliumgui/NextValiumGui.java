@@ -50,6 +50,7 @@ public class NextValiumGui {
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
+    private JComboBox<String> comboBoxUsers;
     private JComboBox<String> comboBoxPlanets;
     private JCheckBox chckbxRadarExplorations;
     private JCheckBox chckbxRadarOthers;
@@ -57,6 +58,7 @@ public class NextValiumGui {
     private Planet planetMarkedAsTarget = null;
     private JTextField textFieldMarkedAsTarget;
     private JButton btnClearTarget;
+    private JButton btnRefresh;
     private ArrayList<String> listUsers;
     private String selectedUser = null;
 
@@ -164,7 +166,7 @@ public class NextValiumGui {
         gbc_lblUserName.gridy = 0;
         panelUserPlanet.add(lblUserName, gbc_lblUserName);
         
-        JComboBox comboBoxUsers = new JComboBox();
+        comboBoxUsers = new JComboBox<String>();
         comboBoxUsers.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -208,7 +210,7 @@ public class NextValiumGui {
         textFieldPosX.setColumns(4);
         textFieldPosX.setText("0");
         
-        JButton btnRefresh = new JButton("Refresh");
+        btnRefresh = new JButton("Refresh");
         GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
         gbc_btnRefresh.insets = new Insets(0, 5, 5, 0);
         gbc_btnRefresh.anchor = GridBagConstraints.WEST;
@@ -341,9 +343,7 @@ public class NextValiumGui {
         });
         chckbxRadarExplorations.setSelected(true);
         GridBagConstraints gbc_chckbxRadarExplorations = new GridBagConstraints();
-        gbc_chckbxRadarExplorations.anchor = GridBagConstraints.WEST;
-        gbc_chckbxRadarExplorations.insets = new Insets(0, 0, 5, 0);
-        gbc_chckbxRadarExplorations.fill = GridBagConstraints.VERTICAL;
+        gbc_chckbxRadarExplorations.anchor = GridBagConstraints.NORTHWEST;
         gbc_chckbxRadarExplorations.gridx = 0;
         gbc_chckbxRadarExplorations.gridy = 0;
         panelRadar.add(chckbxRadarExplorations, gbc_chckbxRadarExplorations);
@@ -356,7 +356,7 @@ public class NextValiumGui {
         });
         chckbxRadarOthers.setSelected(true);
         GridBagConstraints gbc_chckbxRadarOthers = new GridBagConstraints();
-        gbc_chckbxRadarOthers.anchor = GridBagConstraints.WEST;
+        gbc_chckbxRadarOthers.anchor = GridBagConstraints.NORTHWEST;
         gbc_chckbxRadarOthers.gridx = 0;
         gbc_chckbxRadarOthers.gridy = 1;
         panelRadar.add(chckbxRadarOthers, gbc_chckbxRadarOthers);
@@ -421,5 +421,11 @@ public class NextValiumGui {
     
     public boolean isRadarExplorationsEnabled() {
         return chckbxRadarExplorations.isSelected();
+    }
+    
+    public void  setCenterPosition(Planet planet) {
+        comboBoxUsers.setSelectedItem(planet.getUserName());
+        comboBoxPlanets.setSelectedItem(planet.getName());
+        btnRefresh.doClick();
     }
 }

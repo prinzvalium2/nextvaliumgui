@@ -34,7 +34,7 @@ public class PopupMenuPlanet extends JPopupMenu {
         
         popupMenuPlanet = this;
         
-        setPopupSize(new Dimension(200, 200));
+        setPopupSize(new Dimension(200, 250));
         
         Planet planet = panelPlanet.getPlanet();
         String titleBorder = planet.getUserName() + " / " + planet.getName();
@@ -46,9 +46,9 @@ public class PopupMenuPlanet extends JPopupMenu {
         DefaultListModel<String> model = new DefaultListModel<>();
         GridBagLayout gbl_panelPlanetDetails = new GridBagLayout();
         gbl_panelPlanetDetails.columnWidths = new int[]{119, 0};
-        gbl_panelPlanetDetails.rowHeights = new int[]{22, 0, 0};
+        gbl_panelPlanetDetails.rowHeights = new int[]{22, 0, 0, 0};
         gbl_panelPlanetDetails.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-        gbl_panelPlanetDetails.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+        gbl_panelPlanetDetails.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
         panelPlanetDetails.setLayout(gbl_panelPlanetDetails);
         
         JCheckBox chckbxMarkAsTarget = new JCheckBox("Mark as target");
@@ -58,9 +58,7 @@ public class PopupMenuPlanet extends JPopupMenu {
         chckbxMarkAsTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 panelPlanet.setMarked(chckbxMarkAsTarget.isSelected());
-                
                 new Thread(new Runnable() {
-
                     @Override
                     public void run() {
                         try {
@@ -68,22 +66,46 @@ public class PopupMenuPlanet extends JPopupMenu {
                             popupMenuPlanet.setVisible(false);
                         } catch (InterruptedException e) {
                         }
-                        
                     }}).start();
             }
         });
         GridBagConstraints gbc_chckbxMarkAsTarget = new GridBagConstraints();
-        gbc_chckbxMarkAsTarget.anchor = GridBagConstraints.WEST;
-        gbc_chckbxMarkAsTarget.insets = new Insets(0, 0, 5, 0);
+        gbc_chckbxMarkAsTarget.anchor = GridBagConstraints.NORTHWEST;
         gbc_chckbxMarkAsTarget.gridx = 0;
         gbc_chckbxMarkAsTarget.gridy = 0;
         panelPlanetDetails.add(chckbxMarkAsTarget, gbc_chckbxMarkAsTarget);
+        
+        JCheckBox chckbxCenterMap = new JCheckBox("Center map");
+        chckbxCenterMap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                
+                new SwingWorker<Object, Object>() {
+                   @Override
+                    protected Object doInBackground() throws Exception {
+                        Thread.sleep(250);
+                        popupMenuPlanet.setVisible(false);
+                        return null;
+                    }
+                    @Override
+                    protected void done() {
+                        NextValiumGui.getNextValiumGui().setCenterPosition(planet);
+                        super.done();
+                    }
+                }.execute();
+            }
+        });
+        GridBagConstraints gbc_chckbxCenterMap = new GridBagConstraints();
+        gbc_chckbxCenterMap.anchor = GridBagConstraints.WEST;
+        gbc_chckbxCenterMap.insets = new Insets(0, 0, 5, 0);
+        gbc_chckbxCenterMap.gridx = 0;
+        gbc_chckbxCenterMap.gridy = 1;
+        panelPlanetDetails.add(chckbxCenterMap, gbc_chckbxCenterMap);
         
         JScrollPane scrollPane = new JScrollPane();
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 0;
-        gbc_scrollPane.gridy = 1;
+        gbc_scrollPane.gridy = 2;
         panelPlanetDetails.add(scrollPane, gbc_scrollPane);
         
         JList listShips = new JList(model);

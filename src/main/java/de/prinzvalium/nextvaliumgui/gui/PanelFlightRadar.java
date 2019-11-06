@@ -28,6 +28,7 @@ public class PanelFlightRadar extends JPanel {
     private Color colorSupport = new Color(66, 245, 132, 255);
     private Color colorTransport = new Color(219, 211, 59, 255);
     private Color colorExplore = new Color(0, 0, 0, 80);
+    private Color colorExploreSpace = new Color(0, 0, 0, 80);
     private Color colorSiege = new Color(219, 48, 211, 160); 
     private Color colorBreakSiege = new Color(219, 48, 211, 255); 
     private Color colorDeploy = new Color(78, 66, 245, 128);
@@ -73,6 +74,9 @@ public class PanelFlightRadar extends JPanel {
             case "explore":
                 g2.setStroke(new BasicStroke(1));
                 color = colorExplore;
+                break;
+            case "explorespace":
+                color = colorExploreSpace;
                 break;
             case "siege":
                 color = colorSiege;

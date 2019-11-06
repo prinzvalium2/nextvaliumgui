@@ -24,13 +24,13 @@ public class PanelFlightRadar extends JPanel {
     private HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = null;
     private int locationX;
     private int locationY;
-    private Color colorAttack = new Color(245, 66, 66, 255);
+    private Color colorAttack = new Color(245, 66, 66, 150);
     private Color colorSupport = new Color(66, 245, 132, 255);
     private Color colorTransport = new Color(219, 211, 59, 255);
     private Color colorExplore = new Color(0, 0, 0, 80);
     private Color colorSiege = new Color(219, 48, 211, 160); 
     private Color colorBreakSiege = new Color(219, 48, 211, 255); 
-    private Color colorDeploy = new Color(78, 66, 245, 255);
+    private Color colorDeploy = new Color(78, 66, 245, 128);
     
     
     public PanelFlightRadar(HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMap, int locationX, int locationY) {
@@ -47,10 +47,14 @@ public class PanelFlightRadar extends JPanel {
     @Override 
     protected void paintComponent(Graphics g) {
         
+        Graphics2D g2 = (Graphics2D) g;
+        
         galaxyMap.forEach((galaxyMapKey, galaxyMapValue) -> {
             
-            if (!galaxyMapValue.getStatus().equalsIgnoreCase("explore"))
+            if (galaxyMapValue.getGalaxyMapValueExplore() == null)
                 return;
+            
+            g2.setStroke(new BasicStroke(3));
             
             GalaxyMapValueExplore val = galaxyMapValue.getGalaxyMapValueExplore();
             
@@ -67,6 +71,7 @@ public class PanelFlightRadar extends JPanel {
                 color = colorTransport;
                 break;
             case "explore":
+                g2.setStroke(new BasicStroke(1));
                 color = colorExplore;
                 break;
             case "siege":
@@ -93,8 +98,6 @@ public class PanelFlightRadar extends JPanel {
             int ye = (end_y - locationY) * -6 + (getHeight() / 2);
            
             g.setColor(color);
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setStroke(new BasicStroke(1));
             g2.draw(new Line2D.Float(xs, ys, xe, ye));
         });
     }

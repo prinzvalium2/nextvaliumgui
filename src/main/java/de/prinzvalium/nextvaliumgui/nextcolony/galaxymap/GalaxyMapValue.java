@@ -3,19 +3,22 @@ package de.prinzvalium.nextvaliumgui.nextcolony.galaxymap;
 
 public class GalaxyMapValue {
     
-    private String status;
-    private String userName;
-    private String planetId;
-    private String planetImg;
-    private int planetX;
-    private int planetY;
-    private GalaxyMapValueExplore galaxyMapValueExplore;
+    private String status = null;
+    private String userName = null;
+    private String planetId = null;
+    private String planetImg = null;
+    private int planetX = 0;
+    private int planetY = 0;
+    private GalaxyMapValueExplore galaxyMapValueExplore = null;
     
+    public GalaxyMapValue(String status, String userName) {
+        this.status = status;
+        this.userName = userName;
+    }
+
     public GalaxyMapValue(String status, String userName, GalaxyMapValueExplore galaxyMapValueExplore) {
         this.status = status;
         this.userName = userName;
-        this.planetId = null;
-        this.planetImg = null;
         this.galaxyMapValueExplore = galaxyMapValueExplore;
     }
 
@@ -26,7 +29,24 @@ public class GalaxyMapValue {
         this.planetImg = planetImg;
         planetX = key.getX();
         planetY = key.getY();
-        this.galaxyMapValueExplore = null;
+    }
+    
+    public GalaxyMapValue enrich(GalaxyMapValue galaxyMapValue) {
+        if (galaxyMapValue == null)
+            return this;
+        
+        if (this.status == null)
+            this.status = galaxyMapValue.status;
+        if (this.userName == null)
+            this.userName = galaxyMapValue.userName;
+        if (this.planetId == null)
+            this.planetId = galaxyMapValue.planetId;
+        if (this.planetImg == null)
+            this.planetImg = galaxyMapValue.planetImg;
+        if (this.galaxyMapValueExplore == null)
+            this.galaxyMapValueExplore = galaxyMapValue.galaxyMapValueExplore;
+        
+        return this;
     }
 
     public String getStatus() {

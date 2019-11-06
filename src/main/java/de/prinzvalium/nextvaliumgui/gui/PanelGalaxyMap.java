@@ -1,6 +1,7 @@
 package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.Galaxy;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
@@ -58,7 +60,7 @@ public class PanelGalaxyMap extends JPanel {
 
     @Override 
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        //super.paintComponent(g);
         
         if (galaxyMap == null)
             return;
@@ -138,6 +140,8 @@ public class PanelGalaxyMap extends JPanel {
         removeAll();
         add(panelFlighRadar);
         paintPlanets();
+        
+        NextValiumGui.getNextValiumGui().getFrmNextvaliumManagementGui().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
     
     private void paintPlanets() {

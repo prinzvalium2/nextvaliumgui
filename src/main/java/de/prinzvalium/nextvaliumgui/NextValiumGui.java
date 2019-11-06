@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Insets;
 
 public class NextValiumGui {
@@ -211,11 +213,24 @@ public class NextValiumGui {
         panelUserPlanet.add(btnRefresh, gbc_btnRefresh);
         btnRefresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Planets.clearAllPlanets();
-                int x = Integer.parseInt(textFieldPosX.getText());
-                int y = Integer.parseInt(textFieldPosY.getText());
-                panelGalaxyMap.loadGalaxyMap(x, y);
-                frmNextvaliumManagementGui.repaint();
+                frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                
+                new SwingWorker<Object, Object>() {
+
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        Planets.clearAllPlanets();
+                        int x = Integer.parseInt(textFieldPosX.getText());
+                        int y = Integer.parseInt(textFieldPosY.getText());
+                        panelGalaxyMap.loadGalaxyMap(x, y);
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        frmNextvaliumManagementGui.repaint();
+                    }
+                }.execute();
             }
         });
         

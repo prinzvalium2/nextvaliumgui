@@ -102,19 +102,19 @@ public class Galaxy {
                 }
                 
                 GalaxyMapValue galaxyMapValue = new GalaxyMapValue("explore", obj.getString("user"), galaxyMapValueExplore);
-                galaxyMap.put(key, galaxyMapValue);
+                galaxyMap.put(key, galaxyMapValue.enrich(galaxyMap.get(key)));
             }
             for (int i = 0; i < jsonExplored.length(); i++) {
                 JSONObject obj = jsonExplored.getJSONObject(i);
                 GalaxyMapKey key = new GalaxyMapKey(obj.getInt("x"), obj.getInt("y"));
-                GalaxyMapValue value = new GalaxyMapValue("explored", obj.getString("user"), null);
-                galaxyMap.put(key, value);
+                GalaxyMapValue galaxyMapValue = new GalaxyMapValue("explored", obj.getString("user"));
+                galaxyMap.put(key, galaxyMapValue.enrich(galaxyMap.get(key)));
             }
             for (int i = 0; i < jsonPlanets.length(); i++) {
                 JSONObject obj = jsonPlanets.getJSONObject(i);
                 GalaxyMapKey key = new GalaxyMapKey(obj.getInt("x"), obj.getInt("y"));
-                GalaxyMapValue value = new GalaxyMapValue("planet", null, obj.getString("id"), obj.getString("img"), key);
-                galaxyMap.put(key, value);
+                GalaxyMapValue galaxyMapValue = new GalaxyMapValue("planet", null, obj.getString("id"), obj.getString("img"), key);
+                galaxyMap.put(key, galaxyMapValue.enrich(galaxyMap.get(key)));
             }
             
             return galaxyMap;

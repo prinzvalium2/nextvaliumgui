@@ -1,5 +1,6 @@
 package de.prinzvalium.nextvaliumgui.lib;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -226,6 +228,53 @@ public class Util {
         setProxy();
         
         return listUsers;
+    }
+    
+    public static Color getUserColor(String userName) {
+        
+        if (userName == null)
+            return Color.BLACK;
+        
+        int[] colorValues = new int[3];
+
+        colorValues[0] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+        colorValues[1] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+        colorValues[2] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
+        
+        String s = userName.toUpperCase();
+        
+        int i = 0;
+        for (char c : s.toCharArray())  {
+            if (c >= 0x30 && c <= 0x39)
+                colorValues[i++] = (c - 0x30) * 28;
+            else if (c >= 0x41 && c <= 0x5A)
+                colorValues[i++] = (c - 0x41) * 10;
+            if (i > 2)
+                break;
+        }
+        int maxBrightness = 230;
+        
+        int max = 0;
+        if (colorValues[0] >= colorValues[1] && colorValues[0] >= colorValues[2])
+            max = colorValues[0];
+        if (colorValues[1] >= colorValues[0] && colorValues[1] >= colorValues[2])
+            max = colorValues[1];
+        if (colorValues[2] >= colorValues[0] && colorValues[2] >= colorValues[1])
+            max = colorValues[2];
+        
+        int brighter = maxBrightness - max;
+        colorValues[0] += brighter;
+        colorValues[1] += brighter;
+        colorValues[2] += brighter;
+        
+        for (int j = 0; j < 3; j++) {
+            if (colorValues[j] < 0)
+                colorValues[j] = 0;
+            if (colorValues[j] > maxBrightness)
+                colorValues[j] = maxBrightness;
+        }
+          
+        return new Color(colorValues[0], colorValues[1], colorValues[2]);
     }
        
     public static void main(String[] args) throws IOException {

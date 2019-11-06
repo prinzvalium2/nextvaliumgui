@@ -113,6 +113,14 @@ public class PanelFlightRadar extends JPanel {
            
             g.setColor(color);
             g2.draw(new Line2D.Float(xs, ys, xe, ye));
+            
+            if (val.type.equalsIgnoreCase("explore"))
+                return;
+            
+            g2.setStroke(new BasicStroke(1));
+            g.setColor(color.darker());
+            g2.draw(new Line2D.Float(xs, ys, xe, ye));
+
         });
     }
 }

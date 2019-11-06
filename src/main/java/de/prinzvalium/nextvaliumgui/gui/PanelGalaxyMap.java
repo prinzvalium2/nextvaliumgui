@@ -5,7 +5,6 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JPanel;
 
@@ -14,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.Galaxy;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
@@ -27,7 +27,7 @@ public class PanelGalaxyMap extends JPanel {
     private int locationX;
     private int locationY;
     private Color color = null;
-    private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
+    private static HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
     private PanelFlightRadar panelFlighRadar = null;
     private JLabel lblNewLabel;
     
@@ -74,51 +74,9 @@ public class PanelGalaxyMap extends JPanel {
             color = Color.BLACK;
             
             if (userName != null) {
-                
                 color = mapUserColor.get(userName);
-                
                 if (color == null) {
-                    
-                    int[] colorValues = new int[3];
-
-                    colorValues[0] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    colorValues[1] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    colorValues[2] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                    
-                    String s = userName.toUpperCase();
-                    
-                    int i = 0;
-                    for (char c : s.toCharArray())  {
-                        if (c >= 0x30 && c <= 0x39)
-                            colorValues[i++] = (c - 0x30) * 28;
-                        else if (c >= 0x41 && c <= 0x5A)
-                            colorValues[i++] = (c - 0x41) * 10;
-                        if (i > 2)
-                            break;
-                    }
-                    int maxBrightness = 230;
-                    
-                    int max = 0;
-                    if (colorValues[0] >= colorValues[1] && colorValues[0] >= colorValues[2])
-                        max = colorValues[0];
-                    if (colorValues[1] >= colorValues[0] && colorValues[1] >= colorValues[2])
-                        max = colorValues[1];
-                    if (colorValues[2] >= colorValues[0] && colorValues[2] >= colorValues[1])
-                        max = colorValues[2];
-                    
-                    int brighter = maxBrightness - max;
-                    colorValues[0] += brighter;
-                    colorValues[1] += brighter;
-                    colorValues[2] += brighter;
-                    
-                    for (int j = 0; j < 3; j++) {
-                        if (colorValues[j] < 0)
-                            colorValues[j] = 0;
-                        if (colorValues[j] > maxBrightness)
-                            colorValues[j] = maxBrightness;
-                    }
-                      
-                    color = new Color(colorValues[0], colorValues[1], colorValues[2]);
+                    color = Util.getUserColor(userName);
                     mapUserColor.put(userName, color);
                 }
             }

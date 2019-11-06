@@ -13,6 +13,7 @@ import org.json.JSONException;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.DialogPlanet;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
@@ -70,47 +71,7 @@ public class PanelPlanet extends JPanel {
             color = mapUserColor.get(userName);
             
             if (color == null) {
-                
-                int[] colorValues = new int[3];
-
-                colorValues[0] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                colorValues[1] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                colorValues[2] = ThreadLocalRandom.current().nextInt(1, 13) * 20;
-                
-                String s = userName.toUpperCase();
-                
-                int i = 0;
-                for (char c : s.toCharArray())  {
-                    if (c >= 0x30 && c <= 0x39)
-                        colorValues[i++] = (c - 0x30) * 28;
-                    else if (c >= 0x41 && c <= 0x5A)
-                        colorValues[i++] = (c - 0x41) * 10;
-                    if (i > 2)
-                        break;
-                }
-                int maxBrightness = 230;
-                
-                int max = 0;
-                if (colorValues[0] >= colorValues[1] && colorValues[0] >= colorValues[2])
-                    max = colorValues[0];
-                if (colorValues[1] >= colorValues[0] && colorValues[1] >= colorValues[2])
-                    max = colorValues[1];
-                if (colorValues[2] >= colorValues[0] && colorValues[2] >= colorValues[1])
-                    max = colorValues[2];
-                
-                int brighter = maxBrightness - max;
-                colorValues[0] += brighter;
-                colorValues[1] += brighter;
-                colorValues[2] += brighter;
-                
-                for (int j = 0; j < 3; j++) {
-                    if (colorValues[j] < 0)
-                        colorValues[j] = 0;
-                    if (colorValues[j] > maxBrightness)
-                        colorValues[j] = maxBrightness;
-                }
-                    
-                color = new Color(colorValues[0], colorValues[1], colorValues[2]);
+                color = Util.getUserColor(userName);
                 mapUserColor.put(userName, color);
             }
             

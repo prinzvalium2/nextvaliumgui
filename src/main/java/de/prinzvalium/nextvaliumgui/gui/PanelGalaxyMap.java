@@ -28,7 +28,7 @@ public class PanelGalaxyMap extends JPanel {
     private int locationY;
     private Color color = null;
     private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
-    private PanelFlightRadar panelFlighRadar;
+    private PanelFlightRadar panelFlighRadar = null;
     private JLabel lblNewLabel;
     
     public PanelGalaxyMap()  {
@@ -60,7 +60,6 @@ public class PanelGalaxyMap extends JPanel {
 
     @Override 
     protected void paintComponent(Graphics g) {
-        //super.paintComponent(g);
         
         if (galaxyMap == null)
             return;
@@ -138,7 +137,10 @@ public class PanelGalaxyMap extends JPanel {
         });
         
         removeAll();
-        add(panelFlighRadar);
+        
+        if (panelFlighRadar != null)
+            add(panelFlighRadar);
+        
         paintPlanets();
         
         NextValiumGui.getNextValiumGui().getFrmNextvaliumManagementGui().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValueExplore;
@@ -48,16 +49,25 @@ public class PanelFlightRadar extends JPanel {
     @Override 
     protected void paintComponent(Graphics g) {
         
+        boolean showExplore = NextValiumGui.getNextValiumGui().isRadarExplorationsEnabled();
+        boolean showOthers = NextValiumGui.getNextValiumGui().isRadarOthersEnabled();
+        
         Graphics2D g2 = (Graphics2D) g;
         
         galaxyMap.forEach((galaxyMapKey, galaxyMapValue) -> {
             
             if (galaxyMapValue.getGalaxyMapValueExplore() == null)
                 return;
+                    
+            GalaxyMapValueExplore val = galaxyMapValue.getGalaxyMapValueExplore();
+            
+            if (val.type.equalsIgnoreCase("explore") && !showExplore)
+                return;
+            
+            if (!val.type.equalsIgnoreCase("explore") && !showOthers)
+                return;
             
             g2.setStroke(new BasicStroke(3));
-            
-            GalaxyMapValueExplore val = galaxyMapValue.getGalaxyMapValueExplore();
             
             Color color;
             

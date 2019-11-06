@@ -40,6 +40,7 @@ import javax.swing.UIManager;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Insets;
+import javax.swing.JCheckBox;
 
 public class NextValiumGui {
 
@@ -50,6 +51,8 @@ public class NextValiumGui {
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
     private JComboBox<String> comboBoxPlanets;
+    private JCheckBox chckbxRadarExplorations;
+    private JCheckBox chckbxRadarOthers;
     private HashMap<String, Planet> mapPlanets;
     private Planet planetMarkedAsTarget = null;
     private JTextField textFieldMarkedAsTarget;
@@ -128,23 +131,24 @@ public class NextValiumGui {
         });
         mnFile.add(mntmExit);
         
-        JPanel panel_1 = new JPanel();
-        panel_1.setBorder(null);
-        frmNextvaliumManagementGui.getContentPane().add(panel_1, BorderLayout.NORTH);
-        GridBagLayout gbl_panel_1 = new GridBagLayout();
-        gbl_panel_1.columnWidths = new int[]{26, 91, 0};
-        gbl_panel_1.rowHeights = new int[]{23, 0};
-        gbl_panel_1.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-        gbl_panel_1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-        panel_1.setLayout(gbl_panel_1);
+        JPanel panelTop = new JPanel();
+        panelTop.setBorder(null);
+        frmNextvaliumManagementGui.getContentPane().add(panelTop, BorderLayout.NORTH);
+        GridBagLayout gbl_panelTop = new GridBagLayout();
+        gbl_panelTop.columnWidths = new int[]{26, 91, 0, 0};
+        gbl_panelTop.rowHeights = new int[]{23, 0};
+        gbl_panelTop.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelTop.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        panelTop.setLayout(gbl_panelTop);
         
         JPanel panelUserPlanet = new JPanel();
         panelUserPlanet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Select user planet or x/y", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_panelUserPlanet = new GridBagConstraints();
+        gbc_panelUserPlanet.insets = new Insets(0, 0, 0, 5);
         gbc_panelUserPlanet.fill = GridBagConstraints.BOTH;
         gbc_panelUserPlanet.gridx = 0;
         gbc_panelUserPlanet.gridy = 0;
-        panel_1.add(panelUserPlanet, gbc_panelUserPlanet);
+        panelTop.add(panelUserPlanet, gbc_panelUserPlanet);
         GridBagLayout gbl_panelUserPlanet = new GridBagLayout();
         gbl_panelUserPlanet.columnWidths = new int[]{26, 86, 0, 0, 0, 0};
         gbl_panelUserPlanet.rowHeights = new int[]{23, 1, 0};
@@ -283,35 +287,79 @@ public class NextValiumGui {
         textFieldPosY.setText("0");
         textFieldPosY.setColumns(4);
         
-        JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Right click on planet to mark as target", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        GridBagConstraints gbc_panel = new GridBagConstraints();
-        gbc_panel.fill = GridBagConstraints.BOTH;
-        gbc_panel.gridx = 1;
-        gbc_panel.gridy = 0;
-        panel_1.add(panel, gbc_panel);
-        GridBagLayout gbl_panel = new GridBagLayout();
-        gbl_panel.columnWidths = new int[]{200, 0};
-        gbl_panel.rowHeights = new int[]{23, 1, 0};
-        gbl_panel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-        gbl_panel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-        panel.setLayout(gbl_panel);
+        JPanel panelTarget = new JPanel();
+        panelTarget.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Right click on planet to mark as target", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        GridBagConstraints gbc_panelTarget = new GridBagConstraints();
+        gbc_panelTarget.insets = new Insets(0, 0, 0, 5);
+        gbc_panelTarget.fill = GridBagConstraints.BOTH;
+        gbc_panelTarget.gridx = 1;
+        gbc_panelTarget.gridy = 0;
+        panelTop.add(panelTarget, gbc_panelTarget);
+        GridBagLayout gbl_panelTarget = new GridBagLayout();
+        gbl_panelTarget.columnWidths = new int[]{200, 0};
+        gbl_panelTarget.rowHeights = new int[]{23, 1, 0};
+        gbl_panelTarget.columnWeights = new double[]{0.0, Double.MIN_VALUE};
+        gbl_panelTarget.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        panelTarget.setLayout(gbl_panelTarget);
         
         btnClearTarget = new JButton("Clear target");
         GridBagConstraints gbc_btnClearTarget = new GridBagConstraints();
         gbc_btnClearTarget.anchor = GridBagConstraints.EAST;
         gbc_btnClearTarget.gridx = 0;
         gbc_btnClearTarget.gridy = 1;
-        panel.add(btnClearTarget, gbc_btnClearTarget);
+        panelTarget.add(btnClearTarget, gbc_btnClearTarget);
         
         textFieldMarkedAsTarget = new JTextField();
         GridBagConstraints gbc_textFieldMarkedAsTarget = new GridBagConstraints();
         gbc_textFieldMarkedAsTarget.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldMarkedAsTarget.gridx = 0;
         gbc_textFieldMarkedAsTarget.gridy = 0;
-        panel.add(textFieldMarkedAsTarget, gbc_textFieldMarkedAsTarget);
+        panelTarget.add(textFieldMarkedAsTarget, gbc_textFieldMarkedAsTarget);
         textFieldMarkedAsTarget.setEditable(false);
         textFieldMarkedAsTarget.setColumns(10);
+        
+        JPanel panelRadar = new JPanel();
+        panelRadar.setBorder(new TitledBorder(null, "Flight radar", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_panelRadar = new GridBagConstraints();
+        gbc_panelRadar.anchor = GridBagConstraints.WEST;
+        gbc_panelRadar.fill = GridBagConstraints.VERTICAL;
+        gbc_panelRadar.gridx = 2;
+        gbc_panelRadar.gridy = 0;
+        panelTop.add(panelRadar, gbc_panelRadar);
+        GridBagLayout gbl_panelRadar = new GridBagLayout();
+        gbl_panelRadar.columnWidths = new int[]{0, 0};
+        gbl_panelRadar.rowHeights = new int[]{0, 0, 0};
+        gbl_panelRadar.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panelRadar.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+        panelRadar.setLayout(gbl_panelRadar);
+        
+        chckbxRadarExplorations = new JCheckBox("Explorations");
+        chckbxRadarExplorations.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                frmNextvaliumManagementGui.repaint();
+            }
+        });
+        chckbxRadarExplorations.setSelected(true);
+        GridBagConstraints gbc_chckbxRadarExplorations = new GridBagConstraints();
+        gbc_chckbxRadarExplorations.anchor = GridBagConstraints.WEST;
+        gbc_chckbxRadarExplorations.insets = new Insets(0, 0, 5, 0);
+        gbc_chckbxRadarExplorations.fill = GridBagConstraints.VERTICAL;
+        gbc_chckbxRadarExplorations.gridx = 0;
+        gbc_chckbxRadarExplorations.gridy = 0;
+        panelRadar.add(chckbxRadarExplorations, gbc_chckbxRadarExplorations);
+        
+        chckbxRadarOthers = new JCheckBox("Others");
+        chckbxRadarOthers.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frmNextvaliumManagementGui.repaint();
+            }
+        });
+        chckbxRadarOthers.setSelected(true);
+        GridBagConstraints gbc_chckbxRadarOthers = new GridBagConstraints();
+        gbc_chckbxRadarOthers.anchor = GridBagConstraints.WEST;
+        gbc_chckbxRadarOthers.gridx = 0;
+        gbc_chckbxRadarOthers.gridy = 1;
+        panelRadar.add(chckbxRadarOthers, gbc_chckbxRadarOthers);
         btnClearTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 planetMarkedAsTarget = null;
@@ -365,5 +413,13 @@ public class NextValiumGui {
 
     public String getSelectedUser() {
         return selectedUser;
+    }
+    
+    public boolean isRadarOthersEnabled() {
+        return chckbxRadarOthers.isSelected();
+    }
+    
+    public boolean isRadarExplorationsEnabled() {
+        return chckbxRadarExplorations.isSelected();
     }
 }

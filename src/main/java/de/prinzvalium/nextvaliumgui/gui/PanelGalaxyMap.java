@@ -27,13 +27,14 @@ public class PanelGalaxyMap extends JPanel {
     private Color color = null;
     private HashMap<String, Color> mapUserColor = new HashMap<String, Color>();
     private PanelFlightRadar panelFlighRadar;
+    private JLabel lblNewLabel;
     
     public PanelGalaxyMap()  {
         LOGGER.trace("PanelGalaxyMap()");
         
         setLayout(null);
         
-        JLabel lblNewLabel = new JLabel("Loading data...");
+        lblNewLabel = new JLabel("Loading data...");
         lblNewLabel.setBounds(1, 1, 80, 14);
         add(lblNewLabel);
     }
@@ -47,15 +48,13 @@ public class PanelGalaxyMap extends JPanel {
             galaxyMap = Galaxy.loadGalaxyMap(locationX-50, locationY, 100, 125);
             galaxyMap.putAll(Galaxy.loadGalaxyMap(locationX+50, locationY, 100, 125));
            
-//            panelFlighRadar = new PanelFlightRadar(galaxyMap, locationX, locationY);
-//            panelFlighRadar.setBounds(0, 0, getWidth(), getHeight());
+            panelFlighRadar = new PanelFlightRadar(galaxyMap, locationX, locationY);
+            panelFlighRadar.setBounds(0, 0, getWidth(), getHeight());
             
         } catch (JSONException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            lblNewLabel.setText(e.getMessage());
         }
     }
-    
 
     @Override 
     protected void paintComponent(Graphics g) {
@@ -137,7 +136,7 @@ public class PanelGalaxyMap extends JPanel {
         });
         
         removeAll();
-        //add(panelFlighRadar);
+        add(panelFlighRadar);
         paintPlanets();
     }
     

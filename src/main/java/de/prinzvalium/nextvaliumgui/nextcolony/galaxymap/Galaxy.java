@@ -1,7 +1,9 @@
 package de.prinzvalium.nextvaliumgui.nextcolony.galaxymap;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,13 +73,41 @@ public class Galaxy {
             for (int i = 0; i < jsonExplore.length(); i++) {
                 JSONObject obj = jsonExplore.getJSONObject(i);
                 GalaxyMapKey key = new GalaxyMapKey(obj.getInt("x"), obj.getInt("y"));
-                GalaxyMapValue value = new GalaxyMapValue("explore", obj.getString("user"));
-                galaxyMap.put(key, value);
+                
+                GalaxyMapValueExplore galaxyMapValueExplore = new GalaxyMapValueExplore();
+                galaxyMapValueExplore.x = obj.getInt("x");
+                galaxyMapValueExplore.y = obj.getInt("y");
+                galaxyMapValueExplore.start_x = obj.getInt("start_x");
+                galaxyMapValueExplore.start_y = obj.getInt("start_y");
+                galaxyMapValueExplore.user = obj.getString("user");
+                galaxyMapValueExplore.type = obj.getString("type");
+                try {
+                    galaxyMapValueExplore.date = new Date(obj.getLong("date") * 1000);
+                }
+                catch (JSONException e) {
+                    galaxyMapValueExplore.date = null;
+                }
+                try {
+                    galaxyMapValueExplore.date_return = new Date(obj.getLong("date_return") * 1000);
+                }
+                catch (JSONException e) {
+                    galaxyMapValueExplore.date_return = null;
+                }
+                galaxyMapValueExplore.mapShips = new HashMap<String, Integer>();
+                JSONObject jsonShips = new JSONObject(obj.getString("ships"));
+                for (Iterator<String> iterator = jsonShips.keys(); iterator.hasNext();) {
+                    String ship = iterator.next();
+                    int num = jsonShips.getInt(ship);
+                    galaxyMapValueExplore.mapShips.put(ship, num);
+                }
+                
+                GalaxyMapValue galaxyMapValue = new GalaxyMapValue("explore", obj.getString("user"), galaxyMapValueExplore);
+                galaxyMap.put(key, galaxyMapValue);
             }
             for (int i = 0; i < jsonExplored.length(); i++) {
                 JSONObject obj = jsonExplored.getJSONObject(i);
                 GalaxyMapKey key = new GalaxyMapKey(obj.getInt("x"), obj.getInt("y"));
-                GalaxyMapValue value = new GalaxyMapValue("explored", obj.getString("user"));
+                GalaxyMapValue value = new GalaxyMapValue("explored", obj.getString("user"), null);
                 galaxyMap.put(key, value);
             }
             for (int i = 0; i < jsonPlanets.length(); i++) {
@@ -95,5 +125,4 @@ public class Galaxy {
         Util.setProxy();
         LOGGER.info("Stop");
     }
-
 }

@@ -9,12 +9,14 @@ public class GalaxyMapValue {
     private String planetImg;
     private int planetX;
     private int planetY;
+    private GalaxyMapValueExplore galaxyMapValueExplore;
     
-    public GalaxyMapValue(String status, String userName) {
+    public GalaxyMapValue(String status, String userName, GalaxyMapValueExplore galaxyMapValueExplore) {
         this.status = status;
         this.userName = userName;
         this.planetId = null;
         this.planetImg = null;
+        this.galaxyMapValueExplore = galaxyMapValueExplore;
     }
 
     public GalaxyMapValue(String status, String userName, String planetId, String planetImg, GalaxyMapKey key) {
@@ -24,6 +26,7 @@ public class GalaxyMapValue {
         this.planetImg = planetImg;
         planetX = key.getX();
         planetY = key.getY();
+        this.galaxyMapValueExplore = null;
     }
 
     public String getStatus() {
@@ -48,5 +51,9 @@ public class GalaxyMapValue {
 
     public int getPlanetY() {
         return planetY;
+    }
+
+    public GalaxyMapValueExplore getGalaxyMapValueExplore() {
+        return galaxyMapValueExplore;
     }
 }

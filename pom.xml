@@ -4,7 +4,7 @@
 
     <groupId>de.prinzvalium</groupId>
     <artifactId>nextvaliumgui</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>nextvaliumgui</name>

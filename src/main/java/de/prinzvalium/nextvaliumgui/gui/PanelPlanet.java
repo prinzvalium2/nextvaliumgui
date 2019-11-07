@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;

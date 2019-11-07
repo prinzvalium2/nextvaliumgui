@@ -83,6 +83,11 @@ public class DialogPlanet extends JDialog {
         }
     }
 
+    public void setStatusInfo(String status) {
+        textFieldStatus.setForeground(Color.BLACK);
+        setStatus(status);
+    }
+
     public void setStatusError(String status) {
         textFieldStatus.setForeground(colorError);
         setStatus(status);

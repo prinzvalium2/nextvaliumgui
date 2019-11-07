@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.ExecutionException;
 import java.awt.GridBagLayout;
 import javax.swing.JTable;
 import java.awt.GridBagConstraints;
@@ -34,9 +34,12 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.UIManager;
 import java.awt.Color;
+import java.awt.Cursor;
+
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.JButton;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -61,8 +64,8 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldFreeMissions;
     private JTextField textFieldUraniumConsumption;
     private JComboBox<String> comboBoxTargetPlanet;
-    private JComboBox comboBoxMissionsPredefined;
-    private JComboBox comboBoxMissionsStandard;
+    private JComboBox<String> comboBoxMissionsPredefined;
+    private JComboBox<String> comboBoxMissionsStandard;
     private JButton btnSendTransaction;
     private HashMap<String, Planet> mapPlanets;
     private DefaultTableModel model;
@@ -653,42 +656,54 @@ public class PanelFleet extends JPanel {
         gbc_btnSendTransaction.gridy = 3;
         add(btnSendTransaction, gbc_btnSendTransaction);
         
-        setTarget();
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
         
-        checkPreconditionSendToSteemButton();
-        
-        new Thread(new Runnable() {
+        new SwingWorker<Void, Void>() {
 
             @Override
-            public void run() {
-                try {
-                    String userName = planet.getUserName();
-                    String planetId = planet.getId();
-                    String planetName = planet.getName();
-                    
-                    fleet = new Fleet(userName, planetName, planetId);
-                    HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
-                    model.removeRow(0);
-                    for (Map.Entry<?,?> entry : mapShips.entrySet())
-                        model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
-                    
-                    RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(planetName, planetId);
-                    textFieldResourcesCoal.setText(String.format("%.0f", res.getCoal()));
-                    textFieldResourcesOre.setText(String.format("%.0f", res.getOre()));
-                    textFieldResourcesCopper.setText(String.format("%.0f", res.getCopper()));
-                    textFieldResourcesUranium.setText(String.format("%.0f", res.getUranium()));
-                    
-                    int starter = planet.isStarter() ? 1 : 0;
-                    int missionsActive = Missions.loadAllActiveUserMissions(userName).size();
-                    int missionsMax = new Skills(userName).getMissionControlLevel() * 2 + starter;
-                    missionsAvailable = missionsMax - missionsActive;
-                    textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
+            protected Void doInBackground() throws Exception {
+                
+                setTarget();
+                
+                checkPreconditionSendToSteemButton();
+                
+                String userName = planet.getUserName();
+                String planetId = planet.getId();
+                String planetName = planet.getName();
+                
+                fleet = new Fleet(userName, planetName, planetId);
+                HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
+                model.removeRow(0);
+                for (Map.Entry<?,?> entry : mapShips.entrySet())
+                    model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
+                
+                RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(planetName, planetId);
+                textFieldResourcesCoal.setText(String.format("%.0f", res.getCoal()));
+                textFieldResourcesOre.setText(String.format("%.0f", res.getOre()));
+                textFieldResourcesCopper.setText(String.format("%.0f", res.getCopper()));
+                textFieldResourcesUranium.setText(String.format("%.0f", res.getUranium()));
+                
+                int starter = planet.isStarter() ? 1 : 0;
+                int missionsActive = Missions.loadAllActiveUserMissions(userName).size();
+                int missionsMax = new Skills(userName).getMissionControlLevel() * 2 + starter;
+                missionsAvailable = missionsMax - missionsActive;
+                textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
+                return null;
+            }
 
-                } catch (Exception e) {
+            @Override
+            protected void done() {
+                try {
+                    get();
+                } catch (InterruptedException | ExecutionException e) {
                     dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
                 }
+                
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                super.done();
             }
-        }).start();
+            
+        }.execute();
     }
     
     private void setTarget() {
@@ -823,63 +838,83 @@ public class PanelFleet extends JPanel {
     
     private void actionPerformed_btnSendTransaction() {
         
-        try {
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        dialogPlanet.setStatusInfo("Sending transaction to Steem. Please wait...");
+        
+        new SwingWorker<Void, Void>() {
+
+            @Override
+            protected Void doInBackground() throws Exception {
                 
-            int x = Integer.parseInt(textFieldTargetPositionX.getText());
-            int y = Integer.parseInt(textFieldTargetPositionY.getText());
-            
-            Resources resources = new Resources();
-            resources.coal = Integer.parseInt(textFieldResourcesShipCoal.getText());
-            resources.ore = Integer.parseInt(textFieldResourcesShipOre.getText());
-            resources.copper = Integer.parseInt(textFieldResourcesShipCopper.getText());
-            resources.uranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
-            
-            switch ((String)comboBoxMissionsStandard.getSelectedItem()) {
-             
-            case MISSION_DEPLOY:
-                CustomJson.deployShipsOfPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y, resources);
-                break;
+                int x = Integer.parseInt(textFieldTargetPositionX.getText());
+                int y = Integer.parseInt(textFieldTargetPositionY.getText());
                 
-            case MISSION_TRANSPORT:
-                CustomJson.transportToPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y, resources);
-                break;
+                Resources resources = new Resources();
+                resources.coal = Integer.parseInt(textFieldResourcesShipCoal.getText());
+                resources.ore = Integer.parseInt(textFieldResourcesShipOre.getText());
+                resources.copper = Integer.parseInt(textFieldResourcesShipCopper.getText());
+                resources.uranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
                 
-            case MISSION_EXPLORE:
-                Integer numExp = getMapOfShips().get("explorership");
-                if (numExp != null && numExp > 0) {
-                    CustomJson.explore(planet.getUserName(), planet.getId(), x, y, "explorership");
+                switch ((String)comboBoxMissionsStandard.getSelectedItem()) {
+                 
+                case MISSION_DEPLOY:
+                    CustomJson.deployShipsOfPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y, resources);
                     break;
+                    
+                case MISSION_TRANSPORT:
+                    CustomJson.transportToPlanet(getMapOfShips(), planet.getUserName(), planet.getId(), x, y, resources);
+                    break;
+                    
+                case MISSION_EXPLORE:
+                    Integer numExp = getMapOfShips().get("explorership");
+                    if (numExp != null && numExp > 0) {
+                        CustomJson.explore(planet.getUserName(), planet.getId(), x, y, "explorership");
+                        break;
+                    }
+                    Integer numExp2 = getMapOfShips().get("explorership1");
+                    if (numExp2 != null && numExp2 > 0)
+                        CustomJson.explore(planet.getUserName(), planet.getId(), x, y, "explorership1");
+                    break;
+                    
+                case MISSION_ATTACK:
+                    CustomJson.fightingAction("attack", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
+                    break;
+                    
+                case MISSION_SUPPORT:
+                    CustomJson.fightingAction("support", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
+                    break;
+                    
+                case MISSION_SIEGE:
+                    CustomJson.fightingAction("siege", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
+                    break;
+                    
+                case MISSION_BREAKSIEGE:
+                    CustomJson.fightingAction("breaksiege", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
+                    break;
+                    
+                default:
+                    throw new NextValiumException("not implemented"); 
                 }
-                Integer numExp2 = getMapOfShips().get("explorership1");
-                if (numExp2 != null && numExp2 > 0)
-                    CustomJson.explore(planet.getUserName(), planet.getId(), x, y, "explorership1");
-                break;
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
                 
-            case MISSION_ATTACK:
-                CustomJson.fightingAction("attack", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
-                break;
+                try {
+                    get();
+                    dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+                    
+                } catch (InterruptedException | ExecutionException e) {
+                    dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
+                }
                 
-            case MISSION_SUPPORT:
-                CustomJson.fightingAction("support", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
-                break;
-                
-            case MISSION_SIEGE:
-                CustomJson.fightingAction("siege", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
-                break;
-                
-            case MISSION_BREAKSIEGE:
-                CustomJson.fightingAction("breaksiege", getMapOfShipsWithAllValues(), planet.getUserName(), planet.getId(), x, y);
-                break;
-                
-            default:
-                throw new NextValiumException("not implemented"); 
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                super.done();
             }
             
-            dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
-
-        } catch (Exception e) {
-            dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
-        }
+        }.execute();
     }
     
     private void actionPerformed_Ressources() {

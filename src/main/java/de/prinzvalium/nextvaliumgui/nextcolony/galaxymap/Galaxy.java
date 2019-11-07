@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,11 +51,11 @@ public class Galaxy {
         return mapGalaxy;
     }
     
-    public static HashMap<GalaxyMapKey, GalaxyMapValue> loadGalaxyMap(int x, int y, int distanceMax) throws JSONException, IOException {
+    public static MultiValuedMap<GalaxyMapKey, GalaxyMapValue> loadGalaxyMap(int x, int y, int distanceMax) throws JSONException, IOException {
         return loadGalaxyMap(x, y, distanceMax * 2, distanceMax * 2);
     }
     
-    public static HashMap<GalaxyMapKey, GalaxyMapValue> loadGalaxyMap(int x, int y, int width, int height) throws JSONException, IOException {
+    public static MultiValuedMap<GalaxyMapKey, GalaxyMapValue> loadGalaxyMap(int x, int y, int width, int height) throws JSONException, IOException {
             LOGGER.trace("loadTheGalaxyMap()");
             
             JSONObject jsonObject = loadGalaxy(x, y, width, height);
@@ -68,7 +70,7 @@ public class Galaxy {
     //        int xMin = jsonArea.getInt("xmin");
     //        int xMax = jsonArea.getInt("xmax");
             
-            HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = new HashMap<GalaxyMapKey, GalaxyMapValue>();
+            MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = new ArrayListValuedHashMap<GalaxyMapKey, GalaxyMapValue>();
             
             for (int i = 0; i < jsonExplore.length(); i++) {
                 JSONObject obj = jsonExplore.getJSONObject(i);
@@ -102,19 +104,19 @@ public class Galaxy {
                 }
                 
                 GalaxyMapValue galaxyMapValue = new GalaxyMapValue("explore", obj.getString("user"), galaxyMapValueExplore);
-                galaxyMap.put(key, galaxyMapValue.enrich(galaxyMap.get(key)));
+                galaxyMap.put(key, galaxyMapValue);
             }
             for (int i = 0; i < jsonExplored.length(); i++) {
                 JSONObject obj = jsonExplored.getJSONObject(i);
                 GalaxyMapKey key = new GalaxyMapKey(obj.getInt("x"), obj.getInt("y"));
                 GalaxyMapValue galaxyMapValue = new GalaxyMapValue("explored", obj.getString("user"));
-                galaxyMap.put(key, galaxyMapValue.enrich(galaxyMap.get(key)));
+                galaxyMap.put(key, galaxyMapValue);
             }
             for (int i = 0; i < jsonPlanets.length(); i++) {
                 JSONObject obj = jsonPlanets.getJSONObject(i);
                 GalaxyMapKey key = new GalaxyMapKey(obj.getInt("x"), obj.getInt("y"));
                 GalaxyMapValue galaxyMapValue = new GalaxyMapValue("planet", null, obj.getString("id"), obj.getString("img"), key);
-                galaxyMap.put(key, galaxyMapValue.enrich(galaxyMap.get(key)));
+                galaxyMap.put(key, galaxyMapValue);
             }
             
             return galaxyMap;

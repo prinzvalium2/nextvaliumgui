@@ -1,21 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>de.prinzvalium</groupId>
-  <artifactId>nextvaliumgui</artifactId>
-  <version>0.1.2-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>de.prinzvalium</groupId>
+    <artifactId>nextvaliumgui</artifactId>
+    <version>0.1.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>nextvaliumgui</name>
-  <url>http://maven.apache.org</url>
+    <name>nextvaliumgui</name>
+    <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <repositories>
-       <!-- https://jitpack.io/#marvin-we/steem-java-api-wrapper/20181010 -->
+        <!-- https://jitpack.io/#marvin-we/steem-java-api-wrapper/20181010 -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
@@ -35,7 +35,7 @@
             <artifactId>gson</artifactId>
             <version>2.8.5</version>
         </dependency>
-        
+
         <!-- https://jitpack.io/#marvin-we/steem-java-api-wrapper/20181010 -->
         <dependency>
             <groupId>com.github.marvin-we.steem-java-api-wrapper</groupId>
@@ -43,28 +43,30 @@
             <version>20181010</version>
         </dependency>
 
-<!--         <dependency>
-            <groupId>com.github.muksihs</groupId>
-            <artifactId>steemj-core</artifactId>
-            <version>0.5.0-SNAPSHOT</version>
-        </dependency> -->
-       
+        <!-- <dependency> <groupId>com.github.muksihs</groupId> <artifactId>steemj-core</artifactId> <version>0.5.0-SNAPSHOT</version> </dependency> -->
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.1</version>
+        </dependency>
+        
     </dependencies>
-    
-    
-   <build>
+
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -88,7 +90,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -111,7 +113,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- java source 1.8 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -123,7 +125,7 @@
                 </configuration>
             </plugin>
 
-             <plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.0.2</version>
                 <executions>
@@ -150,7 +152,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -162,7 +164,9 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <descriptors> <descriptor>src/main/resources/pack2zip.xml</descriptor> </descriptors>
+                            <descriptors>
+                                <descriptor>src/main/resources/pack2zip.xml</descriptor>
+                            </descriptors>
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>

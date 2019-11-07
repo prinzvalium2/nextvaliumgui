@@ -31,24 +31,6 @@ public class GalaxyMapValue {
         planetY = key.getY();
     }
     
-    public GalaxyMapValue enrich(GalaxyMapValue galaxyMapValue) {
-        if (galaxyMapValue == null)
-            return this;
-        
-        if (this.status == null)
-            this.status = galaxyMapValue.status;
-        if (this.userName == null)
-            this.userName = galaxyMapValue.userName;
-        if (this.planetId == null)
-            this.planetId = galaxyMapValue.planetId;
-        if (this.planetImg == null)
-            this.planetImg = galaxyMapValue.planetImg;
-        if (this.galaxyMapValueExplore == null)
-            this.galaxyMapValueExplore = galaxyMapValue.galaxyMapValueExplore;
-        
-        return this;
-    }
-
     public String getStatus() {
         return status;
     }

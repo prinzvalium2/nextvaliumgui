@@ -3,10 +3,12 @@ package de.prinzvalium.nextvaliumgui.gui;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
-import java.util.HashMap;
+import java.util.Collection;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.collections4.MapIterator;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +24,7 @@ public class PanelFlightRadar extends JPanel {
     
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LoggerFactory.getLogger(PanelGalaxyMap.class);
-    private HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = null;
+    private MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = null;
     private int locationX;
     private int locationY;
     private Color colorAttack = new Color(245, 66, 66, 150);
@@ -35,7 +37,7 @@ public class PanelFlightRadar extends JPanel {
     private Color colorDeploy = new Color(78, 66, 245, 128);
     
     
-    public PanelFlightRadar(HashMap<GalaxyMapKey, GalaxyMapValue> galaxyMap, int locationX, int locationY) {
+    public PanelFlightRadar(MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap, int locationX, int locationY) {
         LOGGER.trace("PanelFlightRadar()");
         
         this.galaxyMap = galaxyMap;
@@ -54,73 +56,80 @@ public class PanelFlightRadar extends JPanel {
         
         Graphics2D g2 = (Graphics2D) g;
         
-        galaxyMap.forEach((galaxyMapKey, galaxyMapValue) -> {
+        MapIterator<GalaxyMapKey, GalaxyMapValue> mapIterator = galaxyMap.mapIterator();
+        
+        while (mapIterator.hasNext()) {
             
-            if (galaxyMapValue.getGalaxyMapValueExplore() == null)
-                return;
-                    
-            GalaxyMapValueExplore val = galaxyMapValue.getGalaxyMapValueExplore();
+            Collection<GalaxyMapValue> galaxyMapValues = galaxyMap.get(mapIterator.next());
             
-            if (val.type.equalsIgnoreCase("explore") && !showExplore)
-                return;
+            galaxyMapValues.forEach(galaxyMapValue -> {
             
-            if (!val.type.equalsIgnoreCase("explore") && !showOthers)
-                return;
-            
-            g2.setStroke(new BasicStroke(3));
-            
-            Color color;
-            
-            switch (val.type) {
-            case "attack":
-                color = colorAttack;
-                break;
-            case "support":
-                color = colorSupport;
-                break;
-            case "transport":
-                color = colorTransport;
-                break;
-            case "explore":
+                if (galaxyMapValue.getGalaxyMapValueExplore() == null)
+                    return;
+                        
+                GalaxyMapValueExplore val = galaxyMapValue.getGalaxyMapValueExplore();
+                
+                if (val.type.equalsIgnoreCase("explore") && !showExplore)
+                    return;
+                
+                if (!val.type.equalsIgnoreCase("explore") && !showOthers)
+                    return;
+                
+                g2.setStroke(new BasicStroke(3));
+                
+                Color color;
+                
+                switch (val.type) {
+                case "attack":
+                    color = colorAttack;
+                    break;
+                case "support":
+                    color = colorSupport;
+                    break;
+                case "transport":
+                    color = colorTransport;
+                    break;
+                case "explore":
+                    g2.setStroke(new BasicStroke(1));
+                    color = colorExplore;
+                    break;
+                case "explorespace":
+                    color = colorExploreSpace;
+                    break;
+                case "siege":
+                    color = colorSiege;
+                    break;
+                case "breaksiege":
+                    color = colorBreakSiege;
+                    break;
+                case "deploy":
+                    color = colorDeploy;
+                    break;
+                default:
+                    color = Color.CYAN;
+                }
+                
+                int start_x = val.start_x;
+                int start_y = val.start_y;
+                int end_x = val.x;
+                int end_y = val.y;
+                
+                int xs = (start_x - locationX) * 6 + (getWidth() / 2);
+                int ys = (start_y - locationY) * -6 + (getHeight() / 2);
+                int xe = (end_x - locationX) * 6 + (getWidth() / 2);
+                int ye = (end_y - locationY) * -6 + (getHeight() / 2);
+               
+                g.setColor(color);
+                g2.draw(new Line2D.Float(xs, ys, xe, ye));
+                
+                if (val.type.equalsIgnoreCase("explore"))
+                    return;
+                
                 g2.setStroke(new BasicStroke(1));
-                color = colorExplore;
-                break;
-            case "explorespace":
-                color = colorExploreSpace;
-                break;
-            case "siege":
-                color = colorSiege;
-                break;
-            case "breaksiege":
-                color = colorBreakSiege;
-                break;
-            case "deploy":
-                color = colorDeploy;
-                break;
-            default:
-                color = Color.CYAN;
-            }
-            
-            int start_x = val.start_x;
-            int start_y = val.start_y;
-            int end_x = val.x;
-            int end_y = val.y;
-            
-            int xs = (start_x - locationX) * 6 + (getWidth() / 2);
-            int ys = (start_y - locationY) * -6 + (getHeight() / 2);
-            int xe = (end_x - locationX) * 6 + (getWidth() / 2);
-            int ye = (end_y - locationY) * -6 + (getHeight() / 2);
-           
-            g.setColor(color);
-            g2.draw(new Line2D.Float(xs, ys, xe, ye));
-            
-            if (val.type.equalsIgnoreCase("explore"))
-                return;
-            
-            g2.setStroke(new BasicStroke(1));
-            g.setColor(color.darker());
-            g2.draw(new Line2D.Float(xs, ys, xe, ye));
-
-        });
+                g.setColor(color.darker());
+                g2.draw(new Line2D.Float(xs, ys, xe, ye));
+    
+            });
+        }
     }
 }

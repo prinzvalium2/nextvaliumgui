@@ -2,6 +2,7 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.util.Collection;
 
@@ -118,17 +119,26 @@ public class PanelFlightRadar extends JPanel {
                 int ys = (start_y - locationY) * -6 + (getHeight() / 2);
                 int xe = (end_x - locationX) * 6 + (getWidth() / 2);
                 int ye = (end_y - locationY) * -6 + (getHeight() / 2);
-               
-                g.setColor(color);
-                g2.draw(new Line2D.Float(xs, ys, xe, ye));
                 
-                if (val.type.equalsIgnoreCase("explore"))
+                // Calculate planet overlapping
+                int deltaX = xe - xs;
+                int deltaY = ye - ys;               
+                double distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
+                int lapX = (int) (deltaX * 6 / distance + 0.5);
+                int lapY = (int) (deltaY * 6 / distance + 0.5);
+                
+                if (val.type.equalsIgnoreCase("explore")) {
+                    g.setColor(color);
+                    g2.draw(new Line2D.Float(xs+lapX, ys+lapY, xe, ye));
                     return;
+                }
+                
+                g.setColor(color);
+                g2.draw(new Line2D.Float(xs+lapX, ys+lapY, xe-lapX, ye-lapY));
                 
                 g2.setStroke(new BasicStroke(1));
                 g.setColor(color.darker());
-                g2.draw(new Line2D.Float(xs, ys, xe, ye));
-    
+                g2.draw(new Line2D.Float(xs+lapX, ys+lapY, xe-lapX, ye-lapY));
             });
         }
     }

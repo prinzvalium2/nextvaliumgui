@@ -2,6 +2,7 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.util.Collection;
 

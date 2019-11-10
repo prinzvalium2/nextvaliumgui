@@ -2,8 +2,12 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.util.Collection;
 import java.util.Date;
 
@@ -15,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValueExplore;
@@ -43,6 +48,9 @@ public class PanelFlightRadar extends JPanel {
     private Stroke strokeExploreReturn = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
     private Stroke strokeExploreCanceled = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
     
+    private AffineTransform tx;
+    Polygon arrowHead;
+    
     
     public PanelFlightRadar(MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap, int locationX, int locationY) {
         LOGGER.trace("PanelFlightRadar()");
@@ -53,6 +61,13 @@ public class PanelFlightRadar extends JPanel {
         
         setLayout(null);
         setOpaque(false);
+        
+        tx = new AffineTransform();
+
+        arrowHead = new Polygon();  
+        arrowHead.addPoint( 0,5);
+        arrowHead.addPoint( -5, -5);
+        arrowHead.addPoint( 5,-5);        
     }
 
     @Override 
@@ -127,9 +142,71 @@ public class PanelFlightRadar extends JPanel {
                 int ye = (val.y - locationY) * -6 + (getHeight() / 2);
                
                 g2.setStroke(stroke);
-                g.setColor(color);
+                g2.setColor(color);
                 g2.draw(new Line2D.Float(xs, ys, xe, ye));
-            });
+                
+                int deltaX = xe - xs;
+                int deltaY = ye - ys;
+                double distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
+                int speed = Util.getSlowestSpeedOfShips(val.mapShips);
+                
+                double posShipX;
+                double posShipY;
+                
+                // Outward flight
+                if (val.date != null && dateCurrent.before(val.date)) {
+                    long seconds = Math.abs(val.date.getTime() - dateCurrent.getTime());
+                    double hours = seconds / 3600000;
+                    double deltaDistance = speed * 6 * hours;
+                    posShipX = xe - deltaX * deltaDistance / distance;
+                    posShipY = ye - deltaY * deltaDistance / distance;
+                    if (Math.abs(xe - posShipX) > Math.abs(deltaX))
+                        posShipX = xs;
+                    if (Math.abs(ye - posShipY) > Math.abs(deltaY))
+                        posShipY = ys;
+                    drawArrowLine(g2, xs-deltaX, ys-deltaY, posShipX, posShipY, 8, 4);
+                }
+                
+                //Return
+                else if (val.date_return != null && dateCurrent.before(val.date_return)){
+                    long seconds = Math.abs(val.date_return.getTime() - dateCurrent.getTime());
+                    double hours = seconds / 3600000;
+                    double deltaDistance = speed * 6 * hours;
+                    posShipX = xs + deltaX * deltaDistance / distance;
+                    posShipY = ys + deltaY * deltaDistance / distance;
+                    if (Math.abs(posShipX - xs) > Math.abs(deltaX))
+                        posShipX = xe;
+                    if (Math.abs(posShipY - ys) > Math.abs(deltaY))
+                        posShipY = ye;
+                    drawArrowLine(g2, xe+deltaX, ye+deltaY, posShipX, posShipY, 8, 4);
+                }
+             });
         }
+    }
+    
+    private void drawArrowLine(Graphics2D g2, double x1, double y1, double x2, double y2, int d, int h) {
+        double dx = x2 - x1, dy = y2 - y1;
+        double D = Math.sqrt(dx*dx + dy*dy);
+        double xm = D - d, xn = xm, ym = h, yn = -h, x;
+        double sin = dy / D, cos = dx / D;
+
+        x = xm*cos - ym*sin + x1;
+        ym = xm*sin + ym*cos + y1;
+        xm = x;
+
+        x = xn*cos - yn*sin + x1;
+        yn = xn*sin + yn*cos + y1;
+        xn = x;
+       
+        Path2D path = new Path2D.Double();
+        path.moveTo(x2, y2);
+        path.lineTo(xm, ym);
+        path.lineTo(xn, yn);
+        path.closePath();
+        
+        g2.setColor(Color.BLACK);
+        g2.setStroke(strokeExploreOutward);
+        g2.draw(path);
+        g2.fill(path);
     }
 }

@@ -11,6 +11,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,6 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.prinzvalium.nextvaliumgui.nextcolony.Shipyard;
+import de.prinzvalium.nextvaliumgui.nextcolony.ShipyardShip;
 
 public class Util {
 
@@ -43,10 +48,8 @@ public class Util {
     public static final String NEXTCOLONY_API_CMD_LOADRECENTTRANSACTIONS = "transactions?";
     public static final String NEXTCOLONY_API_CMD_LOADCORDDATA = "loadcorddata?x=%s&y=%s";
     
-    // prinzvalium
-    public static final String PLANETID_06_SANDURZ = "P-ZWZVQCFOS34";
-    
     public static SimpleDateFormat NextValiumDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static HashMap<String, ShipyardShip> mapShipyardShips = null;
 	
 	public static JSONObject getJSONObjectFromApiCommand(String apiCommand) throws JSONException, IOException {
         return new JSONObject(getJSONPlainTextFromApiCommandWithRetry(apiCommand));
@@ -276,8 +279,41 @@ public class Util {
           
         return new Color(colorValues[0], colorValues[1], colorValues[2]);
     }
+    
+    public static int getSpeedOfShip(String shipType) {
+        
+        if (mapShipyardShips == null) {
+            try {
+                mapShipyardShips = Shipyard.loadShipyard("nextcolony", "1", "Earth");
+            } catch (JSONException | IOException e) {
+                return -1;
+            }
+        }
+        return mapShipyardShips.get(shipType).getSpeed();
+    }
        
-    public static void main(String[] args) throws IOException {
+    public static int getSlowestSpeedOfShips(HashMap<String, Integer> mapShips) {
+        
+        if (mapShipyardShips == null) {
+            try {
+                mapShipyardShips = Shipyard.loadShipyard("nextcolony", "1", "Earth");
+            } catch (JSONException | IOException e) {
+                return -1;
+            }
+        }
+        int lowestSpeed = 999;
+        for (Entry<String, Integer> entry : mapShips.entrySet()) {
+            
+            ShipyardShip ship = mapShipyardShips.get(entry.getKey());
+            int speed = ship.getSpeed();
+            if (speed < lowestSpeed)
+                lowestSpeed = speed;
+        }
+        
+        return lowestSpeed;
+    }
+       
+   public static void main(String[] args) throws IOException {
         getDachColonyUsers();
     }
 }

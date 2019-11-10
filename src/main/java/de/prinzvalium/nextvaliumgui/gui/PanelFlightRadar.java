@@ -2,10 +2,7 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.Collection;
@@ -45,11 +42,8 @@ public class PanelFlightRadar extends JPanel {
     private Stroke strokeFlightOutward = new BasicStroke(3);
     private Stroke strokeFlightReturn = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,5}, 0);
     private Stroke strokeExploreOutward = new BasicStroke(1);
-    private Stroke strokeExploreReturn = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
+    //private Stroke strokeExploreReturn = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
     private Stroke strokeExploreCanceled = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
-    
-    private AffineTransform tx;
-    Polygon arrowHead;
     
     
     public PanelFlightRadar(MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap, int locationX, int locationY) {
@@ -61,13 +55,6 @@ public class PanelFlightRadar extends JPanel {
         
         setLayout(null);
         setOpaque(false);
-        
-        tx = new AffineTransform();
-
-        arrowHead = new Polygon();  
-        arrowHead.addPoint( 0,5);
-        arrowHead.addPoint( -5, -5);
-        arrowHead.addPoint( 5,-5);        
     }
 
     @Override 

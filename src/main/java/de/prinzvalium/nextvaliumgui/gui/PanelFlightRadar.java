@@ -29,7 +29,7 @@ public class PanelFlightRadar extends JPanel {
     private int locationY;
     private Color colorAttack = new Color(245, 66, 66, 150);
     private Color colorSupport = new Color(66, 245, 132, 255);
-    private Color colorTransport = new Color(219, 211, 59, 255);
+    private Color colorTransport = new Color(255, 255, 59, 255);
     private Color colorExplore = new Color(0, 0, 0, 80);
     private Color colorExploreSpace = new Color(0, 0, 0, 80);
     private Color colorSiege = new Color(219, 48, 211, 160); 
@@ -126,7 +126,7 @@ public class PanelFlightRadar extends JPanel {
                     return;
                 
                 g2.setStroke(new BasicStroke(1));
-                g.setColor(color.darker());
+                g.setColor(color.brighter());
                 g2.draw(new Line2D.Float(xs, ys, xe, ye));
     
             });

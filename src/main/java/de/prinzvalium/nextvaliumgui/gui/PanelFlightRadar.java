@@ -130,7 +130,7 @@ public class PanelFlightRadar extends JPanel {
                
                 g2.setStroke(stroke);
                 g2.setColor(color);
-                g2.draw(new Line2D.Float(xs, ys, xe, ye));
+                g2.draw(new Line2D.Double(xs, ys, xe, ye));
                 
                 int deltaX = xe - xs;
                 int deltaY = ye - ys;
@@ -142,11 +142,11 @@ public class PanelFlightRadar extends JPanel {
                 
                 // Outward flight
                 if (val.date != null && dateCurrent.before(val.date)) {
-                    long seconds = Math.abs(val.date.getTime() - dateCurrent.getTime());
+                    double seconds = Math.abs(val.date.getTime() - dateCurrent.getTime());
                     double hours = seconds / 3600000;
                     double deltaDistance = speed * 6 * hours;
-                    posShipX = xe - deltaX * deltaDistance / distance;
-                    posShipY = ye - deltaY * deltaDistance / distance;
+                    posShipX = xe - deltaDistance / distance * deltaX;
+                    posShipY = ye - deltaDistance / distance * deltaY;
                     if (Math.abs(xe - posShipX) > Math.abs(deltaX))
                         posShipX = xs;
                     if (Math.abs(ye - posShipY) > Math.abs(deltaY))
@@ -156,7 +156,7 @@ public class PanelFlightRadar extends JPanel {
                 
                 //Return
                 else if (val.date_return != null && dateCurrent.before(val.date_return)){
-                    long seconds = Math.abs(val.date_return.getTime() - dateCurrent.getTime());
+                    double seconds = Math.abs(val.date_return.getTime() - dateCurrent.getTime());
                     double hours = seconds / 3600000;
                     double deltaDistance = speed * 6 * hours;
                     posShipX = xs + deltaX * deltaDistance / distance;

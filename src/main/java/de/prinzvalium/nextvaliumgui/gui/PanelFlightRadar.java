@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.swing.JPanel;
 
@@ -36,6 +37,11 @@ public class PanelFlightRadar extends JPanel {
     private Color colorSiege = new Color(219, 48, 240, 160); 
     private Color colorBreakSiege = new Color(219, 48, 211, 255); 
     private Color colorDeploy = new Color(78, 66, 245, 128);
+    private Stroke strokeFlightOutward = new BasicStroke(3);
+    private Stroke strokeFlightReturn = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,5}, 0);
+    private Stroke strokeExploreOutward = new BasicStroke(1);
+    private Stroke strokeExploreReturn = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
+    private Stroke strokeExploreCanceled = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
     
     
     public PanelFlightRadar(MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap, int locationX, int locationY) {
@@ -59,6 +65,8 @@ public class PanelFlightRadar extends JPanel {
         
         MapIterator<GalaxyMapKey, GalaxyMapValue> mapIterator = galaxyMap.mapIterator();
         
+        Date dateCurrent = new Date();
+        
         while (mapIterator.hasNext()) {
             
             Collection<GalaxyMapValue> galaxyMapValues = galaxyMap.get(mapIterator.next());
@@ -76,7 +84,10 @@ public class PanelFlightRadar extends JPanel {
                 if (!val.type.equalsIgnoreCase("explore") && !showOthers)
                     return;
                 
-                Stroke stroke = new BasicStroke(3);
+                Stroke stroke = strokeFlightOutward;
+                if (val.date.before(dateCurrent))
+                    stroke = strokeFlightReturn;
+                
                 Color color;
                 
                 switch (val.type) {
@@ -90,12 +101,12 @@ public class PanelFlightRadar extends JPanel {
                     color = colorTransport;
                     break;
                 case "explore":
-                    stroke = new BasicStroke(1);
+                    stroke = strokeExploreOutward;
                     color = colorExplore;
                     break;
                 case "explorespace":
+                    stroke = strokeExploreCanceled;
                     color = colorExploreSpace;
-                    stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,3}, 0);
                     break;
                 case "siege":
                     color = colorSiege;
@@ -110,18 +121,13 @@ public class PanelFlightRadar extends JPanel {
                     color = Color.CYAN;
                 }
                 
-                int start_x = val.start_x;
-                int start_y = val.start_y;
-                int end_x = val.x;
-                int end_y = val.y;
-                
-                int xs = (start_x - locationX) * 6 + (getWidth() / 2);
-                int ys = (start_y - locationY) * -6 + (getHeight() / 2);
-                int xe = (end_x - locationX) * 6 + (getWidth() / 2);
-                int ye = (end_y - locationY) * -6 + (getHeight() / 2);
+                int xs = (val.start_x - locationX) * 6 + (getWidth() / 2);
+                int ys = (val.start_y - locationY) * -6 + (getHeight() / 2);
+                int xe = (val.x - locationX) * 6 + (getWidth() / 2);
+                int ye = (val.y - locationY) * -6 + (getHeight() / 2);
                
-                g.setColor(color);
                 g2.setStroke(stroke);
+                g.setColor(color);
                 g2.draw(new Line2D.Float(xs, ys, xe, ye));
             });
         }

@@ -2,6 +2,7 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.util.Collection;
 
@@ -75,8 +76,7 @@ public class PanelFlightRadar extends JPanel {
                 if (!val.type.equalsIgnoreCase("explore") && !showOthers)
                     return;
                 
-                g2.setStroke(new BasicStroke(3));
-                
+                Stroke stroke = new BasicStroke(3);
                 Color color;
                 
                 switch (val.type) {
@@ -90,11 +90,12 @@ public class PanelFlightRadar extends JPanel {
                     color = colorTransport;
                     break;
                 case "explore":
-                    g2.setStroke(new BasicStroke(1));
+                    stroke = new BasicStroke(1);
                     color = colorExplore;
                     break;
                 case "explorespace":
                     color = colorExploreSpace;
+                    stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,3}, 0);
                     break;
                 case "siege":
                     color = colorSiege;
@@ -120,15 +121,8 @@ public class PanelFlightRadar extends JPanel {
                 int ye = (end_y - locationY) * -6 + (getHeight() / 2);
                
                 g.setColor(color);
+                g2.setStroke(stroke);
                 g2.draw(new Line2D.Float(xs, ys, xe, ye));
-                
-                if (val.type.equalsIgnoreCase("explore"))
-                    return;
-                
-                g2.setStroke(new BasicStroke(1));
-                g.setColor(color.brighter());
-                g2.draw(new Line2D.Float(xs, ys, xe, ye));
-    
             });
         }
     }

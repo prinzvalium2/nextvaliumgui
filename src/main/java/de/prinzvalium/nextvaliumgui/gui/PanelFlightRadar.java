@@ -69,6 +69,8 @@ public class PanelFlightRadar extends JPanel {
         
         Date dateCurrent = new Date();
         
+        removeAll();
+        
         while (mapIterator.hasNext()) {
             
             Collection<GalaxyMapValue> galaxyMapValues = galaxyMap.get(mapIterator.next());
@@ -139,6 +141,7 @@ public class PanelFlightRadar extends JPanel {
                 
                 double posShipX;
                 double posShipY;
+                Path2D path = null;
                 
                 // Outward flight
                 if (val.date != null && dateCurrent.before(val.date)) {
@@ -151,7 +154,7 @@ public class PanelFlightRadar extends JPanel {
                         posShipX = xs;
                     if (Math.abs(ye - posShipY) > Math.abs(deltaY))
                         posShipY = ys;
-                    drawArrowLine(g2, xs-deltaX, ys-deltaY, posShipX, posShipY, 8, 4);
+                    path = drawArrowLine(g2, xs-deltaX, ys-deltaY, posShipX, posShipY, 8, 4);
                 }
                 
                 //Return
@@ -165,13 +168,20 @@ public class PanelFlightRadar extends JPanel {
                         posShipX = xe;
                     if (Math.abs(posShipY - ys) > Math.abs(deltaY))
                         posShipY = ye;
-                    drawArrowLine(g2, xe+deltaX, ye+deltaY, posShipX, posShipY, 8, 4);
+                    path = drawArrowLine(g2, xe+deltaX, ye+deltaY, posShipX, posShipY, 8, 4);
                 }
+                
+                if (path == null)
+                 return;
+
+                PanelArrow panelArrow = new PanelArrow(val);
+                panelArrow.setBounds(path.getBounds());
+                add(panelArrow);
              });
         }
     }
     
-    private void drawArrowLine(Graphics2D g2, double x1, double y1, double x2, double y2, int d, int h) {
+    private Path2D drawArrowLine(Graphics2D g2, double x1, double y1, double x2, double y2, int d, int h) {
         double dx = x2 - x1, dy = y2 - y1;
         double D = Math.sqrt(dx*dx + dy*dy);
         double xm = D - d, xn = xm, ym = h, yn = -h, x;
@@ -195,5 +205,7 @@ public class PanelFlightRadar extends JPanel {
         g2.setStroke(strokeExploreOutward);
         g2.draw(path);
         g2.fill(path);
+        
+        return path;
     }
 }

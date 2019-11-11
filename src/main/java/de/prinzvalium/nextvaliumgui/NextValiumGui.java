@@ -29,8 +29,6 @@ import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
-import de.prinzvalium.nextvaliumgui.nextcolony.Shipyard;
-import de.prinzvalium.nextvaliumgui.nextcolony.ShipyardShip;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;

@@ -3,9 +3,6 @@ package de.prinzvalium.nextvaliumgui.lib;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonObject;
 
 import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.FleetTableValues;
@@ -16,8 +13,6 @@ import eu.bittrade.libs.steemj.exceptions.SteemResponseException;
 
 public class CustomJson {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomJson.class);
-    
     public static void deployShipsOfPlanet(HashMap<String, Integer> mapNumberOfShipTypes, String userName, String planetId, int x, int y, Resources resources) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         
         SteemUtil.setDefaultAccount(userName);

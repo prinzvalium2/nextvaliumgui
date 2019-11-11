@@ -34,7 +34,7 @@ public class PopupMenuPlanet extends JPopupMenu {
         
         popupMenuPlanet = this;
         
-        setPopupSize(new Dimension(200, 250));
+        setPopupSize(new Dimension(180, 250));
         
         Planet planet = panelPlanet.getPlanet();
         String titleBorder = planet.getUserName() + " / " + planet.getName();
@@ -108,7 +108,7 @@ public class PopupMenuPlanet extends JPopupMenu {
         gbc_scrollPane.gridy = 2;
         panelPlanetDetails.add(scrollPane, gbc_scrollPane);
         
-        JList listShips = new JList(model);
+        JList<String> listShips = new JList<>(model);
         scrollPane.setViewportView(listShips);
         listShips.setVisibleRowCount(8);
         listShips.setEnabled(false);

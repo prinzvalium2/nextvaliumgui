@@ -1,6 +1,7 @@
 package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -8,8 +9,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
+import de.prinzvalium.nextvaliumgui.lib.CustomJson;
+import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
+
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import java.awt.GridBagConstraints;
@@ -18,18 +22,35 @@ import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class PanelPlanetDetails extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    private DialogPlanet dialogPlanet;
     private JLabel panelImage;
     private JTextField txtRenameplanet;
     private JTextField txtGiftPlanet;
     private JTextField txtPlanetid;
+    private Planet planet;
+    private JButton btnRenameplanet;
     
-    public PanelPlanetDetails(Planet planet) {
+    public PanelPlanetDetails(DialogPlanet dialogPlanet, Planet planet) {
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent arg0) {
+                checkPreconditionSendToSteemButton();
+            }
+        });
+        
+        this.dialogPlanet = dialogPlanet;
+        this.planet = planet;
         
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagLayout.columnWidths = new int[]{0, 0};
@@ -85,7 +106,6 @@ public class PanelPlanetDetails extends JPanel {
         add(panelImage, gbc_panelImage);
         
         JPanel panelContent = new JPanel();
-        panelContent.setVisible(false);
         GridBagConstraints gbc_panelContent = new GridBagConstraints();
         gbc_panelContent.insets = new Insets(0, 5, 0, 0);
         gbc_panelContent.fill = GridBagConstraints.BOTH;
@@ -107,8 +127,7 @@ public class PanelPlanetDetails extends JPanel {
         gbc_lblRenamePlanet.gridy = 0;
         panelContent.add(lblRenamePlanet, gbc_lblRenamePlanet);
         
-        txtRenameplanet = new JTextField();
-        txtRenameplanet.setText("RenamePlanet");
+        txtRenameplanet = new JTextField(planet.getName());
         GridBagConstraints gbc_txtRenameplanet = new GridBagConstraints();
         gbc_txtRenameplanet.insets = new Insets(0, 0, 5, 5);
         gbc_txtRenameplanet.fill = GridBagConstraints.HORIZONTAL;
@@ -117,7 +136,37 @@ public class PanelPlanetDetails extends JPanel {
         panelContent.add(txtRenameplanet, gbc_txtRenameplanet);
         txtRenameplanet.setColumns(10);
         
-        JButton btnRenameplanet = new JButton("Rename planet");
+        btnRenameplanet = new JButton("Rename planet");
+        btnRenameplanet.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                dialogPlanet.setStatusInfo("Sending transaction to Steem. Please wait...");
+                
+                new SwingWorker<Void, Void>(){
+
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        CustomJson.renamePlanet(planet.getUserName(), planet.getId(), txtRenameplanet.getText());
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            get();
+                            dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+                            
+                        } catch (InterruptedException | ExecutionException e) {
+                            dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
+                        }
+                        
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        super.done();
+                    }
+                }.execute();
+            }
+        });
         GridBagConstraints gbc_btnRenameplanet = new GridBagConstraints();
         gbc_btnRenameplanet.fill = GridBagConstraints.HORIZONTAL;
         gbc_btnRenameplanet.insets = new Insets(0, 0, 5, 0);
@@ -134,6 +183,7 @@ public class PanelPlanetDetails extends JPanel {
         panelContent.add(lblGiftPlanet, gbc_lblGiftPlanet);
         
         txtGiftPlanet = new JTextField();
+        txtGiftPlanet.setEnabled(false);
         txtGiftPlanet.setText("Gift planet");
         GridBagConstraints gbc_txtGiftPlanet = new GridBagConstraints();
         gbc_txtGiftPlanet.insets = new Insets(0, 0, 0, 5);
@@ -144,13 +194,14 @@ public class PanelPlanetDetails extends JPanel {
         txtGiftPlanet.setColumns(10);
         
         JButton btnGiftPlanet = new JButton("Gift planet");
+        btnGiftPlanet.setEnabled(false);
         GridBagConstraints gbc_btnGiftPlanet = new GridBagConstraints();
         gbc_btnGiftPlanet.fill = GridBagConstraints.HORIZONTAL;
         gbc_btnGiftPlanet.gridx = 2;
         gbc_btnGiftPlanet.gridy = 1;
         panelContent.add(btnGiftPlanet, gbc_btnGiftPlanet);
     
-        
+        checkPreconditionSendToSteemButton();
         
         new SwingWorker<Object, Object>() {
 
@@ -173,5 +224,17 @@ public class PanelPlanetDetails extends JPanel {
             }
             
         }.execute();
+    }
+    private void checkPreconditionSendToSteemButton() {
+        String but = "";
+        
+        if (!SteemUtil.isAccountRegistered(planet.getUserName())) {
+            dialogPlanet.setStatusError(but + "Private posting key of user " + planet.getUserName() + " not in nextvaliumgui.ini -> Button <send transaction to Steem> disabled");
+            btnRenameplanet.setEnabled(false);
+            return;
+        }
+        
+        dialogPlanet.setStatusOk("Ok");
+        btnRenameplanet.setEnabled(true);
     }
  }

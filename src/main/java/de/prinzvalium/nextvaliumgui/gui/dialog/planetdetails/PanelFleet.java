@@ -43,6 +43,8 @@ import javax.swing.SwingWorker;
 import javax.swing.JButton;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class PanelFleet extends JPanel {
 
@@ -125,6 +127,12 @@ public class PanelFleet extends JPanel {
     };
     
     public PanelFleet(DialogPlanet dialogPlanet, Planet planet) {
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent arg0) {
+                checkPreconditionSendToSteemButton();
+            }
+        });
         
         this.dialogPlanet = dialogPlanet;
         this.planet = planet;

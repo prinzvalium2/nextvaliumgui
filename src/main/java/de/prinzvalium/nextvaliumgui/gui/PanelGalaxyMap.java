@@ -109,8 +109,10 @@ public class PanelGalaxyMap extends JPanel {
         
         removeAll();
         
-        if (panelFlighRadar != null)
+        if (panelFlighRadar != null) {
+            panelFlighRadar.setBounds(0, 0, getWidth(), getHeight());
             add(panelFlighRadar);
+        }
         
         paintPlanets();
         

@@ -13,7 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Vector;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -42,6 +44,7 @@ import java.awt.Cursor;
 import java.awt.Insets;
 import javax.swing.JCheckBox;
 
+
 public class NextValiumGui {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
@@ -61,6 +64,10 @@ public class NextValiumGui {
     private JButton btnRefresh;
     private ArrayList<String> listUsers;
     private String selectedUser = null;
+    private PanelGalaxyMap panelGalaxyMap;
+    private JLabel lblLastplanetDate;
+    private JLabel lblLastplanetname;
+    private JLabel lblLastplanetuser;
 
     /**
      * Launch the application.
@@ -112,7 +119,7 @@ public class NextValiumGui {
     private void initialize() {
         LOGGER.trace("initialize()");
         
-        PanelGalaxyMap panelGalaxyMap = new PanelGalaxyMap();
+        panelGalaxyMap = new PanelGalaxyMap();
         
         frmNextvaliumManagementGui = new JFrame();
         frmNextvaliumManagementGui.setTitle("NextValium GUI " + version + " - Multi user management GUI for NextColony");
@@ -137,10 +144,10 @@ public class NextValiumGui {
         panelTop.setBorder(null);
         frmNextvaliumManagementGui.getContentPane().add(panelTop, BorderLayout.NORTH);
         GridBagLayout gbl_panelTop = new GridBagLayout();
-        gbl_panelTop.columnWidths = new int[]{26, 91, 0, 0};
+        gbl_panelTop.columnWidths = new int[]{26, 91, 0, 0, 0, 0};
         gbl_panelTop.rowHeights = new int[]{23, 0};
-        gbl_panelTop.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-        gbl_panelTop.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panelTop.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+        gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE};
         panelTop.setLayout(gbl_panelTop);
         
         JPanel panelUserPlanet = new JPanel();
@@ -219,24 +226,7 @@ public class NextValiumGui {
         panelUserPlanet.add(btnRefresh, gbc_btnRefresh);
         btnRefresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                
-                new SwingWorker<Object, Object>() {
-
-                    @Override
-                    protected Object doInBackground() throws Exception {
-                        Planets.clearAllPlanets();
-                        int x = Integer.parseInt(textFieldPosX.getText());
-                        int y = Integer.parseInt(textFieldPosY.getText());
-                        panelGalaxyMap.loadGalaxyMap(x, y);
-                        return null;
-                    }
-
-                    @Override
-                    protected void done() {
-                        frmNextvaliumManagementGui.repaint();
-                    }
-                }.execute();
+                actionPerformed_btnRefresh(e);
             }
         });
         
@@ -323,6 +313,7 @@ public class NextValiumGui {
         JPanel panelRadar = new JPanel();
         panelRadar.setBorder(new TitledBorder(null, "Flight radar", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         GridBagConstraints gbc_panelRadar = new GridBagConstraints();
+        gbc_panelRadar.insets = new Insets(0, 0, 0, 5);
         gbc_panelRadar.anchor = GridBagConstraints.WEST;
         gbc_panelRadar.fill = GridBagConstraints.VERTICAL;
         gbc_panelRadar.gridx = 2;
@@ -360,6 +351,48 @@ public class NextValiumGui {
         gbc_chckbxRadarOthers.gridx = 0;
         gbc_chckbxRadarOthers.gridy = 1;
         panelRadar.add(chckbxRadarOthers, gbc_chckbxRadarOthers);
+        
+        JPanel panelLastPlanets = new JPanel();
+        panelLastPlanets.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Last found planet", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        GridBagConstraints gbc_panelLastPlanets = new GridBagConstraints();
+        gbc_panelLastPlanets.insets = new Insets(0, 0, 0, 5);
+        gbc_panelLastPlanets.fill = GridBagConstraints.BOTH;
+        gbc_panelLastPlanets.gridx = 3;
+        gbc_panelLastPlanets.gridy = 0;
+        panelTop.add(panelLastPlanets, gbc_panelLastPlanets);
+        GridBagLayout gbl_panelLastPlanets = new GridBagLayout();
+        gbl_panelLastPlanets.columnWidths = new int[] {10};
+        gbl_panelLastPlanets.rowHeights = new int[]{1, 0, 0, 0};
+        gbl_panelLastPlanets.columnWeights = new double[]{0.0};
+        gbl_panelLastPlanets.rowWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+        panelLastPlanets.setLayout(gbl_panelLastPlanets);
+        
+        lblLastplanetDate = new JLabel("");
+        lblLastplanetDate.setPreferredSize(new Dimension(150, 14));
+        GridBagConstraints gbc_lblLastplanetDate = new GridBagConstraints();
+        gbc_lblLastplanetDate.anchor = GridBagConstraints.WEST;
+        gbc_lblLastplanetDate.insets = new Insets(0, 0, 5, 0);
+        gbc_lblLastplanetDate.gridx = 0;
+        gbc_lblLastplanetDate.gridy = 0;
+        panelLastPlanets.add(lblLastplanetDate, gbc_lblLastplanetDate);
+        
+        lblLastplanetname = new JLabel("");
+        GridBagConstraints gbc_lblLastplanetname = new GridBagConstraints();
+        gbc_lblLastplanetname.fill = GridBagConstraints.VERTICAL;
+        gbc_lblLastplanetname.anchor = GridBagConstraints.WEST;
+        gbc_lblLastplanetname.insets = new Insets(0, 0, 5, 0);
+        gbc_lblLastplanetname.gridx = 0;
+        gbc_lblLastplanetname.gridy = 1;
+        panelLastPlanets.add(lblLastplanetname, gbc_lblLastplanetname);
+        
+        lblLastplanetuser = new JLabel("");
+        GridBagConstraints gbc_lblLastplanetuser = new GridBagConstraints();
+        gbc_lblLastplanetuser.fill = GridBagConstraints.VERTICAL;
+        gbc_lblLastplanetuser.anchor = GridBagConstraints.WEST;
+        gbc_lblLastplanetuser.gridx = 0;
+        gbc_lblLastplanetuser.gridy = 2;
+        panelLastPlanets.add(lblLastplanetuser, gbc_lblLastplanetuser);
+        
         btnClearTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 planetMarkedAsTarget = null;
@@ -427,5 +460,50 @@ public class NextValiumGui {
         comboBoxUsers.setSelectedItem(planet.getUserName());
         comboBoxPlanets.setSelectedItem(planet.getName());
         btnRefresh.doClick();
+    }
+    
+    private void actionPerformed_btnRefresh(ActionEvent e) {
+        
+        frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        
+        new SwingWorker<Object, Object>() {
+
+            @Override
+            protected Object doInBackground() throws Exception {
+                Planets.clearAllPlanets();
+                int x = Integer.parseInt(textFieldPosX.getText());
+                int y = Integer.parseInt(textFieldPosY.getText());
+                panelGalaxyMap.loadGalaxyMap(x, y);
+                showLastPlanets();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                frmNextvaliumManagementGui.repaint();
+            }
+        }.execute();
+    }
+    
+    private void showLastPlanets(){
+        try {
+            Vector<Planet> planets = new Vector<Planet>();
+            for (String user : listUsers) {
+                Planet p = Planets.loadLastUserPlanet(user);
+                planets.add(p);
+            }
+            Collections.sort(planets, new Comparator<Planet>() {
+               @Override
+                public int compare(Planet arg0, Planet arg1) {
+                    return arg0.getDate().before(arg1.getDate()) ? 1 : -1;
+                }});
+            
+            Planet p = planets.get(0);
+            lblLastplanetDate.setText(Util.getDateAsString(p.getDate()));
+            lblLastplanetname.setText(p.getName());
+            lblLastplanetuser.setText(p.getUserName());
+
+        } catch (JSONException | IOException e) {
+        }
     }
 }

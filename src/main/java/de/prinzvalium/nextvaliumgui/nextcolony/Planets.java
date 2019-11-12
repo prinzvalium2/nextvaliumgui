@@ -27,6 +27,17 @@ public class Planets {
         mapAllPlanets = null;
     }
 
+    public static Planet loadLastUserPlanet(String userName) throws JSONException, IOException {
+        LOGGER.trace("loadLastPlanet()");
+        LOGGER.debug("    LOADING last planet of user " + userName);
+       
+        String apiCmd = String.format(Util.NEXTCOLONY_API_CMD_LOADLASTPLANETS, userName);
+        JSONObject jsonObject = Util.getJSONObjectFromApiCommand(apiCmd);
+        JSONArray jsonPlanets = jsonObject.getJSONArray("planets");
+        
+        return new Planet(jsonPlanets.getJSONObject(0));
+    }
+
     private static HashMap<String, Planet> loadAllPlanets() throws JSONException, IOException {
         LOGGER.trace("loadAllPlanets()");
         

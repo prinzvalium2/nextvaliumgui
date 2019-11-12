@@ -59,6 +59,7 @@ public class PanelFlightRadar extends JPanel {
 
     @Override 
     protected void paintComponent(Graphics g) {
+        LOGGER.trace("PanelFlightRadar.paintComponent() - enter");
         
         boolean showExplore = NextValiumGui.getNextValiumGui().isRadarExplorationsEnabled();
         boolean showOthers = NextValiumGui.getNextValiumGui().isRadarOthersEnabled();
@@ -176,9 +177,10 @@ public class PanelFlightRadar extends JPanel {
 
                 PanelArrow panelArrow = new PanelArrow(val);
                 panelArrow.setBounds(path.getBounds());
-                add(panelArrow);
+                //add(panelArrow);
              });
         }
+        LOGGER.trace("PanelFlightRadar.paintComponent() - leave");
     }
     
     private Path2D drawArrowLine(Graphics2D g2, double x1, double y1, double x2, double y2, int d, int h) {

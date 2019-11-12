@@ -57,13 +57,15 @@ public class PanelPlanet extends JPanel {
         
         try {
             
+            HashMap<String, Planet> planets = Planets.getAllPlanets();
             String planetId = value.getPlanetId();
+            planet = planets.get(planetId);
+            
+            String userName = planet.getUserName();
             
             Planet planetTarget = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
             if (planetTarget != null && planetTarget.getId().equalsIgnoreCase(planetId))
                 return Color.WHITE;
-           
-            String userName = Planets.getAllPlanets().get(planetId).getUserName();
             
             color = mapUserColor.get(userName);
             

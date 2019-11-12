@@ -158,7 +158,8 @@ public class PanelFlightRadar extends JPanel {
                     posShipX = xs;
                 if (Math.abs(ye - posShipY) > Math.abs(deltaY))
                     posShipY = ys;
-                path = drawArrowLine(g2, xs-deltaX, ys-deltaY, posShipX, posShipY, 8, 4);
+                if (shipWithinWindow(posShipX, posShipY))
+                    path = drawArrowLine(g2, xs-deltaX, ys-deltaY, posShipX, posShipY, 8, 4);
             }
             
             //Return
@@ -172,7 +173,8 @@ public class PanelFlightRadar extends JPanel {
                     posShipX = xe;
                 if (Math.abs(posShipY - ys) > Math.abs(deltaY))
                     posShipY = ye;
-                path = drawArrowLine(g2, xe+deltaX, ye+deltaY, posShipX, posShipY, 8, 4);
+                if (shipWithinWindow(posShipX, posShipY))
+                    path = drawArrowLine(g2, xe+deltaX, ye+deltaY, posShipX, posShipY, 8, 4);
             }
             
             if (path == null)
@@ -183,6 +185,16 @@ public class PanelFlightRadar extends JPanel {
             add(panelArrow);
         }
         LOGGER.trace("PanelFlightRadar.paintComponent() - leave - loopCounter:" + loopCounter);
+    }
+    
+    private boolean shipWithinWindow(double x, double y) {
+        if (x < 0 || y < 0)
+            return false;
+        
+        if (x > getBounds().width || y > getBounds().height)
+            return false;
+        
+        return true;
     }
     
     private Path2D drawArrowLine(Graphics2D g2, double x1, double y1, double x2, double y2, int d, int h) {

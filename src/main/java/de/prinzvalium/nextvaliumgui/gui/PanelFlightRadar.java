@@ -30,14 +30,14 @@ public class PanelFlightRadar extends JPanel {
     private MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap = null;
     private int locationX;
     private int locationY;
-    private Color colorAttack = new Color(245, 66, 66, 150);
+    private Color colorAttack = new Color(245, 66, 66, 200);
     private Color colorSupport = new Color(66, 245, 132, 255);
     private Color colorTransport = new Color(255, 255, 59, 255);
     private Color colorExplore = new Color(0, 0, 0, 80);
     private Color colorExploreSpace = new Color(0, 0, 0, 80);
-    private Color colorSiege = new Color(219, 48, 240, 160); 
+    private Color colorSiege = new Color(219, 48, 250, 220); 
     private Color colorBreakSiege = new Color(219, 48, 211, 255); 
-    private Color colorDeploy = new Color(78, 66, 245, 128);
+    private Color colorDeploy = new Color(78, 66, 245, 180);
     private Stroke strokeFlightOutward = new BasicStroke(3);
     private Stroke strokeFlightReturn = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,5}, 0);
     private Stroke strokeExploreOutward = new BasicStroke(1);

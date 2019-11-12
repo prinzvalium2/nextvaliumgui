@@ -105,6 +105,12 @@ public class Galaxy {
                 
                 GalaxyMapValue galaxyMapValue = new GalaxyMapValue("explore", obj.getString("user"), galaxyMapValueExplore);
                 galaxyMap.put(key, galaxyMapValue);
+                
+                // TODO remove!!!!!!!!!! just testing
+//                if (!galaxyMapValueExplore.type.contentEquals("explore")) {
+//                    int size = galaxyMap.get(key).size();
+//                    LOGGER.trace("put galaxyMap(" + key.getX()+ "/"+key.getY()+"-"+size+"): "+galaxyMapValue.getStatus()+"/"+galaxyMapValue.getUserName()+": GalaxyMapValueExplore="+galaxyMapValueExplore.user+"/"+galaxyMapValueExplore.type+": "+galaxyMapValueExplore.start_x+"/"+galaxyMapValueExplore.start_y+"->"+galaxyMapValueExplore.x+"/"+galaxyMapValueExplore.y);
+//                }
             }
             for (int i = 0; i < jsonExplored.length(); i++) {
                 JSONObject obj = jsonExplored.getJSONObject(i);

@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.util.Collection;
 import java.util.Date;
 
 import javax.swing.JPanel;
@@ -44,7 +43,7 @@ public class PanelFlightRadar extends JPanel {
     private Stroke strokeExploreOutward = new BasicStroke(1);
     //private Stroke strokeExploreReturn = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
     private Stroke strokeExploreCanceled = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{10,2}, 0);
-    
+    private int loopCounter;
     
     public PanelFlightRadar(MultiValuedMap<GalaxyMapKey, GalaxyMapValue> galaxyMap, int locationX, int locationY) {
         LOGGER.trace("PanelFlightRadar()");
@@ -72,115 +71,118 @@ public class PanelFlightRadar extends JPanel {
         
         removeAll();
         
+        loopCounter = 0;
+        
         while (mapIterator.hasNext()) {
             
-            Collection<GalaxyMapValue> galaxyMapValues = galaxyMap.get(mapIterator.next());
+            mapIterator.next();
+            GalaxyMapValue galaxyMapValue = mapIterator.getValue();
             
-            galaxyMapValues.forEach(galaxyMapValue -> {
+            if (galaxyMapValue.getGalaxyMapValueExplore() == null)
+                continue;
+                    
+            GalaxyMapValueExplore val = galaxyMapValue.getGalaxyMapValueExplore();
             
-                if (galaxyMapValue.getGalaxyMapValueExplore() == null)
-                    return;
-                        
-                GalaxyMapValueExplore val = galaxyMapValue.getGalaxyMapValueExplore();
-                
-                if (val.type.equalsIgnoreCase("explore") && !showExplore)
-                    return;
-                
-                if (!val.type.equalsIgnoreCase("explore") && !showOthers)
-                    return;
-                
-                Stroke stroke = strokeFlightOutward;
-                if (val.date.before(dateCurrent))
-                    stroke = strokeFlightReturn;
-                
-                Color color;
-                
-                switch (val.type) {
-                case "attack":
-                    color = colorAttack;
-                    break;
-                case "support":
-                    color = colorSupport;
-                    break;
-                case "transport":
-                    color = colorTransport;
-                    break;
-                case "explore":
-                    stroke = strokeExploreOutward;
-                    color = colorExplore;
-                    break;
-                case "explorespace":
-                    stroke = strokeExploreCanceled;
-                    color = colorExploreSpace;
-                    break;
-                case "siege":
-                    color = colorSiege;
-                    break;
-                case "breaksiege":
-                    color = colorBreakSiege;
-                    break;
-                case "deploy":
-                    color = colorDeploy;
-                    break;
-                default:
-                    color = Color.CYAN;
-                }
-                
-                int xs = (val.start_x - locationX) * 6 + (getWidth() / 2);
-                int ys = (val.start_y - locationY) * -6 + (getHeight() / 2);
-                int xe = (val.x - locationX) * 6 + (getWidth() / 2);
-                int ye = (val.y - locationY) * -6 + (getHeight() / 2);
-               
-                g2.setStroke(stroke);
-                g2.setColor(color);
-                g2.draw(new Line2D.Double(xs, ys, xe, ye));
-                
-                int deltaX = xe - xs;
-                int deltaY = ye - ys;
-                double distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
-                int speed = Util.getSlowestSpeedOfShips(val.mapShips);
-                
-                double posShipX;
-                double posShipY;
-                Path2D path = null;
-                
-                // Outward flight
-                if (val.date != null && dateCurrent.before(val.date)) {
-                    double seconds = Math.abs(val.date.getTime() - dateCurrent.getTime());
-                    double hours = seconds / 3600000;
-                    double deltaDistance = speed * 6 * hours;
-                    posShipX = xe - deltaDistance / distance * deltaX;
-                    posShipY = ye - deltaDistance / distance * deltaY;
-                    if (Math.abs(xe - posShipX) > Math.abs(deltaX))
-                        posShipX = xs;
-                    if (Math.abs(ye - posShipY) > Math.abs(deltaY))
-                        posShipY = ys;
-                    path = drawArrowLine(g2, xs-deltaX, ys-deltaY, posShipX, posShipY, 8, 4);
-                }
-                
-                //Return
-                else if (val.date_return != null && dateCurrent.before(val.date_return)){
-                    double seconds = Math.abs(val.date_return.getTime() - dateCurrent.getTime());
-                    double hours = seconds / 3600000;
-                    double deltaDistance = speed * 6 * hours;
-                    posShipX = xs + deltaX * deltaDistance / distance;
-                    posShipY = ys + deltaY * deltaDistance / distance;
-                    if (Math.abs(posShipX - xs) > Math.abs(deltaX))
-                        posShipX = xe;
-                    if (Math.abs(posShipY - ys) > Math.abs(deltaY))
-                        posShipY = ye;
-                    path = drawArrowLine(g2, xe+deltaX, ye+deltaY, posShipX, posShipY, 8, 4);
-                }
-                
-                if (path == null)
-                 return;
+            if (val.type.equalsIgnoreCase("explore") && !showExplore)
+                continue;
+            
+            if (!val.type.equalsIgnoreCase("explore") && !showOthers)
+                continue;
+            
+            loopCounter++;
+            //LOGGER.trace(val.user+"/"+val.type+": "+val.start_x+"/"+val.start_y+"->"+val.x+"/"+val.y);
+            
+            Stroke stroke = strokeFlightOutward;
+            if (val.date.before(dateCurrent))
+                stroke = strokeFlightReturn;
+            
+            Color color;
+            
+            switch (val.type) {
+            case "attack":
+                color = colorAttack;
+                break;
+            case "support":
+                color = colorSupport;
+                break;
+            case "transport":
+                color = colorTransport;
+                break;
+            case "explore":
+                stroke = strokeExploreOutward;
+                color = colorExplore;
+                break;
+            case "explorespace":
+                stroke = strokeExploreCanceled;
+                color = colorExploreSpace;
+                break;
+            case "siege":
+                color = colorSiege;
+                break;
+            case "breaksiege":
+                color = colorBreakSiege;
+                break;
+            case "deploy":
+                color = colorDeploy;
+                break;
+            default:
+                color = Color.CYAN;
+            }
+            
+            int xs = (val.start_x - locationX) * 6 + (getWidth() / 2);
+            int ys = (val.start_y - locationY) * -6 + (getHeight() / 2);
+            int xe = (val.x - locationX) * 6 + (getWidth() / 2);
+            int ye = (val.y - locationY) * -6 + (getHeight() / 2);
+           
+            g2.setStroke(stroke);
+            g2.setColor(color);
+            g2.draw(new Line2D.Double(xs, ys, xe, ye));
+            
+            int deltaX = xe - xs;
+            int deltaY = ye - ys;
+            double distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
+            int speed = Util.getSlowestSpeedOfShips(val.mapShips);
+            
+            double posShipX;
+            double posShipY;
+            Path2D path = null;
+            
+            // Outward flight
+            if (val.date != null && dateCurrent.before(val.date)) {
+                double seconds = Math.abs(val.date.getTime() - dateCurrent.getTime());
+                double hours = seconds / 3600000;
+                double deltaDistance = speed * 6 * hours;
+                posShipX = xe - deltaDistance / distance * deltaX;
+                posShipY = ye - deltaDistance / distance * deltaY;
+                if (Math.abs(xe - posShipX) > Math.abs(deltaX))
+                    posShipX = xs;
+                if (Math.abs(ye - posShipY) > Math.abs(deltaY))
+                    posShipY = ys;
+                path = drawArrowLine(g2, xs-deltaX, ys-deltaY, posShipX, posShipY, 8, 4);
+            }
+            
+            //Return
+            else if (val.date_return != null && dateCurrent.before(val.date_return)){
+                double seconds = Math.abs(val.date_return.getTime() - dateCurrent.getTime());
+                double hours = seconds / 3600000;
+                double deltaDistance = speed * 6 * hours;
+                posShipX = xs + deltaX * deltaDistance / distance;
+                posShipY = ys + deltaY * deltaDistance / distance;
+                if (Math.abs(posShipX - xs) > Math.abs(deltaX))
+                    posShipX = xe;
+                if (Math.abs(posShipY - ys) > Math.abs(deltaY))
+                    posShipY = ye;
+                path = drawArrowLine(g2, xe+deltaX, ye+deltaY, posShipX, posShipY, 8, 4);
+            }
+            
+            if (path == null)
+                continue;
 
-                PanelArrow panelArrow = new PanelArrow(val);
-                panelArrow.setBounds(path.getBounds());
-                //add(panelArrow);
-             });
+            PanelArrow panelArrow = new PanelArrow(val);
+            panelArrow.setBounds(path.getBounds());
+            add(panelArrow);
         }
-        LOGGER.trace("PanelFlightRadar.paintComponent() - leave");
+        LOGGER.trace("PanelFlightRadar.paintComponent() - leave - loopCounter:" + loopCounter);
     }
     
     private Path2D drawArrowLine(Graphics2D g2, double x1, double y1, double x2, double y2, int d, int h) {

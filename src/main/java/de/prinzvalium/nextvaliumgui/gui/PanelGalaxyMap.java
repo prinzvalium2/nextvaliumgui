@@ -51,7 +51,10 @@ public class PanelGalaxyMap extends JPanel {
             locationX = x;
             locationY = y;
             galaxyMap = Galaxy.loadGalaxyMap(locationX-50, locationY, 100, 125);
-            galaxyMap.putAll(Galaxy.loadGalaxyMap(locationX+50, locationY, 100, 125));
+            
+            // loadGalaxy returns width+1 (left and right from the location plus the location)
+            //galaxyMap.putAll(Galaxy.loadGalaxyMap(locationX+50, locationY, 100, 125));
+            galaxyMap.putAll(Galaxy.loadGalaxyMap(locationX+51, locationY, 100, 125));
            
             panelFlighRadar = new PanelFlightRadar(galaxyMap, locationX, locationY);
             panelFlighRadar.setBounds(0, 0, getWidth(), getHeight());

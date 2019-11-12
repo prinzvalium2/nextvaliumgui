@@ -81,6 +81,7 @@ public class PanelPlanet extends JPanel {
 
     protected void paintComponent(Graphics g) {
         
+        // Target white with red circles
         if (color.equals(Color.WHITE)) {
             g.setColor(Color.WHITE);
             g.fillOval(0, 0, getWidth()-1, getHeight()-1);
@@ -90,6 +91,7 @@ public class PanelPlanet extends JPanel {
             g.drawOval(0+4, 0+4, getWidth()-9, getHeight()-9);
             return;
         }
+        
         g.setColor(color);
         
         String selectedUser = NextValiumGui.getNextValiumGui().getSelectedUser();

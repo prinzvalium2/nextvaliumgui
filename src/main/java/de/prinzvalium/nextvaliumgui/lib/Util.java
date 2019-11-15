@@ -48,6 +48,8 @@ public class Util {
     public static final String NEXTCOLONY_API_CMD_LOADMISSIONS = "loadfleetmission?user=%s";
     public static final String NEXTCOLONY_API_CMD_LOADRECENTTRANSACTIONS = "transactions?";
     public static final String NEXTCOLONY_API_CMD_LOADCORDDATA = "loadcorddata?x=%s&y=%s";
+    public static final String NEXTCOLONY_API_CMD_STATE = "state";
+    
     
     public static SimpleDateFormat NextValiumDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static HashMap<String, ShipyardShip> mapShipyardShips = null;

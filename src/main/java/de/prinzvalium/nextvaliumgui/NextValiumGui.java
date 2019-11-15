@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +44,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Insets;
 import javax.swing.JCheckBox;
+import javax.swing.border.BevelBorder;
+import javax.swing.SwingConstants;
 
 
 public class NextValiumGui {
@@ -68,6 +71,9 @@ public class NextValiumGui {
     private JLabel lblLastplanetDate;
     private JLabel lblLastplanetname;
     private JLabel lblLastplanetuser;
+    private JPanel panelStatusBar;
+    private JLabel lblGamedelay;
+    private JTextField textFieldGameDelay;
 
     /**
      * Launch the application.
@@ -123,7 +129,7 @@ public class NextValiumGui {
         
         frmNextvaliumManagementGui = new JFrame();
         frmNextvaliumManagementGui.setTitle("NextValium GUI " + version + " - Multi user management GUI for NextColony");
-        frmNextvaliumManagementGui.setBounds(10, 10, 1250, 900);
+        frmNextvaliumManagementGui.setBounds(10, 10, 1250, 950);
         frmNextvaliumManagementGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         JMenuBar menuBar = new JMenuBar();
@@ -393,6 +399,36 @@ public class NextValiumGui {
         gbc_lblLastplanetuser.gridy = 2;
         panelLastPlanets.add(lblLastplanetuser, gbc_lblLastplanetuser);
         
+        panelStatusBar = new JPanel();
+        panelStatusBar.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+        frmNextvaliumManagementGui.getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
+        GridBagLayout gbl_panelStatusBar = new GridBagLayout();
+        gbl_panelStatusBar.columnWidths = new int[]{0, 0, 0, 0};
+        gbl_panelStatusBar.rowHeights = new int[] {0};
+        gbl_panelStatusBar.columnWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelStatusBar.rowWeights = new double[]{0.0};
+        panelStatusBar.setLayout(gbl_panelStatusBar);
+        
+        lblGamedelay = new JLabel("Game delay:");
+        GridBagConstraints gbc_lblGamedelay = new GridBagConstraints();
+        gbc_lblGamedelay.insets = new Insets(1, 0, 1, 2);
+        gbc_lblGamedelay.anchor = GridBagConstraints.WEST;
+        gbc_lblGamedelay.gridx = 1;
+        gbc_lblGamedelay.gridy = 0;
+        panelStatusBar.add(lblGamedelay, gbc_lblGamedelay);
+        
+        textFieldGameDelay = new JTextField();
+        textFieldGameDelay.setHorizontalAlignment(SwingConstants.CENTER);
+        textFieldGameDelay.setEditable(false);
+        textFieldGameDelay.setEnabled(false);
+        GridBagConstraints gbc_textFieldGameDelay = new GridBagConstraints();
+        gbc_textFieldGameDelay.anchor = GridBagConstraints.EAST;
+        gbc_textFieldGameDelay.insets = new Insets(0, 0, 0, 2);
+        gbc_textFieldGameDelay.gridx = 2;
+        gbc_textFieldGameDelay.gridy = 0;
+        panelStatusBar.add(textFieldGameDelay, gbc_textFieldGameDelay);
+        textFieldGameDelay.setColumns(8);
+        
         btnClearTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 planetMarkedAsTarget = null;
@@ -405,6 +441,8 @@ public class NextValiumGui {
         frmNextvaliumManagementGui.setVisible(true);
         
         listUsers.forEach(user -> comboBoxUsers.addItem(user));
+        
+        doInBackgroundGameDelay();
         
         new Thread(new Runnable() {
 
@@ -505,5 +543,35 @@ public class NextValiumGui {
 
         } catch (JSONException | IOException e) {
         }
+    }
+    
+    private void doInBackgroundGameDelay() {
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                
+                while (true) {
+                    try {
+                        JSONObject jsonState = Util.getJSONObjectFromApiCommand(Util.NEXTCOLONY_API_CMD_STATE);
+                        int delay = jsonState.getInt("processing_delay_seconds");
+                        int sec = delay % 60;
+                        int min = (delay / 60)%60;
+                        int hours = (delay/60)/60;
+                        
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                textFieldGameDelay.setText(String.format("%02d:%02d:%02d", hours, min, sec));
+                            }});
+                    } catch (JSONException | IOException e) {
+                    }
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }).start();
     }
 }

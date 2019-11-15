@@ -74,6 +74,7 @@ public class NextValiumGui {
     private JPanel panelStatusBar;
     private JLabel lblGamedelay;
     private JTextField textFieldGameDelay;
+    private JCheckBox chckbxYamatos;
 
     /**
      * Launch the application.
@@ -327,12 +328,13 @@ public class NextValiumGui {
         panelTop.add(panelRadar, gbc_panelRadar);
         GridBagLayout gbl_panelRadar = new GridBagLayout();
         gbl_panelRadar.columnWidths = new int[]{0, 0};
-        gbl_panelRadar.rowHeights = new int[]{0, 0, 0};
+        gbl_panelRadar.rowHeights = new int[]{0, 0, 0, 0};
         gbl_panelRadar.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-        gbl_panelRadar.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+        gbl_panelRadar.rowWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
         panelRadar.setLayout(gbl_panelRadar);
         
         chckbxRadarExplorations = new JCheckBox("Explorations");
+        chckbxRadarExplorations.setMargin(new Insets(0, 0, 0, 0));
         chckbxRadarExplorations.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 frmNextvaliumManagementGui.repaint();
@@ -346,16 +348,31 @@ public class NextValiumGui {
         panelRadar.add(chckbxRadarExplorations, gbc_chckbxRadarExplorations);
         
         chckbxRadarOthers = new JCheckBox("Others");
+        chckbxRadarOthers.setMargin(new Insets(0, 0, 0, 0));
         chckbxRadarOthers.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frmNextvaliumManagementGui.repaint();
             }
         });
+        
+        chckbxYamatos = new JCheckBox("Yamatos");
+        chckbxYamatos.setSelected(true);
+        chckbxYamatos.setMargin(new Insets(0, 0, 0, 0));
+        chckbxYamatos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frmNextvaliumManagementGui.repaint();
+            }
+        });
+        GridBagConstraints gbc_chckbxYamatos = new GridBagConstraints();
+        gbc_chckbxYamatos.anchor = GridBagConstraints.WEST;
+        gbc_chckbxYamatos.gridx = 0;
+        gbc_chckbxYamatos.gridy = 1;
+        panelRadar.add(chckbxYamatos, gbc_chckbxYamatos);
         chckbxRadarOthers.setSelected(true);
         GridBagConstraints gbc_chckbxRadarOthers = new GridBagConstraints();
         gbc_chckbxRadarOthers.anchor = GridBagConstraints.NORTHWEST;
         gbc_chckbxRadarOthers.gridx = 0;
-        gbc_chckbxRadarOthers.gridy = 1;
+        gbc_chckbxRadarOthers.gridy = 2;
         panelRadar.add(chckbxRadarOthers, gbc_chckbxRadarOthers);
         
         JPanel panelLastPlanets = new JPanel();
@@ -492,6 +509,10 @@ public class NextValiumGui {
     
     public boolean isRadarExplorationsEnabled() {
         return chckbxRadarExplorations.isSelected();
+    }
+    
+    public boolean isRadarYamatosEnabled() {
+        return chckbxYamatos.isSelected();
     }
     
     public void  setCenterPosition(Planet planet) {

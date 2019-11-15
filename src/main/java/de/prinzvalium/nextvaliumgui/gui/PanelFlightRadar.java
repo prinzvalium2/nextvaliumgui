@@ -62,6 +62,7 @@ public class PanelFlightRadar extends JPanel {
         
         boolean showExplore = NextValiumGui.getNextValiumGui().isRadarExplorationsEnabled();
         boolean showOthers = NextValiumGui.getNextValiumGui().isRadarOthersEnabled();
+        boolean showYamatos = NextValiumGui.getNextValiumGui().isRadarYamatosEnabled();
         
         Graphics2D g2 = (Graphics2D) g;
         
@@ -86,7 +87,10 @@ public class PanelFlightRadar extends JPanel {
             if (val.type.equalsIgnoreCase("explore") && !showExplore)
                 continue;
             
-            if (!val.type.equalsIgnoreCase("explore") && !showOthers)
+            if (!val.type.equalsIgnoreCase("explore") && !val.type.equalsIgnoreCase("upgradeyamato") && !showOthers)
+                continue;
+            
+            if (val.type.equalsIgnoreCase("upgradeyamato") && !showYamatos)
                 continue;
             
             loopCounter++;
@@ -125,6 +129,9 @@ public class PanelFlightRadar extends JPanel {
             case "deploy":
                 color = colorDeploy;
                 break;
+            case "upgradeyamato":
+                color = Color.RED;
+                break;
             default:
                 color = Color.CYAN;
             }
@@ -134,6 +141,14 @@ public class PanelFlightRadar extends JPanel {
             int xe = (val.x - locationX) * 6 + (getWidth() / 2);
             int ye = (val.y - locationY) * -6 + (getHeight() / 2);
            
+            if (val.type.equalsIgnoreCase("upgradeyamato")) {
+                g2.setStroke(strokeExploreOutward);
+                g2.setColor(color);
+                g2.drawOval(xs-8, ys-8, 15, 15);
+                g2.drawOval(xs-7, ys-7, 13, 13);
+                continue;
+            }
+            
             g2.setStroke(stroke);
             g2.setColor(color);
             g2.draw(new Line2D.Double(xs, ys, xe, ye));

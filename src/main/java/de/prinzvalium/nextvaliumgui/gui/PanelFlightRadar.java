@@ -32,7 +32,7 @@ public class PanelFlightRadar extends JPanel {
     private int locationY;
     private Color colorAttack = new Color(245, 66, 66, 200);
     private Color colorSupport = new Color(66, 245, 132, 255);
-    private Color colorTransport = new Color(255, 255, 59, 255);
+    private Color colorTransport = new Color(255, 255, 59, 220);
     private Color colorExplore = new Color(0, 0, 0, 80);
     private Color colorExploreSpace = new Color(0, 0, 0, 80);
     private Color colorSiege = new Color(219, 48, 250, 220); 

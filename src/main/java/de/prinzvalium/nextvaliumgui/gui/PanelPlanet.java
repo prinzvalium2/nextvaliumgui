@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import org.json.JSONException;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
-import de.prinzvalium.nextvaliumgui.gui.PopupMenu.PopupMenuPlanet;
 import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.DialogPlanet;
+import de.prinzvalium.nextvaliumgui.gui.popupmenu.PopupMenuPlanet;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;

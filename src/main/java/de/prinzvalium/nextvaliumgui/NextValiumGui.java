@@ -75,6 +75,8 @@ public class NextValiumGui {
     private JLabel lblGamedelay;
     private JTextField textFieldGameDelay;
     private JCheckBox chckbxYamatos;
+    private JMenu mnInfo;
+    private JMenuItem mntmSeasonRanking;
 
     /**
      * Launch the application.
@@ -147,8 +149,18 @@ public class NextValiumGui {
         });
         mnFile.add(mntmExit);
         
+        mnInfo = new JMenu("Info");
+        menuBar.add(mnInfo);
+        
+        mntmSeasonRanking = new JMenuItem("Season ranking");
+        mntmSeasonRanking.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            }
+        });
+        mnInfo.add(mntmSeasonRanking);
+        
         JPanel panelTop = new JPanel();
-        panelTop.setBorder(null);
+        panelTop.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
         frmNextvaliumManagementGui.getContentPane().add(panelTop, BorderLayout.NORTH);
         GridBagLayout gbl_panelTop = new GridBagLayout();
         gbl_panelTop.columnWidths = new int[]{26, 91, 0, 0, 0, 0};
@@ -225,6 +237,7 @@ public class NextValiumGui {
         textFieldPosX.setText("0");
         
         btnRefresh = new JButton("Refresh");
+        btnRefresh.setBackground(Color.ORANGE);
         GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
         gbc_btnRefresh.fill = GridBagConstraints.VERTICAL;
         gbc_btnRefresh.gridheight = 2;
@@ -441,7 +454,7 @@ public class NextValiumGui {
         textFieldGameDelay.setEnabled(false);
         GridBagConstraints gbc_textFieldGameDelay = new GridBagConstraints();
         gbc_textFieldGameDelay.anchor = GridBagConstraints.EAST;
-        gbc_textFieldGameDelay.insets = new Insets(0, 0, 0, 2);
+        gbc_textFieldGameDelay.insets = new Insets(0, 0, 1, 1);
         gbc_textFieldGameDelay.gridx = 2;
         gbc_textFieldGameDelay.gridy = 0;
         panelStatusBar.add(textFieldGameDelay, gbc_textFieldGameDelay);

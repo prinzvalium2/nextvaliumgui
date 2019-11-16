@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
-import de.prinzvalium.nextvaliumgui.gui.seasonranking.SeasonRanking;
+import de.prinzvalium.nextvaliumgui.gui.dialog.seasonranking.SeasonRanking;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;

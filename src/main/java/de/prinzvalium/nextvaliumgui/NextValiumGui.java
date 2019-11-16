@@ -69,15 +69,14 @@ public class NextValiumGui {
     private ArrayList<String> listUsers;
     private String selectedUser = null;
     private PanelGalaxyMap panelGalaxyMap;
-    private JLabel lblLastplanetDate;
-    private JLabel lblLastplanetname;
-    private JLabel lblLastplanetuser;
     private JPanel panelStatusBar;
     private JLabel lblGamedelay;
     private JTextField textFieldGameDelay;
     private JCheckBox chckbxYamatos;
     private JMenu mnInfo;
     private JMenuItem mntmSeasonRanking;
+    private JButton btnLastPlanet;
+    private Planet lastPlanet = null;
 
     /**
      * Launch the application.
@@ -401,37 +400,25 @@ public class NextValiumGui {
         gbc_panelLastPlanets.gridy = 0;
         panelTop.add(panelLastPlanets, gbc_panelLastPlanets);
         GridBagLayout gbl_panelLastPlanets = new GridBagLayout();
-        gbl_panelLastPlanets.columnWidths = new int[] {10};
-        gbl_panelLastPlanets.rowHeights = new int[]{1, 0, 0, 0};
+        gbl_panelLastPlanets.columnWidths = new int[] {107};
+        gbl_panelLastPlanets.rowHeights = new int[] {1};
         gbl_panelLastPlanets.columnWeights = new double[]{0.0};
-        gbl_panelLastPlanets.rowWeights = new double[]{0.0, 1.0, 1.0, Double.MIN_VALUE};
+        gbl_panelLastPlanets.rowWeights = new double[]{1.0};
         panelLastPlanets.setLayout(gbl_panelLastPlanets);
         
-        lblLastplanetDate = new JLabel("");
-        lblLastplanetDate.setPreferredSize(new Dimension(150, 14));
-        GridBagConstraints gbc_lblLastplanetDate = new GridBagConstraints();
-        gbc_lblLastplanetDate.anchor = GridBagConstraints.WEST;
-        gbc_lblLastplanetDate.insets = new Insets(0, 0, 5, 0);
-        gbc_lblLastplanetDate.gridx = 0;
-        gbc_lblLastplanetDate.gridy = 0;
-        panelLastPlanets.add(lblLastplanetDate, gbc_lblLastplanetDate);
-        
-        lblLastplanetname = new JLabel("");
-        GridBagConstraints gbc_lblLastplanetname = new GridBagConstraints();
-        gbc_lblLastplanetname.fill = GridBagConstraints.VERTICAL;
-        gbc_lblLastplanetname.anchor = GridBagConstraints.WEST;
-        gbc_lblLastplanetname.insets = new Insets(0, 0, 5, 0);
-        gbc_lblLastplanetname.gridx = 0;
-        gbc_lblLastplanetname.gridy = 1;
-        panelLastPlanets.add(lblLastplanetname, gbc_lblLastplanetname);
-        
-        lblLastplanetuser = new JLabel("");
-        GridBagConstraints gbc_lblLastplanetuser = new GridBagConstraints();
-        gbc_lblLastplanetuser.fill = GridBagConstraints.VERTICAL;
-        gbc_lblLastplanetuser.anchor = GridBagConstraints.WEST;
-        gbc_lblLastplanetuser.gridx = 0;
-        gbc_lblLastplanetuser.gridy = 2;
-        panelLastPlanets.add(lblLastplanetuser, gbc_lblLastplanetuser);
+        btnLastPlanet = new JButton("");
+        btnLastPlanet.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                if (lastPlanet == null)
+                    return;
+                NextValiumGui.getNextValiumGui().setCenterPosition(lastPlanet);
+            }
+        });
+        GridBagConstraints gbc_btnLastPlanet = new GridBagConstraints();
+        gbc_btnLastPlanet.fill = GridBagConstraints.BOTH;
+        gbc_btnLastPlanet.gridx = 0;
+        gbc_btnLastPlanet.gridy = 0;
+        panelLastPlanets.add(btnLastPlanet, gbc_btnLastPlanet);
         
         panelStatusBar = new JPanel();
         panelStatusBar.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -574,10 +561,12 @@ public class NextValiumGui {
                     return arg0.getDate().before(arg1.getDate()) ? 1 : -1;
                 }});
             
-            Planet p = planets.get(0);
-            lblLastplanetDate.setText(Util.getDateAsString(p.getDate()));
-            lblLastplanetname.setText(p.getName());
-            lblLastplanetuser.setText(p.getUserName());
+            lastPlanet = planets.get(0);
+            String date = Util.getDateAsString(lastPlanet.getDate());
+            String name = lastPlanet.getName();
+            String user = lastPlanet.getUserName();
+            String text = "<html><center>"+date+"<br>"+name+"<br>"+user+"</center></html>";
+            btnLastPlanet.setText(text);
 
         } catch (JSONException | IOException e) {
         }

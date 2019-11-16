@@ -21,13 +21,13 @@ import javax.swing.JLabel;
 import java.awt.Insets;
 import javax.swing.JTextField;
 
-public class PopupMenuArrow extends JPopupMenu {
+public class PopupMenuMission extends JPopupMenu {
 
     private static final long serialVersionUID = 1L;
     private JTextField txtArrival;
     private JTextField txtReturn;
 
-    public PopupMenuArrow(GalaxyMapValueExplore val) {
+    public PopupMenuMission(GalaxyMapValueExplore val) {
         
         setPopupSize(new Dimension(180, 250));
         

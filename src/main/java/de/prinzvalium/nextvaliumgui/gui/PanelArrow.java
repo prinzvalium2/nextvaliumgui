@@ -2,7 +2,7 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import javax.swing.JPanel;
 
-import de.prinzvalium.nextvaliumgui.gui.popupmenu.PopupMenuArrow;
+import de.prinzvalium.nextvaliumgui.gui.popupmenu.PopupMenuMission;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValueExplore;
 
 import java.awt.event.MouseAdapter;
@@ -17,7 +17,7 @@ public class PanelArrow extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent arg0) {
-                PopupMenuArrow popupMenuArrow = new PopupMenuArrow(val);
+                PopupMenuMission popupMenuArrow = new PopupMenuMission(val);
                 popupMenuArrow.show(arg0.getComponent(), arg0.getX(), arg0.getY());
             }
         });

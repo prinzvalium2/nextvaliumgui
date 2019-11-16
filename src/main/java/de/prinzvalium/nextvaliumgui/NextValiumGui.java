@@ -237,7 +237,7 @@ public class NextValiumGui {
         textFieldPosX.setColumns(4);
         textFieldPosX.setText("0");
         
-        btnRefresh = new JButton("<html><center>Refresh<br>\r\nmap</center></html>");
+        btnRefresh = new JButton("<html><center>Reload<br>\r\nmap</center></html>");
         btnRefresh.setHorizontalTextPosition(SwingConstants.CENTER);
         btnRefresh.setBackground(Color.ORANGE);
         GridBagConstraints gbc_btnRefresh = new GridBagConstraints();

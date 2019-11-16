@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvaliumgui.gui;
+package de.prinzvalium.nextvaliumgui.gui.PopupMenu;
 
 import java.awt.Dimension;
 

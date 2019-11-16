@@ -2,6 +2,7 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import javax.swing.JPanel;
 
+import de.prinzvalium.nextvaliumgui.gui.PopupMenu.PopupMenuArrow;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValueExplore;
 
 import java.awt.event.MouseAdapter;

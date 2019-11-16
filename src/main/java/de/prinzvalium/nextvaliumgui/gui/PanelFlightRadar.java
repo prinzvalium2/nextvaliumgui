@@ -130,7 +130,7 @@ public class PanelFlightRadar extends JPanel {
                 color = colorDeploy;
                 break;
             case "upgradeyamato":
-                color = Color.RED;
+                color = Color.ORANGE;
                 break;
             default:
                 color = Color.CYAN;
@@ -142,10 +142,12 @@ public class PanelFlightRadar extends JPanel {
             int ye = (val.y - locationY) * -6 + (getHeight() / 2);
            
             if (val.type.equalsIgnoreCase("upgradeyamato")) {
-                g2.setStroke(strokeExploreOutward);
+                g2.setStroke(strokeFlightOutward);
                 g2.setColor(color);
                 g2.drawOval(xs-8, ys-8, 15, 15);
-                g2.drawOval(xs-7, ys-7, 13, 13);
+                g2.setStroke(strokeExploreOutward);
+                g2.setColor(Color.BLACK);
+                g2.drawOval(xs-9, ys-9, 17, 17);
                 continue;
             }
             

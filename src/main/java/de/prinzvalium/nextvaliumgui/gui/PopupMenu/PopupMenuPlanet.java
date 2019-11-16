@@ -1,4 +1,4 @@
-package de.prinzvalium.nextvaliumgui.gui;
+package de.prinzvalium.nextvaliumgui.gui.PopupMenu;
 
 import javax.swing.JPopupMenu;
 
@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
+import de.prinzvalium.nextvaliumgui.gui.PanelPlanet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 

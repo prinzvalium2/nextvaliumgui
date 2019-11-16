@@ -51,7 +51,7 @@ import javax.swing.SwingConstants;
 public class NextValiumGui {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
-    private static final String version = "0.4.0";
+    private static final String version = "0.4.1-SNAPSHOT";
     private static NextValiumGui nextValiumGui = null;
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;
@@ -226,7 +226,8 @@ public class NextValiumGui {
         
         btnRefresh = new JButton("Refresh");
         GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
-        gbc_btnRefresh.insets = new Insets(0, 5, 5, 0);
+        gbc_btnRefresh.fill = GridBagConstraints.VERTICAL;
+        gbc_btnRefresh.gridheight = 2;
         gbc_btnRefresh.anchor = GridBagConstraints.WEST;
         gbc_btnRefresh.gridx = 4;
         gbc_btnRefresh.gridy = 0;

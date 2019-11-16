@@ -12,6 +12,7 @@ import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.SwingWorker;
 import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import org.json.JSONArray;
@@ -50,7 +51,7 @@ public class SeasonRanking extends JDialog {
     public SeasonRanking() {
         setModal(true);
         setTitle("Season ranking");
-        setBounds(100, 100, 500, 400);
+        setBounds(100, 100, 600, 500);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -72,12 +73,27 @@ public class SeasonRanking extends JDialog {
                 new String[] {
                     "Pos.", "Account", "Build", "Destroyed", "Total"
                 }
-            ));
-            table.getColumnModel().getColumn(0).setPreferredWidth(30);
+            ) {
+                private static final long serialVersionUID = 1L;
+                boolean[] columnEditables = new boolean[] {
+                    false, false, false, false, false
+                };
+                public boolean isCellEditable(int row, int column) {
+                    return columnEditables[column];
+                }
+            });
+            table.getColumnModel().getColumn(0).setPreferredWidth(50);
             table.getColumnModel().getColumn(1).setPreferredWidth(200);
-            table.getColumnModel().getColumn(2).setPreferredWidth(50);
-            table.getColumnModel().getColumn(3).setPreferredWidth(50);
-            table.getColumnModel().getColumn(4).setPreferredWidth(50);
+            table.getColumnModel().getColumn(2).setPreferredWidth(100);
+            table.getColumnModel().getColumn(3).setPreferredWidth(100);
+            table.getColumnModel().getColumn(4).setPreferredWidth(100);
+
+            DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+            rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+            table.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+            table.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
+            table.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
+
             scrollPaneSeasonRanking.setViewportView(table);
         }
         {
@@ -113,15 +129,15 @@ public class SeasonRanking extends JDialog {
                     JSONArray ranking = seasonRanking.getJSONArray("ranking");
                     for (int i = 0; i < ranking.length(); i++) {
                         JSONObject rank = ranking.getJSONObject(i);
-                        model.setValueAt(i, i, 0);
-                        model.setValueAt(rank.getString("user"), i, 1);
-                        model.setValueAt(rank.getInt("build_reward"), i, 2);
-                        model.setValueAt(rank.getInt("destroy_reward"), i, 2);
-                        model.setValueAt(rank.getInt("total_reward"), i, 3);
+                        String user = rank.getString("user");
+                        String build_reward = String.format("%.3f", rank.getDouble("build_reward")/10E7);
+                        String destroy_reward = String.format("%.3f", rank.getDouble("destroy_reward")/10E7);
+                        String total_reward = String.format("%.3f", rank.getDouble("total_reward")/10E7);
+                        model.addRow(new Object[] { i, user, build_reward, destroy_reward, total_reward});
                     }
                     
                 } catch (InterruptedException | ExecutionException e) {
-                    model.setValueAt(e.getCause()+": "+e.getMessage(), 0, 1);
+                    model.addRow(new Object[] { null, e.getCause()+": "+e.getMessage(), null, null, null });
                 }
                 super.done();
             }

@@ -133,7 +133,7 @@ public class SeasonRanking extends JDialog {
                         String build_reward = String.format("%.3f", rank.getDouble("build_reward")/10E7);
                         String destroy_reward = String.format("%.3f", rank.getDouble("destroy_reward")/10E7);
                         String total_reward = String.format("%.3f", rank.getDouble("total_reward")/10E7);
-                        model.addRow(new Object[] { i, user, build_reward, destroy_reward, total_reward});
+                        model.addRow(new Object[] { i+1, user, build_reward, destroy_reward, total_reward});
                     }
                     
                 } catch (InterruptedException | ExecutionException e) {

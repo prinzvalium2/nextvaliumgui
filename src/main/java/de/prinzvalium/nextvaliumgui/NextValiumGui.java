@@ -51,7 +51,7 @@ import javax.swing.SwingConstants;
 public class NextValiumGui {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NextValiumGui.class);
-    private static final String version = "0.3.1-SNAPSHOT";
+    private static final String version = "0.4.0";
     private static NextValiumGui nextValiumGui = null;
     private JFrame frmNextvaliumManagementGui;
     private JTextField textFieldPosX;

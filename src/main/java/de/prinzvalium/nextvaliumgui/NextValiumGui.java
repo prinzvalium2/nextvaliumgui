@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
+import de.prinzvalium.nextvaliumgui.gui.seasonranking.SeasonRanking;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
@@ -155,6 +156,7 @@ public class NextValiumGui {
         mntmSeasonRanking = new JMenuItem("Season ranking");
         mntmSeasonRanking.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+                new SeasonRanking().setVisible(true);
             }
         });
         mnInfo.add(mntmSeasonRanking);
@@ -236,12 +238,13 @@ public class NextValiumGui {
         textFieldPosX.setColumns(4);
         textFieldPosX.setText("0");
         
-        btnRefresh = new JButton("Refresh");
+        btnRefresh = new JButton("<html><center>Refresh<br>\r\nmap</center></html>");
+        btnRefresh.setHorizontalTextPosition(SwingConstants.CENTER);
         btnRefresh.setBackground(Color.ORANGE);
         GridBagConstraints gbc_btnRefresh = new GridBagConstraints();
+        gbc_btnRefresh.anchor = GridBagConstraints.WEST;
         gbc_btnRefresh.fill = GridBagConstraints.VERTICAL;
         gbc_btnRefresh.gridheight = 2;
-        gbc_btnRefresh.anchor = GridBagConstraints.WEST;
         gbc_btnRefresh.gridx = 4;
         gbc_btnRefresh.gridy = 0;
         panelUserPlanet.add(btnRefresh, gbc_btnRefresh);

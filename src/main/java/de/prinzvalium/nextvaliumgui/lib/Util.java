@@ -49,6 +49,7 @@ public class Util {
     public static final String NEXTCOLONY_API_CMD_LOADRECENTTRANSACTIONS = "transactions?";
     public static final String NEXTCOLONY_API_CMD_LOADCORDDATA = "loadcorddata?x=%s&y=%s";
     public static final String NEXTCOLONY_API_CMD_STATE = "state";
+    public static final String NEXTCOLONY_API_CMD_SEASONRANKING = "seasonranking";
     
     
     public static SimpleDateFormat NextValiumDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

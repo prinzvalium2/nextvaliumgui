@@ -81,7 +81,6 @@ public class PanelFleet extends JPanel {
     private Fleet fleet = null;
     private boolean predefinedMissionSelected = false;
     private int missionsAvailable = 0;
-    private double doubleConsumption = 0;
     private int numberOfShips = 0;
     
     private final String PREDEFINED_MISSION_NONE = "";
@@ -1048,8 +1047,7 @@ public class PanelFleet extends JPanel {
             if (!selectedMission.equalsIgnoreCase(MISSION_DEPLOY))
                 distance += distance;
             
-            doubleConsumption = distance * consumptionTotal;
-            textFieldUraniumConsumption.setText(String.format("%.3f", doubleConsumption));
+            textFieldUraniumConsumption.setText(String.format("%.3f", distance * consumptionTotal));
             
         }
         catch (Exception e) {
@@ -1095,25 +1093,25 @@ public class PanelFleet extends JPanel {
         }
         
         try {
-            int shipCoal = Integer.parseInt(textFieldResourcesShipCoal.getText());
-            int shipOre = Integer.parseInt(textFieldResourcesShipOre.getText());
-            int shipCopper = Integer.parseInt(textFieldResourcesShipCopper.getText());
-            int shipUranium = Integer.parseInt(textFieldResourcesShipUranium.getText());
+            double shipCoal = Double.parseDouble(textFieldResourcesShipCoal.getText().replace(',','.'));
+            double shipOre = Double.parseDouble(textFieldResourcesShipOre.getText().replace(',','.'));
+            double shipCopper = Double.parseDouble(textFieldResourcesShipCopper.getText().replace(',','.'));
+            double shipUranium = Double.parseDouble(textFieldResourcesShipUranium.getText().replace(',','.'));
 
-            int coal = Integer.parseInt(textFieldResourcesCoal.getText());
-            int ore = Integer.parseInt(textFieldResourcesOre.getText());
-            int copper = Integer.parseInt(textFieldResourcesCopper.getText());
-            int uranium = Integer.parseInt(textFieldResourcesUranium.getText());
+            double coal = Double.parseDouble(textFieldResourcesCoal.getText().replace(',','.'));
+            double ore = Double.parseDouble(textFieldResourcesOre.getText().replace(',','.'));
+            double copper = Double.parseDouble(textFieldResourcesCopper.getText().replace(',','.'));
+            double uranium = Double.parseDouble(textFieldResourcesUranium.getText().replace(',','.'));
             
             int resourcesShipTotal = Integer.parseInt(textFieldResourcesShipTotal.getText());
             int resourcesFleetMax = Integer.parseInt(textFieldResourcesFleetMax.getText());
             
-            int consumption = new Double(doubleConsumption).intValue() + 1;
+            double consumption = Double.parseDouble(textFieldUraniumConsumption.getText().replace(',','.'));
             
             if (shipCoal > coal || 
                     shipOre > ore || 
                     shipCopper > copper || 
-                    (shipUranium + consumption) > uranium ||
+                    (consumption + shipUranium) > uranium ||
                     resourcesShipTotal > resourcesFleetMax)
                 throw new NextValiumException("");
         }

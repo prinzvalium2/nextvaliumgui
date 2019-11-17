@@ -359,6 +359,7 @@ public class PanelFleet extends JPanel {
                     }
                 });
                 tableChanged_Fleet();
+                checkPreconditionSendToSteemButton();
             }
         });
         
@@ -381,6 +382,7 @@ public class PanelFleet extends JPanel {
         panelTargetPosition.add(lblTargetPositionX);
         
         textFieldTargetPositionX = new JTextField();
+        textFieldTargetPositionX.setHorizontalAlignment(SwingConstants.RIGHT);
         textFieldTargetPositionX.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
@@ -403,12 +405,13 @@ public class PanelFleet extends JPanel {
             }
         });
         panelTargetPosition.add(textFieldTargetPositionX);
-        textFieldTargetPositionX.setColumns(10);
+        textFieldTargetPositionX.setColumns(5);
         
         JLabel lblTargetPositionY = new JLabel("Y:");
         panelTargetPosition.add(lblTargetPositionY);
         
         textFieldTargetPositionY = new JTextField();
+        textFieldTargetPositionY.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldTargetPositionY.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
@@ -431,7 +434,7 @@ public class PanelFleet extends JPanel {
             }
         });
         panelTargetPosition.add(textFieldTargetPositionY);
-        textFieldTargetPositionY.setColumns(10);
+        textFieldTargetPositionY.setColumns(5);
         
         JPanel panelResources = new JPanel();
         panelResources.setBorder(new TitledBorder(null, "Resources", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -1081,7 +1084,7 @@ public class PanelFleet extends JPanel {
             Integer.parseInt(textFieldTargetPositionY.getText());
         }
         catch (Exception e) {
-            dialogPlanet.setStatusError(but + "No target X/Y coordinates");
+            dialogPlanet.setStatusError(but + "Check target X/Y coordinates");
             btnSendTransaction.setEnabled(false);
             return;
         }

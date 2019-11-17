@@ -392,7 +392,7 @@ public class NextValiumGui {
         panelRadar.add(chckbxRadarOthers, gbc_chckbxRadarOthers);
         
         JPanel panelLastPlanets = new JPanel();
-        panelLastPlanets.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Last planet", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panelLastPlanets.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Quick jump last planet", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_panelLastPlanets = new GridBagConstraints();
         gbc_panelLastPlanets.insets = new Insets(0, 0, 0, 5);
         gbc_panelLastPlanets.fill = GridBagConstraints.BOTH;
@@ -400,7 +400,7 @@ public class NextValiumGui {
         gbc_panelLastPlanets.gridy = 0;
         panelTop.add(panelLastPlanets, gbc_panelLastPlanets);
         GridBagLayout gbl_panelLastPlanets = new GridBagLayout();
-        gbl_panelLastPlanets.columnWidths = new int[] {107};
+        gbl_panelLastPlanets.columnWidths = new int[] {120};
         gbl_panelLastPlanets.rowHeights = new int[] {1};
         gbl_panelLastPlanets.columnWeights = new double[]{0.0};
         gbl_panelLastPlanets.rowWeights = new double[]{1.0};

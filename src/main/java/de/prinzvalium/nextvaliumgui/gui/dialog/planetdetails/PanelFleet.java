@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.CustomJson;
+import de.prinzvalium.nextvaliumgui.lib.MyIntFilter;
 import de.prinzvalium.nextvaliumgui.lib.NextValiumException;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
@@ -25,6 +26,8 @@ import javax.swing.JTable;
 import java.awt.GridBagConstraints;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.PlainDocument;
+
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,6 +48,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import javax.swing.SwingConstants;
 
 public class PanelFleet extends JPanel {
 
@@ -125,6 +129,7 @@ public class PanelFleet extends JPanel {
             MISSION_BREAKSIEGE,
             MISSION_EXPLORE
     };
+    private JTextField txtResourcesTotal;
     
     public PanelFleet(DialogPlanet dialogPlanet, Planet planet) {
         addComponentListener(new ComponentAdapter() {
@@ -467,6 +472,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(lblRessourcesCoal, gbc_lblRessourcesCoal);
         
         textFieldResourcesCoal = new JTextField();
+        textFieldResourcesCoal.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesCoal.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesCoal = new GridBagConstraints();
         gbc_textFieldResourcesCoal.insets = new Insets(0, 0, 5, 5);
@@ -477,6 +483,7 @@ public class PanelFleet extends JPanel {
         textFieldResourcesCoal.setColumns(10);
         
         textFieldResourcesShipCoal = new JTextField();
+        textFieldResourcesShipCoal.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesShipCoal.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
@@ -492,6 +499,7 @@ public class PanelFleet extends JPanel {
         gbc_textFieldResourcesShipCoal.gridy = 1;
         panelResources.add(textFieldResourcesShipCoal, gbc_textFieldResourcesShipCoal);
         textFieldResourcesShipCoal.setColumns(10);
+        ((PlainDocument)textFieldResourcesShipCoal.getDocument()).setDocumentFilter(new MyIntFilter());
         
         JLabel lblRessourcesOre = new JLabel("Ore:");
         GridBagConstraints gbc_lblRessourcesOre = new GridBagConstraints();
@@ -502,6 +510,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(lblRessourcesOre, gbc_lblRessourcesOre);
         
         textFieldResourcesOre = new JTextField();
+        textFieldResourcesOre.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesOre.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesOre = new GridBagConstraints();
         gbc_textFieldResourcesOre.insets = new Insets(0, 0, 5, 5);
@@ -512,6 +521,7 @@ public class PanelFleet extends JPanel {
         textFieldResourcesOre.setColumns(10);
         
         textFieldResourcesShipOre = new JTextField();
+        textFieldResourcesShipOre.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesShipOre.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
@@ -527,6 +537,7 @@ public class PanelFleet extends JPanel {
         gbc_textFieldResourcesShipOre.gridy = 2;
         panelResources.add(textFieldResourcesShipOre, gbc_textFieldResourcesShipOre);
         textFieldResourcesShipOre.setColumns(10);
+        ((PlainDocument)textFieldResourcesShipOre.getDocument()).setDocumentFilter(new MyIntFilter());
         
         JLabel lblResourcesCopper = new JLabel("Copper:");
         GridBagConstraints gbc_lblResourcesCopper = new GridBagConstraints();
@@ -537,6 +548,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(lblResourcesCopper, gbc_lblResourcesCopper);
         
         textFieldResourcesCopper = new JTextField();
+        textFieldResourcesCopper.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesCopper.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesCopper = new GridBagConstraints();
         gbc_textFieldResourcesCopper.insets = new Insets(0, 0, 5, 5);
@@ -547,6 +559,7 @@ public class PanelFleet extends JPanel {
         textFieldResourcesCopper.setColumns(10);
         
         textFieldResourcesShipCopper = new JTextField();
+        textFieldResourcesShipCopper.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesShipCopper.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
@@ -562,6 +575,7 @@ public class PanelFleet extends JPanel {
         gbc_textFieldResourcesShipCopper.gridy = 3;
         panelResources.add(textFieldResourcesShipCopper, gbc_textFieldResourcesShipCopper);
         textFieldResourcesShipCopper.setColumns(10);
+        ((PlainDocument)textFieldResourcesShipCopper.getDocument()).setDocumentFilter(new MyIntFilter());
         
         JLabel lblResourcesUranium = new JLabel("Uranium:");
         GridBagConstraints gbc_lblResourcesUranium = new GridBagConstraints();
@@ -572,6 +586,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(lblResourcesUranium, gbc_lblResourcesUranium);
         
         textFieldResourcesUranium = new JTextField();
+        textFieldResourcesUranium.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesUranium.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesUranium = new GridBagConstraints();
         gbc_textFieldResourcesUranium.insets = new Insets(0, 0, 5, 5);
@@ -582,6 +597,7 @@ public class PanelFleet extends JPanel {
         textFieldResourcesUranium.setColumns(10);
         
         textFieldResourcesShipUranium = new JTextField();
+        textFieldResourcesShipUranium.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesShipUranium.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
@@ -597,16 +613,29 @@ public class PanelFleet extends JPanel {
         gbc_textFieldResourcesShipUranium.gridy = 4;
         panelResources.add(textFieldResourcesShipUranium, gbc_textFieldResourcesShipUranium);
         textFieldResourcesShipUranium.setColumns(10);
+        ((PlainDocument)textFieldResourcesShipUranium.getDocument()).setDocumentFilter(new MyIntFilter());
         
-        JLabel lblResourcesShipTotal = new JLabel("Resources total:");
+        JLabel lblResourcesShipTotal = new JLabel("Total:");
         GridBagConstraints gbc_lblResourcesShipTotal = new GridBagConstraints();
         gbc_lblResourcesShipTotal.insets = new Insets(0, 0, 5, 5);
         gbc_lblResourcesShipTotal.anchor = GridBagConstraints.EAST;
-        gbc_lblResourcesShipTotal.gridx = 1;
+        gbc_lblResourcesShipTotal.gridx = 0;
         gbc_lblResourcesShipTotal.gridy = 5;
         panelResources.add(lblResourcesShipTotal, gbc_lblResourcesShipTotal);
         
+        txtResourcesTotal = new JTextField();
+        txtResourcesTotal.setHorizontalAlignment(SwingConstants.TRAILING);
+        txtResourcesTotal.setEnabled(false);
+        GridBagConstraints gbc_txtResourcestotal = new GridBagConstraints();
+        gbc_txtResourcestotal.insets = new Insets(0, 0, 5, 5);
+        gbc_txtResourcestotal.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtResourcestotal.gridx = 1;
+        gbc_txtResourcestotal.gridy = 5;
+        panelResources.add(txtResourcesTotal, gbc_txtResourcestotal);
+        txtResourcesTotal.setColumns(10);
+        
         textFieldResourcesShipTotal = new JTextField();
+        textFieldResourcesShipTotal.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesShipTotal.setText("0");
         textFieldResourcesShipTotal.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesShipTotal = new GridBagConstraints();
@@ -626,6 +655,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(lblResourcesFleetMax, gbc_lblResourcesFleetMax);
         
         textFieldResourcesFleetMax = new JTextField();
+        textFieldResourcesFleetMax.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldResourcesFleetMax.setEditable(false);
         GridBagConstraints gbc_textFieldResourcesFleetMax = new GridBagConstraints();
         gbc_textFieldResourcesFleetMax.insets = new Insets(0, 0, 5, 0);
@@ -644,6 +674,7 @@ public class PanelFleet extends JPanel {
         panelResources.add(lblUramiumConsumption, gbc_lblUramiumConsumption);
         
         textFieldUraniumConsumption = new JTextField();
+        textFieldUraniumConsumption.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldUraniumConsumption.setEditable(false);
         GridBagConstraints gbc_textFieldUraniumConsumption = new GridBagConstraints();
         gbc_textFieldUraniumConsumption.fill = GridBagConstraints.HORIZONTAL;
@@ -686,10 +717,11 @@ public class PanelFleet extends JPanel {
                     model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
                 
                 RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(planetName, planetId);
-                textFieldResourcesCoal.setText(String.format("%.0f", res.getCoal()));
-                textFieldResourcesOre.setText(String.format("%.0f", res.getOre()));
-                textFieldResourcesCopper.setText(String.format("%.0f", res.getCopper()));
-                textFieldResourcesUranium.setText(String.format("%.0f", res.getUranium()));
+                textFieldResourcesCoal.setText(String.format("%.3f", res.getCoal()));
+                textFieldResourcesOre.setText(String.format("%.3f", res.getOre()));
+                textFieldResourcesCopper.setText(String.format("%.3f", res.getCopper()));
+                textFieldResourcesUranium.setText(String.format("%.3f", res.getUranium()));
+                txtResourcesTotal.setText(String.format("%.3f", res.getCoal()+res.getOre()+res.getCopper()+res.getUranium()));
                 
                 int starter = planet.isStarter() ? 1 : 0;
                 int missionsActive = Missions.loadAllActiveUserMissions(userName).size();

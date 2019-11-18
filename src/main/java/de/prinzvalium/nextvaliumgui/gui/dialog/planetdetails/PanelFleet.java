@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.awt.GridBagLayout;
 import javax.swing.JTable;
@@ -70,7 +71,7 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldFreeMissions;
     private JTextField textFieldUraniumConsumption;
     private JComboBox<String> comboBoxTargetPlanet;
-    private JComboBox<String> comboBoxMissionsPredefined;
+    private JComboBox<String> comboBoxShipsPredefined;
     private JComboBox<String> comboBoxMissionsStandard;
     private JButton btnSendTransaction;
     private HashMap<String, Planet> mapPlanets;
@@ -79,34 +80,28 @@ public class PanelFleet extends JPanel {
     private Planet targetPlanet = null;
     private DialogPlanet dialogPlanet;
     private Fleet fleet = null;
-    private boolean predefinedMissionSelected = false;
-    private int missionsAvailable = 0;
+    private int missionsAvailable = -1;
     private int numberOfShips = 0;
+    private boolean actionPerformed_comboBoxShipsPredefined = false;
     
-    private final String PREDEFINED_MISSION_NONE = "";
-    private final String PREDEFINED_MISSION_TRANSPORT_FAST = "Transport fast with corvettes";
-    private final String PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES = "Attack with all corvettes";
-    private final String PREDEFINED_MISSION_DEPLOY_ALL = "Deploy all ships";
-    private final String PREDEFINED_MISSION_DEPLOY_ALL_EXP = "Deploy all explorers";
-    private final String PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES = "Deploy all corvettes";
-    private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS = "Deploy all battleships";
-    private final String PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER = "Deploy all battleships and transporter";
-    private final String PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP = "Deploy all ships except explorers";
-    private final String PREDEFINED_MISSION_EXPLORE_EXP = "Explore with Explorer";
-    private final String PREDEFINED_MISSION_EXPLORE_EXP2 = "Explore with Explorer II";
+    private final String PREDEFINED_SHIPSELECTION_EMPTY = "";
+    private final String PREDEFINED_SHIPSELECTION_NONE = "No ships";
+    private final String PREDEFINED_SHIPSELECTION_ALL_EXP = "All explorership (Exp I)";
+    private final String PREDEFINED_SHIPSELECTION_ALL_CORVETTES = "All corvettes";
+    private final String PREDEFINED_SHIPSELECTION_ALL_EXCEPT_EXP0 = "All ships except explorership (Exp I)";
+    private final String PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS = "All battleships";
+    private final String PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS_AND_TRANSPORTER0 = "All battleships and transportship (Tr.I)";
+    private final String PREDEFINED_SHIPSELECTION_ALL = "All ships";
 
-    private String[] predefinedMissions = {
-            PREDEFINED_MISSION_NONE,
-            PREDEFINED_MISSION_TRANSPORT_FAST,
-            PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES,
-            PREDEFINED_MISSION_DEPLOY_ALL_EXP,
-            PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP,
-            PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES,
-            PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS,
-            PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER,
-            PREDEFINED_MISSION_DEPLOY_ALL, 
-            PREDEFINED_MISSION_EXPLORE_EXP,
-            PREDEFINED_MISSION_EXPLORE_EXP2
+    private String[] predefinedShipSelection = {
+            PREDEFINED_SHIPSELECTION_EMPTY,
+            PREDEFINED_SHIPSELECTION_NONE,
+            PREDEFINED_SHIPSELECTION_ALL_EXP,
+            PREDEFINED_SHIPSELECTION_ALL_CORVETTES,
+            PREDEFINED_SHIPSELECTION_ALL_EXCEPT_EXP0,
+            PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS,
+            PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS_AND_TRANSPORTER0,
+            PREDEFINED_SHIPSELECTION_ALL
     };
     
     private final String MISSION_NONE = "";
@@ -184,6 +179,8 @@ public class PanelFleet extends JPanel {
 
             @Override
             public void tableChanged(TableModelEvent arg0) {
+                if (!actionPerformed_comboBoxShipsPredefined)
+                    comboBoxShipsPredefined.setSelectedItem(PREDEFINED_SHIPSELECTION_EMPTY);
                 tableChanged_Fleet();
                 checkPreconditionSendToSteemButton();
             }});
@@ -227,7 +224,7 @@ public class PanelFleet extends JPanel {
         panelMissions.add(textFieldFreeMissions, gbc_textFieldFreeMissions);
         textFieldFreeMissions.setColumns(10);
         
-        JLabel lblMissionsPredefined = new JLabel("Predefined:");
+        JLabel lblMissionsPredefined = new JLabel("Ships:");
         GridBagConstraints gbc_lblMissionsPredefined = new GridBagConstraints();
         gbc_lblMissionsPredefined.anchor = GridBagConstraints.EAST;
         gbc_lblMissionsPredefined.insets = new Insets(0, 0, 5, 5);
@@ -235,11 +232,11 @@ public class PanelFleet extends JPanel {
         gbc_lblMissionsPredefined.gridy = 1;
         panelMissions.add(lblMissionsPredefined, gbc_lblMissionsPredefined);
         
-        comboBoxMissionsPredefined = new JComboBox(predefinedMissions);
-        comboBoxMissionsPredefined.addActionListener(new ActionListener() {
+        comboBoxShipsPredefined = new JComboBox(predefinedShipSelection);
+        comboBoxShipsPredefined.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                if (!((String)comboBoxMissionsPredefined.getSelectedItem()).equalsIgnoreCase(PREDEFINED_MISSION_NONE))
-                    actionPerformed_comboBoxMissionsPredefined();
+                if (!((String)comboBoxShipsPredefined.getSelectedItem()).equalsIgnoreCase(PREDEFINED_SHIPSELECTION_EMPTY))
+                    actionPerformed_comboBoxShipsPredefined();
             }
         });
         
@@ -248,7 +245,7 @@ public class PanelFleet extends JPanel {
         gbc_comboBoxMissionsPredefined.insets = new Insets(0, 0, 5, 0);
         gbc_comboBoxMissionsPredefined.gridx = 1;
         gbc_comboBoxMissionsPredefined.gridy = 1;
-        panelMissions.add(comboBoxMissionsPredefined, gbc_comboBoxMissionsPredefined);
+        panelMissions.add(comboBoxShipsPredefined, gbc_comboBoxMissionsPredefined);
         
         JLabel lblMissionsStandard = new JLabel("Type:");
         GridBagConstraints gbc_lblMissionsStandard = new GridBagConstraints();
@@ -261,14 +258,7 @@ public class PanelFleet extends JPanel {
         comboBoxMissionsStandard = new JComboBox(missions);
         comboBoxMissionsStandard.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                if (predefinedMissionSelected) {
-                    predefinedMissionSelected = false;
-                } else {
-                    if (!((String)comboBoxMissionsPredefined.getSelectedItem()).equalsIgnoreCase(PREDEFINED_MISSION_NONE))
-                        comboBoxMissionsPredefined.setSelectedItem(PREDEFINED_MISSION_NONE);
-                }
-                tableChanged_Fleet();
-                checkPreconditionSendToSteemButton();
+                actionPerformed_comboBoxMissionsStandard();
             }
         });
         GridBagConstraints gbc_comboBoxMissionsStandard = new GridBagConstraints();
@@ -759,9 +749,9 @@ public class PanelFleet extends JPanel {
         comboBoxTargetPlanet.setSelectedItem(targetPlanet.getName());
     }
     
-    private void actionPerformed_comboBoxMissionsPredefined() {
+    private void actionPerformed_comboBoxShipsPredefined() {
         
-        predefinedMissionSelected = true;
+        actionPerformed_comboBoxShipsPredefined = true;
         
         // Reset all values in table
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -769,54 +759,36 @@ public class PanelFleet extends JPanel {
             model.setValueAt(null, i, 3);
         }
         
-        switch ((String)comboBoxMissionsPredefined.getSelectedItem()) {
-        
-        // Explore
-        
-        case PREDEFINED_MISSION_EXPLORE_EXP:
-            for (int i = 0; i < model.getRowCount(); i++) {
-                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership")) 
-                    model.setValueAt(1, i, 2);
-            }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_EXPLORE);
+        switch ((String)comboBoxShipsPredefined.getSelectedItem()) {
+            
+        case PREDEFINED_SHIPSELECTION_NONE:
             break;
             
-        case PREDEFINED_MISSION_EXPLORE_EXP2:
-            for (int i = 0; i < model.getRowCount(); i++) {
-                if (((String)model.getValueAt(i, 0)).equalsIgnoreCase("explorership1"))
-                    model.setValueAt(1, i, 2);
-            }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_EXPLORE);
-            break;
-            
-            
-        // DEPLOY
-            
-        case PREDEFINED_MISSION_DEPLOY_ALL:
-            for (int i = 0; i < model.getRowCount(); i++)
-                model.setValueAt(model.getValueAt(i, 1), i, 2);
-            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
-            break;
-            
-        case PREDEFINED_MISSION_DEPLOY_ALL_EXP:
+        case PREDEFINED_SHIPSELECTION_ALL_EXP:
             for (int i = 0; i < model.getRowCount(); i++) {
                 String ship = (String)model.getValueAt(i, 0);
                 if (ship.equalsIgnoreCase("explorership"))
                     model.setValueAt(model.getValueAt(i, 1), i, 2);
             }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
             
-        case PREDEFINED_MISSION_DEPLOY_ALL_CORVETTES:
+        case PREDEFINED_SHIPSELECTION_ALL_CORVETTES:
             for (int i = 0; i < model.getRowCount(); i++) {
                 String ship = (String)model.getValueAt(i, 0);
                 if (ship.equalsIgnoreCase("corvette") || ship.equalsIgnoreCase("corvette1"))
                     model.setValueAt(model.getValueAt(i, 1), i, 2);
             }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
             
-        case PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS:
+        case PREDEFINED_SHIPSELECTION_ALL_EXCEPT_EXP0:
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String ship = (String)model.getValueAt(i, 0);
+                if (!ship.equalsIgnoreCase("explorership"))
+                    model.setValueAt(model.getValueAt(i, 1), i, 2);
+            }
+            break;
+        
+        case PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS:
             for (int i = 0; i < model.getRowCount(); i++) {
                 String ship = (String)model.getValueAt(i, 0);
                 if (!ship.equalsIgnoreCase("explorership") && 
@@ -825,10 +797,9 @@ public class PanelFleet extends JPanel {
                         !ship.equalsIgnoreCase("transportship1"))
                     model.setValueAt(model.getValueAt(i, 1), i, 2);
             }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
             
-        case PREDEFINED_MISSION_DEPLOY_ALL_BATTLESHIPS_AND_TRANSPORTER:
+        case PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS_AND_TRANSPORTER0:
             for (int i = 0; i < model.getRowCount(); i++) {
                 String ship = (String)model.getValueAt(i, 0);
                 if (!ship.equalsIgnoreCase("explorership") && 
@@ -836,46 +807,15 @@ public class PanelFleet extends JPanel {
                         !ship.equalsIgnoreCase("transportship1"))
                     model.setValueAt(model.getValueAt(i, 1), i, 2);
             }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
             break;
             
-        case PREDEFINED_MISSION_DEPLOY_ALL_EXCEPT_EXP:
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String ship = (String)model.getValueAt(i, 0);
-                if (!ship.equalsIgnoreCase("explorership") && !ship.equalsIgnoreCase("explorership1"))
-                    model.setValueAt(model.getValueAt(i, 1), i, 2);
-            }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_DEPLOY);
-            break;
-        
-        // Transport
-        
-        case PREDEFINED_MISSION_TRANSPORT_FAST:
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String ship = (String)model.getValueAt(i, 0);
-                if (ship.equalsIgnoreCase("corvette") || ship.equalsIgnoreCase("corvette1"))
-                    model.setValueAt(model.getValueAt(i, 1), i, 2);
-            }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_TRANSPORT);
-            break;
-            
-        // Attack
-        
-        case PREDEFINED_MISSION_ATTACK_WITH_ALL_CORVETTES:
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String ship = (String)model.getValueAt(i, 0);
-                if (ship.equalsIgnoreCase("corvette")) {
-                    model.setValueAt(model.getValueAt(i, 1), i, 2);
-                    model.setValueAt(1, i, 3);
-                }
-                if (ship.equalsIgnoreCase("corvette1")) {
-                    model.setValueAt(model.getValueAt(i, 1), i, 2);
-                    model.setValueAt(2, i, 3);
-                }
-            }
-            comboBoxMissionsStandard.setSelectedItem(MISSION_ATTACK);
+        case PREDEFINED_SHIPSELECTION_ALL:
+            for (int i = 0; i < model.getRowCount(); i++)
+                model.setValueAt(model.getValueAt(i, 1), i, 2);
             break;
         }
+        
+        actionPerformed_comboBoxShipsPredefined = false;
     }
     
     private void actionPerformed_btnSendTransaction() {
@@ -1067,16 +1007,38 @@ public class PanelFleet extends JPanel {
             return;
         }
         
-        if(((String)comboBoxMissionsStandard.getSelectedItem()).equalsIgnoreCase(MISSION_NONE)) {
-            dialogPlanet.setStatusError(but + "No mission selected");
+        if (missionsAvailable == 0) {
+            dialogPlanet.setStatusError(but + "No mission slot available");
             btnSendTransaction.setEnabled(false);
             return;
         }
         
-        if (missionsAvailable <= 0) {
-            dialogPlanet.setStatusError(but + "No mission slot available");
+        String selectedMission = (String) comboBoxMissionsStandard.getSelectedItem();
+        
+        if (numberOfShips <= 0) {
+            dialogPlanet.setStatusError(but + "No ships selected");
             btnSendTransaction.setEnabled(false);
             return;
+        }
+        
+        if(selectedMission.equalsIgnoreCase(MISSION_NONE)) {
+            dialogPlanet.setStatusError(but + "No mission type selected");
+            btnSendTransaction.setEnabled(false);
+            return;
+        }
+        
+        if (selectedMission.equalsIgnoreCase(MISSION_ATTACK) || 
+                selectedMission.equalsIgnoreCase(MISSION_SUPPORT) ||
+                selectedMission.equalsIgnoreCase(MISSION_SIEGE) ||
+                selectedMission.equalsIgnoreCase(MISSION_BREAKSIEGE)) {
+            
+            for (Entry<String, TableFleetValues> entry : getMapOfShipsWithAllValues().entrySet()) {
+                if (entry.getValue().getPosition() == null) {
+                    dialogPlanet.setStatusError(but + "Check ship position for battle (start with 1...)");
+                    btnSendTransaction.setEnabled(false);
+                    return;
+                }
+            }
         }
         
         try {
@@ -1085,12 +1047,6 @@ public class PanelFleet extends JPanel {
         }
         catch (Exception e) {
             dialogPlanet.setStatusError(but + "Check target X/Y coordinates");
-            btnSendTransaction.setEnabled(false);
-            return;
-        }
-        
-        if (numberOfShips <= 0) {
-            dialogPlanet.setStatusError(but + "No ships selected");
             btnSendTransaction.setEnabled(false);
             return;
         }
@@ -1126,5 +1082,41 @@ public class PanelFleet extends JPanel {
         
         dialogPlanet.setStatusOk("Ok");
         btnSendTransaction.setEnabled(true);
+    }
+    
+    private void actionPerformed_comboBoxMissionsStandard() {
+        
+        actionPerformed_comboBoxShipsPredefined = true;
+        
+        // Reset position values in table
+        for (int i = 0; i < model.getRowCount(); i++) {
+            model.setValueAt(null, i, 3);
+        }
+        
+        String selectedMission = (String)comboBoxMissionsStandard.getSelectedItem();
+        if (selectedMission.equalsIgnoreCase(MISSION_ATTACK) || 
+                selectedMission.equalsIgnoreCase(MISSION_SUPPORT) ||
+                selectedMission.equalsIgnoreCase(MISSION_SIEGE) ||
+                selectedMission.equalsIgnoreCase(MISSION_BREAKSIEGE)) {
+            
+            String ships = (String) comboBoxShipsPredefined.getSelectedItem();
+            if (ships.equalsIgnoreCase(PREDEFINED_SHIPSELECTION_ALL_CORVETTES)) {
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String ship = (String)model.getValueAt(i, 0);
+                    if (ship.equalsIgnoreCase("corvette")) {
+                        model.setValueAt(model.getValueAt(i, 1), i, 2);
+                        model.setValueAt(1, i, 3);
+                    }
+                    if (ship.equalsIgnoreCase("corvette1")) {
+                        model.setValueAt(model.getValueAt(i, 1), i, 2);
+                        model.setValueAt(2, i, 3);
+                    }
+                }
+                tableChanged_Fleet();
+                checkPreconditionSendToSteemButton();
+            }
+        }
+        
+        actionPerformed_comboBoxShipsPredefined = false;
     }
 }

@@ -96,6 +96,14 @@ public class PanelPlanetDetails extends JPanel {
         gbc_txtPlanetid.gridy = 2;
         panelImageText.add(txtPlanetid, gbc_txtPlanetid);
         
+        JLabel lblPlanettype = new JLabel("");
+        lblPlanettype.setForeground(new Color(255, 255, 224));
+        lblPlanettype.setFont(new Font("Comic Sans MS", Font.PLAIN, 36));
+        GridBagConstraints gbc_lblPlanettype = new GridBagConstraints();
+        gbc_lblPlanettype.gridx = 1;
+        gbc_lblPlanettype.gridy = 3;
+        panelImageText.add(lblPlanettype, gbc_lblPlanettype);
+        
         panelImage = new JLabel();
         panelImage.setOpaque(false);
         GridBagConstraints gbc_panelImage = new GridBagConstraints();
@@ -203,23 +211,29 @@ public class PanelPlanetDetails extends JPanel {
     
         checkPreconditionSendToSteemButton();
         
-        new SwingWorker<Object, Object>() {
+        new SwingWorker<PlanetDetails, Object>() {
 
             @Override
-            protected Object doInBackground() throws Exception {
+            protected PlanetDetails doInBackground() throws Exception {
                 PlanetDetails planetDetails = new PlanetDetails(planet.getId());
                 String path = "https://nextcolony.io/img/planets/" + planetDetails.getImg();
                 URL url = new URL(path);
                 BufferedImage image = ImageIO.read(url);
                 panelImage = new JLabel(new ImageIcon(image));
-                return null;
+                return planetDetails;
             }
 
             @Override
             protected void done() {
-                panelImage.setBackground(Color.BLUE);
-                panelImage.setOpaque(true);
-                add(panelImage, gbc_panelImage);
+                
+                try {
+                    PlanetDetails planetDetails = get();
+                    lblPlanettype.setText(planetDetails.getPlanet_rarity() + " " + planetDetails.getPlanet_type());
+                    panelImage.setBackground(Color.BLUE);
+                    panelImage.setOpaque(true);
+                    add(panelImage, gbc_panelImage);
+                } catch (InterruptedException | ExecutionException e) {
+                }
                 super.done();
             }
             

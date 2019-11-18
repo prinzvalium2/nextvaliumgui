@@ -47,6 +47,8 @@ public class PlanetDetails {
         JSONObject jsonPlanet = Util.getJSONObjectFromApiCommand(apiCmd);
  
         img = jsonPlanet.getString("img");
+        planet_rarity = jsonPlanet.getString("planet_rarity");
+        planet_type = jsonPlanet.getString("planet_type");
 
         userName = jsonPlanet.getString("user");
         planetId = jsonPlanet.getString("planet_id");

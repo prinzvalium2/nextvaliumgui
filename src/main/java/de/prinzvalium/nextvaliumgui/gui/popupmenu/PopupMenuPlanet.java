@@ -53,6 +53,7 @@ public class PopupMenuPlanet extends JPopupMenu {
         panelPlanetDetails.setLayout(gbl_panelPlanetDetails);
         
         JCheckBox chckbxMarkAsTarget = new JCheckBox("Mark as target");
+        chckbxMarkAsTarget.setMargin(new Insets(0, 0, 0, 0));
         Planet planetMarked = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
         boolean unselected = planetMarked == null || !planet.getId().equalsIgnoreCase(planetMarked.getId());
         chckbxMarkAsTarget.setSelected(!unselected);
@@ -71,12 +72,13 @@ public class PopupMenuPlanet extends JPopupMenu {
             }
         });
         GridBagConstraints gbc_chckbxMarkAsTarget = new GridBagConstraints();
-        gbc_chckbxMarkAsTarget.anchor = GridBagConstraints.NORTHWEST;
+        gbc_chckbxMarkAsTarget.anchor = GridBagConstraints.WEST;
         gbc_chckbxMarkAsTarget.gridx = 0;
         gbc_chckbxMarkAsTarget.gridy = 0;
         panelPlanetDetails.add(chckbxMarkAsTarget, gbc_chckbxMarkAsTarget);
         
         JCheckBox chckbxCenterMap = new JCheckBox("Center map");
+        chckbxCenterMap.setMargin(new Insets(0, 0, 0, 0));
         chckbxCenterMap.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 

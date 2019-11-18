@@ -1,20 +1,20 @@
 package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 
-public class FleetTableValues {
+public class TableFleetValues {
     
     private String shipType;
     private Integer numberPlanet;
     private Integer numberFleet;
     private Integer position;
     
-    public FleetTableValues() {
+    public TableFleetValues() {
         this.shipType = null;
         this.numberPlanet = -1;
         this.numberFleet = -1;
         this.position = -1;
     }
     
-    public FleetTableValues(String shipType, Integer numberPlanet, Integer numberFleet, Integer position) {
+    public TableFleetValues(String shipType, Integer numberPlanet, Integer numberFleet, Integer position) {
         this.shipType = shipType;
         this.numberPlanet = numberPlanet;
         this.numberFleet = numberFleet;

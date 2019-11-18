@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 
-import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.FleetTableValues;
+import de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails.TableFleetValues;
 import de.prinzvalium.nextvaliumgui.nextcolony.Resources;
 import eu.bittrade.libs.steemj.exceptions.SteemCommunicationException;
 import eu.bittrade.libs.steemj.exceptions.SteemInvalidTransactionException;
@@ -100,7 +100,7 @@ public class CustomJson {
         broadcastJSONObjectToSteem(jsonObject);
     }
     
-    public static void fightingAction(String type, HashMap<String, FleetTableValues> map, String userName, String planetId, int x, int y) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+    public static void fightingAction(String type, HashMap<String, TableFleetValues> map, String userName, String planetId, int x, int y) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         
         SteemUtil.setDefaultAccount(userName);
         
@@ -110,8 +110,8 @@ public class CustomJson {
         JsonObject jsonShips = new JsonObject();
         
         while (map.size() > 0 ) {
-            Entry<String, FleetTableValues> smallestEntry = null;
-            for (Entry<String, FleetTableValues> entry : map.entrySet()) {
+            Entry<String, TableFleetValues> smallestEntry = null;
+            for (Entry<String, TableFleetValues> entry : map.entrySet()) {
                 if (smallestEntry == null) {
                     smallestEntry = entry;
                     continue;

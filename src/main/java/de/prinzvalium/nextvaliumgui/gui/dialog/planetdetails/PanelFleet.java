@@ -980,16 +980,16 @@ public class PanelFleet extends JPanel {
         return mapNumberOfShipTypes;
     }
     
-    private HashMap<String, FleetTableValues> getMapOfShipsWithAllValues() {
+    private HashMap<String, TableFleetValues> getMapOfShipsWithAllValues() {
         
-        HashMap<String, FleetTableValues> mapNumberOfShipTypes = new HashMap<String, FleetTableValues>();
+        HashMap<String, TableFleetValues> mapNumberOfShipTypes = new HashMap<String, TableFleetValues>();
         for (int i = 0; i < model.getRowCount(); i++) {
             String ship = (String)model.getValueAt(i, 0);
             Integer numberPlanet = (Integer)model.getValueAt(i, 1);
             Integer numberFleet = (Integer)model.getValueAt(i, 2);
             Integer position = (Integer)model.getValueAt(i, 3);
             if (numberFleet != null && numberFleet > 0) {
-                FleetTableValues ftv = new FleetTableValues(ship, numberPlanet, numberFleet, position);
+                TableFleetValues ftv = new TableFleetValues(ship, numberPlanet, numberFleet, position);
                 mapNumberOfShipTypes.put(ship, ftv);
             }
         }

@@ -29,6 +29,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.Dimension;
 
 public class PanelPlanetDetails extends JPanel {
 
@@ -37,7 +42,6 @@ public class PanelPlanetDetails extends JPanel {
     private JLabel panelImage;
     private JTextField txtRenameplanet;
     private JTextField txtGiftPlanet;
-    private JTextField txtPlanetid;
     private Planet planet;
     private JButton btnRenameplanet;
     
@@ -68,43 +72,74 @@ public class PanelPlanetDetails extends JPanel {
         gbc_panelImageText.gridy = 0;
         add(panelImageText, gbc_panelImageText);
         GridBagLayout gbl_panelImageText = new GridBagLayout();
-        gbl_panelImageText.columnWidths = new int[]{0, 0, 0};
-        gbl_panelImageText.rowHeights = new int[]{0, 0, 0, 0, 0};
-        gbl_panelImageText.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-        gbl_panelImageText.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelImageText.columnWidths = new int[] {0, 400};
+        gbl_panelImageText.rowHeights = new int[] {0, -18, 0, 30, 0, 0, 0};
+        gbl_panelImageText.columnWeights = new double[]{1.0, 0.0};
+        gbl_panelImageText.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
         panelImageText.setLayout(gbl_panelImageText);
+        
+        Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
+        GridBagConstraints gbc_rigidArea = new GridBagConstraints();
+        gbc_rigidArea.insets = new Insets(0, 0, 5, 5);
+        gbc_rigidArea.gridx = 0;
+        gbc_rigidArea.gridy = 0;
+        panelImageText.add(rigidArea, gbc_rigidArea);
+        
+        Component horizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_horizontalStrut = new GridBagConstraints();
+        gbc_horizontalStrut.insets = new Insets(0, 0, 5, 0);
+        gbc_horizontalStrut.gridx = 1;
+        gbc_horizontalStrut.gridy = 1;
+        panelImageText.add(horizontalStrut, gbc_horizontalStrut);
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+        gbc_scrollPane.gridheight = 6;
+        gbc_scrollPane.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane.gridx = 1;
+        gbc_scrollPane.gridy = 0;
+        panelImageText.add(scrollPane, gbc_scrollPane);
+        
+        JTextArea textArea = new JTextArea();
+        scrollPane.setViewportView(textArea);
+        textArea.setForeground(Color.WHITE);
+        textArea.setOpaque(false);
         
         JLabel lblPlanetName = new JLabel(planet.getName());
         lblPlanetName.setForeground(Color.WHITE);
-        lblPlanetName.setFont(new Font("Comic Sans MS", Font.PLAIN, 46));
+        lblPlanetName.setFont(new Font("Comic Sans MS", Font.PLAIN, 36));
         GridBagConstraints gbc_lblPlanetName = new GridBagConstraints();
-        gbc_lblPlanetName.insets = new Insets(0, 0, 5, 0);
-        gbc_lblPlanetName.gridx = 1;
-        gbc_lblPlanetName.gridy = 1;
+        gbc_lblPlanetName.insets = new Insets(0, 0, 5, 5);
+        gbc_lblPlanetName.gridx = 0;
+        gbc_lblPlanetName.gridy = 2;
         panelImageText.add(lblPlanetName, gbc_lblPlanetName);
         
-        txtPlanetid = new JTextField(planet.getId());
+        JLabel txtPlanetid = new JLabel(planet.getId());
         txtPlanetid.setHorizontalAlignment(SwingConstants.CENTER);
         txtPlanetid.setForeground(Color.WHITE);
-        txtPlanetid.setFont(new Font("Comic Sans MS", Font.PLAIN, 46));
+        txtPlanetid.setFont(new Font("Comic Sans MS", Font.PLAIN, 26));
         txtPlanetid.setBorder(null);
-        txtPlanetid.setEditable(false);
         txtPlanetid.setOpaque(false);
         GridBagConstraints gbc_txtPlanetid = new GridBagConstraints();
-        gbc_txtPlanetid.insets = new Insets(0, 0, 5, 0);
-        gbc_txtPlanetid.gridx = 1;
-        gbc_txtPlanetid.gridy = 2;
+        gbc_txtPlanetid.insets = new Insets(0, 0, 5, 5);
+        gbc_txtPlanetid.gridx = 0;
+        gbc_txtPlanetid.gridy = 3;
         panelImageText.add(txtPlanetid, gbc_txtPlanetid);
         
-        JLabel lblPlanettype = new JLabel("");
-        lblPlanettype.setForeground(new Color(255, 255, 224));
+        JLabel lblPlanettype = new JLabel("dsdf");
+        lblPlanettype.setForeground(Color.WHITE);
         lblPlanettype.setFont(new Font("Comic Sans MS", Font.PLAIN, 36));
         GridBagConstraints gbc_lblPlanettype = new GridBagConstraints();
-        gbc_lblPlanettype.gridx = 1;
-        gbc_lblPlanettype.gridy = 3;
+        gbc_lblPlanettype.insets = new Insets(0, 0, 5, 5);
+        gbc_lblPlanettype.gridx = 0;
+        gbc_lblPlanettype.gridy = 4;
         panelImageText.add(lblPlanettype, gbc_lblPlanettype);
         
         panelImage = new JLabel();
+        panelImage.setBackground(Color.BLUE);
         panelImage.setOpaque(false);
         GridBagConstraints gbc_panelImage = new GridBagConstraints();
         gbc_panelImage.insets = new Insets(0, 0, 5, 0);
@@ -229,9 +264,12 @@ public class PanelPlanetDetails extends JPanel {
                 try {
                     PlanetDetails planetDetails = get();
                     lblPlanettype.setText(planetDetails.getPlanet_rarity() + " " + planetDetails.getPlanet_type());
+                    textArea.setText(planetDetails.getJsonString());
+                    textArea.setCaretPosition(0);
                     panelImage.setBackground(Color.BLUE);
                     panelImage.setOpaque(true);
                     add(panelImage, gbc_panelImage);
+                    
                 } catch (InterruptedException | ExecutionException e) {
                 }
                 super.done();

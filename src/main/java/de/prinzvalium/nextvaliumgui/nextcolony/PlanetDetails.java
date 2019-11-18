@@ -13,6 +13,7 @@ public class PlanetDetails {
     private String userName;
     
     private String img;
+    private String jsonString;
     private int level_base;
     private int level_coal;
     private int level_coaldepot;
@@ -45,6 +46,8 @@ public class PlanetDetails {
         
         String apiCmd = String.format(Util.NEXTCOLONY_API_CMD_LOADPLANET, planetId);
         JSONObject jsonPlanet = Util.getJSONObjectFromApiCommand(apiCmd);
+        
+        jsonString = jsonPlanet.toString(4);
  
         img = jsonPlanet.getString("img");
         planet_rarity = jsonPlanet.getString("planet_rarity");
@@ -169,5 +172,9 @@ public class PlanetDetails {
     public static void main(String[] args) throws JSONException, IOException {
         Util.setProxy();
         new PlanetDetails("P-ZGD7FULO3I8").loadPlanetDetails(); // patti.pizza
+    }
+
+    public String getJsonString() {
+        return jsonString;
     }
 }

@@ -63,7 +63,7 @@ public class NextValiumGui {
     private JCheckBox chckbxRadarOthers;
     private HashMap<String, Planet> mapPlanets;
     private Planet planetMarkedAsTarget = null;
-    private JTextField textFieldMarkedAsTarget;
+    private JTextField textFieldTargetUser;
     private JButton btnClearTarget;
     private JButton btnRefresh;
     private ArrayList<String> listUsers;
@@ -77,6 +77,9 @@ public class NextValiumGui {
     private JMenuItem mntmSeasonRanking;
     private JButton btnLastPlanet;
     private Planet lastPlanet = null;
+    private JLabel lblTargetuser;
+    private JLabel lblTargetplanet;
+    private JTextField txtTargetplanet;
 
     /**
      * Launch the application.
@@ -171,7 +174,8 @@ public class NextValiumGui {
         panelTop.setLayout(gbl_panelTop);
         
         JPanel panelUserPlanet = new JPanel();
-        panelUserPlanet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Select user planet or x/y", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panelUserPlanet.setToolTipText("Select user planet or x/y");
+        panelUserPlanet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Center map", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_panelUserPlanet = new GridBagConstraints();
         gbc_panelUserPlanet.insets = new Insets(0, 0, 0, 5);
         gbc_panelUserPlanet.fill = GridBagConstraints.BOTH;
@@ -181,7 +185,7 @@ public class NextValiumGui {
         GridBagLayout gbl_panelUserPlanet = new GridBagLayout();
         gbl_panelUserPlanet.columnWidths = new int[]{26, 86, 0, 0, 0, 0};
         gbl_panelUserPlanet.rowHeights = new int[]{23, 1, 0};
-        gbl_panelUserPlanet.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelUserPlanet.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
         gbl_panelUserPlanet.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panelUserPlanet.setLayout(gbl_panelUserPlanet);
         
@@ -235,7 +239,6 @@ public class NextValiumGui {
         gbc_textFieldPosX.gridy = 0;
         panelUserPlanet.add(textFieldPosX, gbc_textFieldPosX);
         textFieldPosX.setColumns(4);
-        textFieldPosX.setText("0");
         
         btnRefresh = new JButton("<html><center>Reload<br>\r\nmap</center></html>");
         btnRefresh.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -299,11 +302,11 @@ public class NextValiumGui {
         gbc_textFieldPosY.gridx = 3;
         gbc_textFieldPosY.gridy = 1;
         panelUserPlanet.add(textFieldPosY, gbc_textFieldPosY);
-        textFieldPosY.setText("0");
         textFieldPosY.setColumns(4);
         
         JPanel panelTarget = new JPanel();
-        panelTarget.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Right click on planet to mark as target", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panelTarget.setToolTipText("Right click on planet to mark as target");
+        panelTarget.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Target", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_panelTarget = new GridBagConstraints();
         gbc_panelTarget.insets = new Insets(0, 0, 0, 5);
         gbc_panelTarget.fill = GridBagConstraints.BOTH;
@@ -311,27 +314,56 @@ public class NextValiumGui {
         gbc_panelTarget.gridy = 0;
         panelTop.add(panelTarget, gbc_panelTarget);
         GridBagLayout gbl_panelTarget = new GridBagLayout();
-        gbl_panelTarget.columnWidths = new int[]{200, 0};
+        gbl_panelTarget.columnWidths = new int[]{0, 0, 0, 0};
         gbl_panelTarget.rowHeights = new int[]{23, 1, 0};
-        gbl_panelTarget.columnWeights = new double[]{0.0, Double.MIN_VALUE};
+        gbl_panelTarget.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
         gbl_panelTarget.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panelTarget.setLayout(gbl_panelTarget);
         
-        btnClearTarget = new JButton("Clear target");
+        lblTargetuser = new JLabel("User:");
+        GridBagConstraints gbc_lblTargetuser = new GridBagConstraints();
+        gbc_lblTargetuser.insets = new Insets(0, 0, 5, 5);
+        gbc_lblTargetuser.anchor = GridBagConstraints.EAST;
+        gbc_lblTargetuser.gridx = 0;
+        gbc_lblTargetuser.gridy = 0;
+        panelTarget.add(lblTargetuser, gbc_lblTargetuser);
+        
+        lblTargetplanet = new JLabel("Planet:");
+        GridBagConstraints gbc_lblTargetplanet = new GridBagConstraints();
+        gbc_lblTargetplanet.anchor = GridBagConstraints.EAST;
+        gbc_lblTargetplanet.insets = new Insets(0, 0, 0, 5);
+        gbc_lblTargetplanet.gridx = 0;
+        gbc_lblTargetplanet.gridy = 1;
+        panelTarget.add(lblTargetplanet, gbc_lblTargetplanet);
+        
+        btnClearTarget = new JButton("<html><center>Clear<br>target</center></html>");
         GridBagConstraints gbc_btnClearTarget = new GridBagConstraints();
+        gbc_btnClearTarget.fill = GridBagConstraints.VERTICAL;
+        gbc_btnClearTarget.gridheight = 2;
         gbc_btnClearTarget.anchor = GridBagConstraints.EAST;
-        gbc_btnClearTarget.gridx = 0;
-        gbc_btnClearTarget.gridy = 1;
+        gbc_btnClearTarget.gridx = 2;
+        gbc_btnClearTarget.gridy = 0;
         panelTarget.add(btnClearTarget, gbc_btnClearTarget);
         
-        textFieldMarkedAsTarget = new JTextField();
+        textFieldTargetUser = new JTextField();
         GridBagConstraints gbc_textFieldMarkedAsTarget = new GridBagConstraints();
+        gbc_textFieldMarkedAsTarget.insets = new Insets(0, 0, 5, 5);
         gbc_textFieldMarkedAsTarget.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textFieldMarkedAsTarget.gridx = 0;
+        gbc_textFieldMarkedAsTarget.gridx = 1;
         gbc_textFieldMarkedAsTarget.gridy = 0;
-        panelTarget.add(textFieldMarkedAsTarget, gbc_textFieldMarkedAsTarget);
-        textFieldMarkedAsTarget.setEditable(false);
-        textFieldMarkedAsTarget.setColumns(10);
+        panelTarget.add(textFieldTargetUser, gbc_textFieldMarkedAsTarget);
+        textFieldTargetUser.setEditable(false);
+        textFieldTargetUser.setColumns(15);
+        
+        txtTargetplanet = new JTextField();
+        txtTargetplanet.setEditable(false);
+        GridBagConstraints gbc_txtTargetplanet = new GridBagConstraints();
+        gbc_txtTargetplanet.insets = new Insets(0, 0, 0, 5);
+        gbc_txtTargetplanet.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtTargetplanet.gridx = 1;
+        gbc_txtTargetplanet.gridy = 1;
+        panelTarget.add(txtTargetplanet, gbc_txtTargetplanet);
+        txtTargetplanet.setColumns(15);
         
         JPanel panelRadar = new JPanel();
         panelRadar.setBorder(new TitledBorder(null, "Flight radar", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -453,7 +485,8 @@ public class NextValiumGui {
         btnClearTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 planetMarkedAsTarget = null;
-                textFieldMarkedAsTarget.setText(null);
+                textFieldTargetUser.setText(null);
+                txtTargetplanet.setText(null);
                 frmNextvaliumManagementGui.repaint();
             }
         });
@@ -485,13 +518,14 @@ public class NextValiumGui {
 
     public void setPlanetMarkedAsTarget(Planet planetMarkedAsTarget) {
         this.planetMarkedAsTarget = planetMarkedAsTarget;
-        textFieldMarkedAsTarget.setText(planetMarkedAsTarget.getUserName() + " / " + planetMarkedAsTarget.getName());
+        textFieldTargetUser.setText(planetMarkedAsTarget.getUserName());
+        txtTargetplanet.setText(planetMarkedAsTarget.getName());
         frmNextvaliumManagementGui.repaint();
     }
     
     public void clearTarget() {
         planetMarkedAsTarget = null;
-        textFieldMarkedAsTarget.setText(null);
+        textFieldTargetUser.setText(null);
         frmNextvaliumManagementGui.repaint();
     }
 

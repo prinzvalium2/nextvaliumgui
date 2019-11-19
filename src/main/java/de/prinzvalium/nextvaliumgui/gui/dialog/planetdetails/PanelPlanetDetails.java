@@ -251,10 +251,15 @@ public class PanelPlanetDetails extends JPanel {
             @Override
             protected PlanetDetails doInBackground() throws Exception {
                 PlanetDetails planetDetails = new PlanetDetails(planet.getId());
-                String path = "https://nextcolony.io/img/planets/" + planetDetails.getImg();
-                URL url = new URL(path);
-                BufferedImage image = ImageIO.read(url);
-                panelImage = new JLabel(new ImageIcon(image));
+                
+                try {
+                    String path = "https://nextcolony.io/img/planets/" + planetDetails.getImg();
+                    URL url = new URL(path);
+                    BufferedImage image = ImageIO.read(url);
+                    panelImage = new JLabel(new ImageIcon(image));
+                }
+                catch (Exception e) {
+                }
                 return planetDetails;
             }
 

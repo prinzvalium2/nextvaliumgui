@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
+import de.prinzvalium.nextvaliumgui.gui.dialog.lastplanets.DialogLastPlanets;
 import de.prinzvalium.nextvaliumgui.gui.dialog.seasonranking.SeasonRanking;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
@@ -80,6 +81,7 @@ public class NextValiumGui {
     private JLabel lblTargetuser;
     private JLabel lblTargetplanet;
     private JTextField txtTargetplanet;
+    private JMenuItem mntmLastPlanets;
 
     /**
      * Launch the application.
@@ -162,6 +164,14 @@ public class NextValiumGui {
             }
         });
         mnInfo.add(mntmSeasonRanking);
+        
+        mntmLastPlanets = new JMenuItem("Last planets");
+        mntmLastPlanets.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                new DialogLastPlanets().setVisible(true);
+            }
+        });
+        mnInfo.add(mntmLastPlanets);
         
         JPanel panelTop = new JPanel();
         panelTop.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -571,7 +581,7 @@ public class NextValiumGui {
                 int x = Integer.parseInt(textFieldPosX.getText());
                 int y = Integer.parseInt(textFieldPosY.getText());
                 panelGalaxyMap.loadGalaxyMap(x, y);
-                showLastPlanets();
+                showLastPlanet();
                 return null;
             }
 
@@ -582,7 +592,7 @@ public class NextValiumGui {
         }.execute();
     }
     
-    private void showLastPlanets(){
+    private void showLastPlanet(){
         try {
             Vector<Planet> planets = new Vector<Planet>();
             for (String user : listUsers) {
@@ -634,5 +644,9 @@ public class NextValiumGui {
                 }
             }
         }).start();
+    }
+
+    public ArrayList<String> getListUsers() {
+        return listUsers;
     }
 }

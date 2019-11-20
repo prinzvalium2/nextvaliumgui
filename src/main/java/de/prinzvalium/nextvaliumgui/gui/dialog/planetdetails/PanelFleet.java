@@ -86,11 +86,11 @@ public class PanelFleet extends JPanel {
     
     private final String PREDEFINED_SHIPSELECTION_EMPTY = "";
     private final String PREDEFINED_SHIPSELECTION_NONE = "No ships";
-    private final String PREDEFINED_SHIPSELECTION_ALL_EXP = "All explorership (Exp I)";
+    private final String PREDEFINED_SHIPSELECTION_ALL_EXP = "All explorerships";
     private final String PREDEFINED_SHIPSELECTION_ALL_CORVETTES = "All corvettes";
-    private final String PREDEFINED_SHIPSELECTION_ALL_EXCEPT_EXP0 = "All ships except explorership (Exp I)";
+    private final String PREDEFINED_SHIPSELECTION_ALL_EXCEPT_EXP0 = "All ships except explorerships";
     private final String PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS = "All battleships";
-    private final String PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS_AND_TRANSPORTER0 = "All battleships and transportship (Tr.I)";
+    private final String PREDEFINED_SHIPSELECTION_ALL_BATTLESHIPS_AND_TRANSPORTER0 = "All battleships and transportships";
     private final String PREDEFINED_SHIPSELECTION_ALL = "All ships";
 
     private String[] predefinedShipSelection = {

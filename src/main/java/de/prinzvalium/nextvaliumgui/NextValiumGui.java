@@ -82,6 +82,8 @@ public class NextValiumGui {
     private JLabel lblTargetplanet;
     private JTextField txtTargetplanet;
     private JMenuItem mntmLastPlanets;
+    private JLabel lblStatus;
+    private JLabel txtStatus;
 
     /**
      * Launch the application.
@@ -180,7 +182,7 @@ public class NextValiumGui {
         gbl_panelTop.columnWidths = new int[]{26, 91, 0, 0, 0, 0};
         gbl_panelTop.rowHeights = new int[]{23, 0};
         gbl_panelTop.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-        gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+        gbl_panelTop.rowWeights = new double[]{1.0, Double.MIN_VALUE};
         panelTop.setLayout(gbl_panelTop);
         
         JPanel panelUserPlanet = new JPanel();
@@ -195,7 +197,7 @@ public class NextValiumGui {
         GridBagLayout gbl_panelUserPlanet = new GridBagLayout();
         gbl_panelUserPlanet.columnWidths = new int[]{26, 86, 0, 0, 0, 0};
         gbl_panelUserPlanet.rowHeights = new int[]{23, 1, 0};
-        gbl_panelUserPlanet.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_panelUserPlanet.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
         gbl_panelUserPlanet.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panelUserPlanet.setLayout(gbl_panelUserPlanet);
         
@@ -243,8 +245,8 @@ public class NextValiumGui {
         
         textFieldPosX = new JTextField();
         GridBagConstraints gbc_textFieldPosX = new GridBagConstraints();
+        gbc_textFieldPosX.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldPosX.insets = new Insets(0, 2, 5, 5);
-        gbc_textFieldPosX.anchor = GridBagConstraints.WEST;
         gbc_textFieldPosX.gridx = 3;
         gbc_textFieldPosX.gridy = 0;
         panelUserPlanet.add(textFieldPosX, gbc_textFieldPosX);
@@ -307,8 +309,8 @@ public class NextValiumGui {
         
         textFieldPosY = new JTextField();
         GridBagConstraints gbc_textFieldPosY = new GridBagConstraints();
+        gbc_textFieldPosY.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldPosY.insets = new Insets(0, 2, 0, 5);
-        gbc_textFieldPosY.anchor = GridBagConstraints.WEST;
         gbc_textFieldPosY.gridx = 3;
         gbc_textFieldPosY.gridy = 1;
         panelUserPlanet.add(textFieldPosY, gbc_textFieldPosY);
@@ -466,17 +468,35 @@ public class NextValiumGui {
         panelStatusBar.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
         frmNextvaliumManagementGui.getContentPane().add(panelStatusBar, BorderLayout.SOUTH);
         GridBagLayout gbl_panelStatusBar = new GridBagLayout();
-        gbl_panelStatusBar.columnWidths = new int[]{0, 0, 0, 0};
+        gbl_panelStatusBar.columnWidths = new int[]{0, 0, 0, 0, 0};
         gbl_panelStatusBar.rowHeights = new int[] {0};
-        gbl_panelStatusBar.columnWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelStatusBar.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
         gbl_panelStatusBar.rowWeights = new double[]{0.0};
         panelStatusBar.setLayout(gbl_panelStatusBar);
         
+        lblStatus = new JLabel("Alarmstatus:");
+        GridBagConstraints gbc_lblStatus = new GridBagConstraints();
+        gbc_lblStatus.anchor = GridBagConstraints.WEST;
+        gbc_lblStatus.insets = new Insets(0, 5, 0, 5);
+        gbc_lblStatus.gridx = 0;
+        gbc_lblStatus.gridy = 0;
+        panelStatusBar.add(lblStatus, gbc_lblStatus);
+        
+        txtStatus = new JLabel();
+        //txtStatus.setEditable(false);
+        GridBagConstraints gbc_txtStatus = new GridBagConstraints();
+        gbc_txtStatus.insets = new Insets(0, 0, 0, 5);
+        gbc_txtStatus.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtStatus.gridx = 1;
+        gbc_txtStatus.gridy = 0;
+        panelStatusBar.add(txtStatus, gbc_txtStatus);
+        //txtStatus.setColumns(10);
+        
         lblGamedelay = new JLabel("Game delay:");
         GridBagConstraints gbc_lblGamedelay = new GridBagConstraints();
-        gbc_lblGamedelay.insets = new Insets(1, 0, 1, 2);
+        gbc_lblGamedelay.insets = new Insets(1, 0, 1, 5);
         gbc_lblGamedelay.anchor = GridBagConstraints.WEST;
-        gbc_lblGamedelay.gridx = 1;
+        gbc_lblGamedelay.gridx = 2;
         gbc_lblGamedelay.gridy = 0;
         panelStatusBar.add(lblGamedelay, gbc_lblGamedelay);
         
@@ -487,7 +507,7 @@ public class NextValiumGui {
         GridBagConstraints gbc_textFieldGameDelay = new GridBagConstraints();
         gbc_textFieldGameDelay.anchor = GridBagConstraints.EAST;
         gbc_textFieldGameDelay.insets = new Insets(0, 0, 1, 1);
-        gbc_textFieldGameDelay.gridx = 2;
+        gbc_textFieldGameDelay.gridx = 3;
         gbc_textFieldGameDelay.gridy = 0;
         panelStatusBar.add(textFieldGameDelay, gbc_textFieldGameDelay);
         textFieldGameDelay.setColumns(8);
@@ -507,6 +527,7 @@ public class NextValiumGui {
         listUsers.forEach(user -> comboBoxUsers.addItem(user));
         
         doInBackgroundGameDelay();
+        doInBackgroundAlarm();
         
         new Thread(new Runnable() {
 
@@ -635,6 +656,52 @@ public class NextValiumGui {
                             public void run() {
                                 textFieldGameDelay.setText(String.format("%02d:%02d:%02d", hours, min, sec));
                             }});
+                    } catch (JSONException | IOException e) {
+                    }
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void doInBackgroundAlarm() {
+        
+        new Thread(new Runnable() {
+            boolean alarm = false;
+            @Override
+            public void run() {
+                
+                while (true) {
+                    try {
+                        
+                        alarm = false;
+                        
+                        for (String user : listUsers) {
+                            
+                            String apiCall = String.format(Util.NEXTCOLONY_API_CMD_MISSIONOVERVIEW, user);
+                            JSONObject jsonMissions = Util.getJSONObjectFromApiCommand(apiCall);
+                            if (jsonMissions.getInt("hostile_missions") > 0) {
+                                alarm = true;
+                                break;
+                            }
+                        }
+                        
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (alarm) {
+                                    txtStatus.setForeground(Color.RED.darker());
+                                    txtStatus.setText("Hostile mission");
+                                }
+                                else {
+                                    txtStatus.setForeground(Color.GREEN.darker());
+                                    txtStatus.setText("OK");
+                                 }
+                           }});
+                        
                     } catch (JSONException | IOException e) {
                     }
                     try {

@@ -244,6 +244,7 @@ public class NextValiumGui {
         panelUserPlanet.add(lblMapPosition, gbc_lblMapPosition);
         
         textFieldPosX = new JTextField();
+        textFieldPosX.setText("0");
         GridBagConstraints gbc_textFieldPosX = new GridBagConstraints();
         gbc_textFieldPosX.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldPosX.insets = new Insets(0, 2, 5, 5);
@@ -308,6 +309,7 @@ public class NextValiumGui {
         panelUserPlanet.add(lblMapPositionY, gbc_lblMapPositionY);
         
         textFieldPosY = new JTextField();
+        textFieldPosY.setText("0");
         GridBagConstraints gbc_textFieldPosY = new GridBagConstraints();
         gbc_textFieldPosY.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldPosY.insets = new Insets(0, 2, 0, 5);

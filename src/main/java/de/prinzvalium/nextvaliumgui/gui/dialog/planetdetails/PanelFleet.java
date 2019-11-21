@@ -749,7 +749,7 @@ public class PanelFleet extends JPanel {
                 
                 int baseCurrent = new Buildings(planet).getBuilding("base").getCurrent();
                 int missionsPlanetMax = baseCurrent / 2;
-                int missionsPlanetActive = Missions.loadAllActiveUserMissions(userName, planet.getId()).size();
+                int missionsPlanetActive = Missions.loadAllActiveOutgoingUserPlanetMissions(userName, planet.getId()).size();
                 missionsPlanetAvailable = missionsPlanetMax - missionsPlanetActive;
                 txtFreeMissionsPlanet.setText(missionsPlanetAvailable + " / " + missionsPlanetMax);
                 

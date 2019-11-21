@@ -34,6 +34,10 @@ public class Missions {
         return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=1&planetid=" + planetId);
     }
 
+    public static Vector<Mission> loadAllActiveOutgoingUserPlanetMissions(String userName, String planetId) throws JSONException, IOException {
+        return loadMissionsOfUserWithFilter(userName, "&active=1&outgoing=1&onlyuser=1&planetid=" + planetId);
+    }
+
     public static Vector<Mission> loadAllUserMissions(String userName, String planetId) throws JSONException, IOException {
         return loadMissionsOfUserWithFilter(userName, "&onlyuser=1&planetid=" + planetId);
     }

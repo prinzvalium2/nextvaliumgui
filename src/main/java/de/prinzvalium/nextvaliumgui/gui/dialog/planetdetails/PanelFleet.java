@@ -7,6 +7,7 @@ import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.MyIntFilter;
 import de.prinzvalium.nextvaliumgui.lib.NextValiumException;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
+import de.prinzvalium.nextvaliumgui.nextcolony.Buildings;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Missions;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
@@ -81,6 +82,7 @@ public class PanelFleet extends JPanel {
     private DialogPlanet dialogPlanet;
     private Fleet fleet = null;
     private int missionsAvailable = -1;
+    private int missionsPlanetAvailable = -1;
     private int numberOfShips = 0;
     private boolean actionPerformed_comboBoxShipsPredefined = false;
     
@@ -124,6 +126,7 @@ public class PanelFleet extends JPanel {
             MISSION_EXPLORE
     };
     private JTextField txtResourcesTotal;
+    private JTextField txtFreeMissionsPlanet;
     
     public PanelFleet(DialogPlanet dialogPlanet, Planet planet) {
         addComponentListener(new ComponentAdapter() {
@@ -206,7 +209,8 @@ public class PanelFleet extends JPanel {
         gbl_panelMissions.columnWeights = new double[]{0.0, 1.0};
         panelMissions.setLayout(gbl_panelMissions);
         
-        JLabel lblFreeMissions = new JLabel("Available:");
+        JLabel lblFreeMissions = new JLabel("Avail. user:");
+        lblFreeMissions.setToolTipText("Available user missions");
         GridBagConstraints gbc_lblFreeMissions = new GridBagConstraints();
         gbc_lblFreeMissions.anchor = GridBagConstraints.EAST;
         gbc_lblFreeMissions.insets = new Insets(0, 0, 5, 5);
@@ -224,12 +228,31 @@ public class PanelFleet extends JPanel {
         panelMissions.add(textFieldFreeMissions, gbc_textFieldFreeMissions);
         textFieldFreeMissions.setColumns(10);
         
+        JLabel lblFreeMissionsPlanet = new JLabel("Avail. planet:");
+        lblFreeMissionsPlanet.setToolTipText("Available planet missions");
+        GridBagConstraints gbc_lblFreeMissionsPlanet = new GridBagConstraints();
+        gbc_lblFreeMissionsPlanet.anchor = GridBagConstraints.EAST;
+        gbc_lblFreeMissionsPlanet.insets = new Insets(0, 0, 5, 5);
+        gbc_lblFreeMissionsPlanet.gridx = 0;
+        gbc_lblFreeMissionsPlanet.gridy = 1;
+        panelMissions.add(lblFreeMissionsPlanet, gbc_lblFreeMissionsPlanet);
+        
+        txtFreeMissionsPlanet = new JTextField();
+        txtFreeMissionsPlanet.setEditable(false);
+        GridBagConstraints gbc_txtFreeMissionsPlanet = new GridBagConstraints();
+        gbc_txtFreeMissionsPlanet.insets = new Insets(0, 0, 5, 0);
+        gbc_txtFreeMissionsPlanet.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtFreeMissionsPlanet.gridx = 1;
+        gbc_txtFreeMissionsPlanet.gridy = 1;
+        panelMissions.add(txtFreeMissionsPlanet, gbc_txtFreeMissionsPlanet);
+        txtFreeMissionsPlanet.setColumns(10);
+        
         JLabel lblMissionsPredefined = new JLabel("Ships:");
         GridBagConstraints gbc_lblMissionsPredefined = new GridBagConstraints();
         gbc_lblMissionsPredefined.anchor = GridBagConstraints.EAST;
         gbc_lblMissionsPredefined.insets = new Insets(0, 0, 5, 5);
         gbc_lblMissionsPredefined.gridx = 0;
-        gbc_lblMissionsPredefined.gridy = 1;
+        gbc_lblMissionsPredefined.gridy = 2;
         panelMissions.add(lblMissionsPredefined, gbc_lblMissionsPredefined);
         
         comboBoxShipsPredefined = new JComboBox(predefinedShipSelection);
@@ -244,7 +267,7 @@ public class PanelFleet extends JPanel {
         gbc_comboBoxMissionsPredefined.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsPredefined.insets = new Insets(0, 0, 5, 0);
         gbc_comboBoxMissionsPredefined.gridx = 1;
-        gbc_comboBoxMissionsPredefined.gridy = 1;
+        gbc_comboBoxMissionsPredefined.gridy = 2;
         panelMissions.add(comboBoxShipsPredefined, gbc_comboBoxMissionsPredefined);
         
         JLabel lblMissionsStandard = new JLabel("Type:");
@@ -252,7 +275,7 @@ public class PanelFleet extends JPanel {
         gbc_lblMissionsStandard.anchor = GridBagConstraints.EAST;
         gbc_lblMissionsStandard.insets = new Insets(0, 0, 0, 5);
         gbc_lblMissionsStandard.gridx = 0;
-        gbc_lblMissionsStandard.gridy = 2;
+        gbc_lblMissionsStandard.gridy = 3;
         panelMissions.add(lblMissionsStandard, gbc_lblMissionsStandard);
         
         comboBoxMissionsStandard = new JComboBox(missions);
@@ -264,7 +287,7 @@ public class PanelFleet extends JPanel {
         GridBagConstraints gbc_comboBoxMissionsStandard = new GridBagConstraints();
         gbc_comboBoxMissionsStandard.fill = GridBagConstraints.HORIZONTAL;
         gbc_comboBoxMissionsStandard.gridx = 1;
-        gbc_comboBoxMissionsStandard.gridy = 2;
+        gbc_comboBoxMissionsStandard.gridy = 3;
         panelMissions.add(comboBoxMissionsStandard, gbc_comboBoxMissionsStandard);
         
         JPanel panelTarget = new JPanel();
@@ -715,11 +738,21 @@ public class PanelFleet extends JPanel {
                 textFieldResourcesUranium.setText(String.format("%.3f", res.getUranium()));
                 txtResourcesTotal.setText(String.format("%.3f", res.getCoal()+res.getOre()+res.getCopper()+res.getUranium()));
                 
-                int starter = planet.isStarter() ? 1 : 0;
+                // https://steempeak.com/nextcolony/@nextcolony/base-now-limits-the-number-of-missions-on-a-planet-level
+                //int starter = planet.isStarter() ? 1 : 0;
+                int starter = 0;
+                
                 int missionsActive = Missions.loadAllActiveUserMissions(userName).size();
                 int missionsMax = new Skills(userName).getMissionControlLevel() * 2 + starter;
                 missionsAvailable = missionsMax - missionsActive;
                 textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
+                
+                int baseCurrent = new Buildings(planet).getBuilding("base").getCurrent();
+                int missionsPlanetMax = baseCurrent / 2;
+                int missionsPlanetActive = Missions.loadAllActiveUserMissions(userName, planet.getId()).size();
+                missionsPlanetAvailable = missionsPlanetMax - missionsPlanetActive;
+                txtFreeMissionsPlanet.setText(missionsPlanetAvailable + " / " + missionsPlanetMax);
+                
                 return null;
             }
 
@@ -731,6 +764,7 @@ public class PanelFleet extends JPanel {
                     dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
                 }
                 
+                checkPreconditionSendToSteemButton();
                 setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 super.done();
             }
@@ -1007,7 +1041,7 @@ public class PanelFleet extends JPanel {
             return;
         }
         
-        if (missionsAvailable == 0) {
+        if (missionsAvailable <= 0 || missionsPlanetAvailable <= 0) {
             dialogPlanet.setStatusError(but + "No mission slot available");
             btnSendTransaction.setEnabled(false);
             return;

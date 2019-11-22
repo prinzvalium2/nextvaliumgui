@@ -34,8 +34,14 @@ public class Missions {
         return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=1&planetid=" + planetId);
     }
 
-    public static Vector<Mission> loadAllActiveOutgoingUserPlanetMissions(String userName, String planetId) throws JSONException, IOException {
-        return loadMissionsOfUserWithFilter(userName, "&active=1&outgoing=1&onlyuser=1&planetid=" + planetId);
+    public static Vector<Mission> loadAllActiveUserMissionsStartedFromPlanet(String userName, String planetId) throws JSONException, IOException {
+        Vector<Mission> missions = loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=1&planetid=" + planetId);
+        Vector<Mission> activeUserMissionsStartedFromPlanet = new Vector<Mission>();
+        for (Mission mission : missions) {
+            if (mission.getFromPlanetId().equalsIgnoreCase(planetId))
+                activeUserMissionsStartedFromPlanet.add(mission);
+        }
+        return activeUserMissionsStartedFromPlanet;
     }
 
     public static Vector<Mission> loadAllUserMissions(String userName, String planetId) throws JSONException, IOException {

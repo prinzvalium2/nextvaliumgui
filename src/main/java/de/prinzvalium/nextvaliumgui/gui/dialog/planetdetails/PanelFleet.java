@@ -1119,38 +1119,6 @@ public class PanelFleet extends JPanel {
     }
     
     private void actionPerformed_comboBoxMissionsStandard() {
-        
-        actionPerformed_comboBoxShipsPredefined = true;
-        
-        // Reset position values in table
-        for (int i = 0; i < model.getRowCount(); i++) {
-            model.setValueAt(null, i, 3);
-        }
-        
-        String selectedMission = (String)comboBoxMissionsStandard.getSelectedItem();
-        if (selectedMission.equalsIgnoreCase(MISSION_ATTACK) || 
-                selectedMission.equalsIgnoreCase(MISSION_SUPPORT) ||
-                selectedMission.equalsIgnoreCase(MISSION_SIEGE) ||
-                selectedMission.equalsIgnoreCase(MISSION_BREAKSIEGE)) {
-            
-            String ships = (String) comboBoxShipsPredefined.getSelectedItem();
-            if (ships.equalsIgnoreCase(PREDEFINED_SHIPSELECTION_ALL_CORVETTES)) {
-                for (int i = 0; i < model.getRowCount(); i++) {
-                    String ship = (String)model.getValueAt(i, 0);
-                    if (ship.equalsIgnoreCase("corvette")) {
-                        model.setValueAt(model.getValueAt(i, 1), i, 2);
-                        model.setValueAt(1, i, 3);
-                    }
-                    if (ship.equalsIgnoreCase("corvette1")) {
-                        model.setValueAt(model.getValueAt(i, 1), i, 2);
-                        model.setValueAt(2, i, 3);
-                    }
-                }
-                tableChanged_Fleet();
-                checkPreconditionSendToSteemButton();
-            }
-        }
-        
-        actionPerformed_comboBoxShipsPredefined = false;
+        checkPreconditionSendToSteemButton();
     }
 }

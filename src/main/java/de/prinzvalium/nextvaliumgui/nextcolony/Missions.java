@@ -14,10 +14,6 @@ public class Missions {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(Missions.class);
 
-    public int getNumberOfActiveUserMissions(String userName) throws JSONException, IOException {
-        return loadAllActiveUserMissions(userName).size();
-    }
-    
     public static Vector<Mission> loadAllActiveUserMissions(String userName) throws JSONException, IOException {
         return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=1");
     }
@@ -26,16 +22,16 @@ public class Missions {
         return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=0");
     }
     
-    public static Vector<Mission> loadAllActiveMissions(String userName, String planetId) throws JSONException, IOException {
+    public static Vector<Mission> loadAllActiveMissionsOfPlanet(String userName, String planetId) throws JSONException, IOException {
         return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=0&planetid=" + planetId);
     }
     
-    public static Vector<Mission> loadAllActiveUserMissions(String userName, String planetId) throws JSONException, IOException {
+    public static Vector<Mission> loadAllActiveUserMissionsOfPlanet(String userName, String planetId) throws JSONException, IOException {
         return loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=1&planetid=" + planetId);
     }
 
     public static Vector<Mission> loadAllActiveUserMissionsStartedFromPlanet(String userName, String planetId) throws JSONException, IOException {
-        Vector<Mission> missions = loadMissionsOfUserWithFilter(userName, "&active=1&onlyuser=1&planetid=" + planetId);
+        Vector<Mission> missions = loadAllActiveUserMissionsOfPlanet(userName, planetId);
         Vector<Mission> activeUserMissionsStartedFromPlanet = new Vector<Mission>();
         for (Mission mission : missions) {
             if (mission.getFromPlanetId().equalsIgnoreCase(planetId))
@@ -44,7 +40,7 @@ public class Missions {
         return activeUserMissionsStartedFromPlanet;
     }
 
-    public static Vector<Mission> loadAllUserMissions(String userName, String planetId) throws JSONException, IOException {
+    public static Vector<Mission> loadAllUserMissionsOfPlanet(String userName, String planetId) throws JSONException, IOException {
         return loadMissionsOfUserWithFilter(userName, "&onlyuser=1&planetid=" + planetId);
     }
 

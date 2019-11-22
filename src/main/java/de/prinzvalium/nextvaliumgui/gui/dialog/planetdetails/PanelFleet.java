@@ -182,7 +182,7 @@ public class PanelFleet extends JPanel {
 
             @Override
             public void tableChanged(TableModelEvent arg0) {
-                if (!actionPerformed_comboBoxShipsPredefined)
+                if (!actionPerformed_comboBoxShipsPredefined && arg0.getColumn() == 2)
                     comboBoxShipsPredefined.setSelectedItem(PREDEFINED_SHIPSELECTION_EMPTY);
                 tableChanged_Fleet();
                 checkPreconditionSendToSteemButton();

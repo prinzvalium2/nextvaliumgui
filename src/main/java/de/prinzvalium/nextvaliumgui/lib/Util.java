@@ -51,6 +51,7 @@ public class Util {
     public static final String NEXTCOLONY_API_CMD_STATE = "state";
     public static final String NEXTCOLONY_API_CMD_SEASONRANKING = "seasonranking";
     public static final String NEXTCOLONY_API_CMD_MISSIONOVERVIEW = "missionoverview?user=%s";
+    public static final String NEXTCOLONY_API_CMD_GALAXYPLANETS = "galaxyplanets";
     
     
     public static SimpleDateFormat NextValiumDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

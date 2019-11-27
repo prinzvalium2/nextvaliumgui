@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
+import de.prinzvalium.nextvaliumgui.gui.PanelUniverse;
 import de.prinzvalium.nextvaliumgui.gui.dialog.lastplanets.DialogLastPlanets;
 import de.prinzvalium.nextvaliumgui.gui.dialog.seasonranking.SeasonRanking;
 import de.prinzvalium.nextvaliumgui.lib.Util;
@@ -524,6 +525,7 @@ public class NextValiumGui {
         });
         
         frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER); // $hide$
+        //frmNextvaliumManagementGui.getContentPane().add(new PanelUniverse(), BorderLayout.CENTER); // $hide$
         frmNextvaliumManagementGui.setVisible(true);
         
         listUsers.forEach(user -> comboBoxUsers.addItem(user));

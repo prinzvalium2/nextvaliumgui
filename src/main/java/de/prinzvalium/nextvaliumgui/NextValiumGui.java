@@ -95,6 +95,7 @@ public class NextValiumGui {
     private static final Integer LAYER_UNIVERSE = new Integer(1);
     private static final Integer LAYER_GALAXYMAP = new Integer(0);
     private JLayeredPane lp;
+    private Boolean galaxyLoaded = false;
 
     /**
      * Launch the application.
@@ -214,7 +215,31 @@ public class NextValiumGui {
                     lp.setLayer(panelGalaxyMap, 0);
                 else {
                     lp.setLayer(panelUniverse, 0);
-                    btnRefresh.doClick();
+                    
+                    if (!galaxyLoaded)
+                        btnRefresh.doClick();
+                    
+                    
+//                  new Thread(new Runnable() {
+//                    
+//                                @Override
+//                                public void run() {
+//                                    SwingUtilities.invokeLater(new Runnable() {
+//                    
+//                                        @Override
+//                                        public void run() {
+//                                            btnRefresh.doClick();
+//                                        }});
+//                                    
+//                                }}).start();
+                        
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 }
             }
         });
@@ -640,6 +665,8 @@ public class NextValiumGui {
     }
     
     private void actionPerformed_btnRefresh(ActionEvent e) {
+        
+        galaxyLoaded = true;
         
         frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         

@@ -66,7 +66,7 @@ public class PanelGalaxyMap extends JPanel {
 
     @Override 
     protected void paintComponent(Graphics g) {
-        
+        super.paintComponent(g);
         if (galaxyMap == null)
             return;
         

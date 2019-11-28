@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JDialog;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
@@ -19,6 +18,7 @@ import de.prinzvalium.nextvaliumgui.nextcolony.GalaxyPlanet;
 
 public class PanelUniverse extends JPanel {
     
+    private static final long serialVersionUID = 1L;
     private HashMap<String, GalaxyPlanet> mapPlanets = null;
     Integer[] ai = null;
     
@@ -51,8 +51,6 @@ public class PanelUniverse extends JPanel {
                     get();
                     
                 } catch (InterruptedException | ExecutionException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
                 repaint();
                 
@@ -89,21 +87,16 @@ public class PanelUniverse extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        
-        //setBounds(((JLayeredPane)getParent()).getVisibleRect());
-        
         super.paintComponent(g);
         
         if (ai == null)
             return;
         
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.LIGHT_GRAY);
         
         Rectangle rectPanel = getBounds();
         rectPanel.width -= 20;
         rectPanel.height -= 20;
-        
         
         Rectangle rectUniverse = new Rectangle(ai[0], ai[1], ai[2]-ai[0], ai[3]-ai[1]);
         Double zoomX = rectPanel.getWidth() / rectUniverse.getWidth();
@@ -115,8 +108,8 @@ public class PanelUniverse extends JPanel {
             double x = 10 + (offsetX + planet.getX()) * zoomX;
             double y = (offsetY + planet.getY()) * zoomY;
             y = 10 + rectPanel.getHeight() - y;
+            g2.setColor(Util.getUserColor(planet.getUser()));
             g2.fillOval((int)x, (int)y, 2, 2);
         });
     }
-
 }

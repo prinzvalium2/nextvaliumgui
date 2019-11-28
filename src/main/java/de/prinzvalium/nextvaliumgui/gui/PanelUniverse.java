@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JDialog;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
@@ -89,6 +90,8 @@ public class PanelUniverse extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         
+        //setBounds(((JLayeredPane)getParent()).getVisibleRect());
+        
         super.paintComponent(g);
         
         if (ai == null)
@@ -112,7 +115,7 @@ public class PanelUniverse extends JPanel {
             double x = 10 + (offsetX + planet.getX()) * zoomX;
             double y = (offsetY + planet.getY()) * zoomY;
             y = 10 + rectPanel.getHeight() - y;
-            g2.fillOval((int)x, (int)10, 2, 2);
+            g2.fillOval((int)x, (int)y, 2, 2);
         });
     }
 

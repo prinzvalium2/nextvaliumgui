@@ -16,9 +16,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -49,6 +51,8 @@ import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.border.BevelBorder;
 import javax.swing.SwingConstants;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 
 public class NextValiumGui {
@@ -85,6 +89,12 @@ public class NextValiumGui {
     private JMenuItem mntmLastPlanets;
     private JLabel lblStatus;
     private JLabel txtStatus;
+    private JPanel panelMenuUniverse;
+    private JCheckBox chckbxShowUniverse;
+    private PanelUniverse panelUniverse;
+    private static final Integer LAYER_UNIVERSE = new Integer(1);
+    private static final Integer LAYER_GALAXYMAP = new Integer(0);
+    private JLayeredPane lp;
 
     /**
      * Launch the application.
@@ -137,6 +147,7 @@ public class NextValiumGui {
         LOGGER.trace("initialize()");
         
         panelGalaxyMap = new PanelGalaxyMap();
+        panelUniverse = new PanelUniverse();
         
         frmNextvaliumManagementGui = new JFrame();
         frmNextvaliumManagementGui.setTitle("NextValium GUI " + version + " - Multi user management GUI for NextColony");
@@ -180,11 +191,34 @@ public class NextValiumGui {
         panelTop.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
         frmNextvaliumManagementGui.getContentPane().add(panelTop, BorderLayout.NORTH);
         GridBagLayout gbl_panelTop = new GridBagLayout();
-        gbl_panelTop.columnWidths = new int[]{26, 91, 0, 0, 0, 0};
+        gbl_panelTop.columnWidths = new int[]{0, 26, 91, 0, 0, 0, 0};
         gbl_panelTop.rowHeights = new int[]{23, 0};
-        gbl_panelTop.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-        gbl_panelTop.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panelTop.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+        gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE};
         panelTop.setLayout(gbl_panelTop);
+        
+        panelMenuUniverse = new JPanel();
+        panelMenuUniverse.setBorder(new TitledBorder(null, "Universe", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_panel = new GridBagConstraints();
+        gbc_panel.insets = new Insets(0, 0, 0, 5);
+        gbc_panel.fill = GridBagConstraints.BOTH;
+        gbc_panel.gridx = 0;
+        gbc_panel.gridy = 0;
+        panelTop.add(panelMenuUniverse, gbc_panel);
+        
+        chckbxShowUniverse = new JCheckBox("Show");
+        chckbxShowUniverse.setSelected(true);
+        chckbxShowUniverse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                if (chckbxShowUniverse.isSelected())
+                    lp.setLayer(panelGalaxyMap, 0);
+                else {
+                    lp.setLayer(panelUniverse, 0);
+                    btnRefresh.doClick();
+                }
+            }
+        });
+        panelMenuUniverse.add(chckbxShowUniverse);
         
         JPanel panelUserPlanet = new JPanel();
         panelUserPlanet.setToolTipText("Select user planet or x/y");
@@ -192,7 +226,7 @@ public class NextValiumGui {
         GridBagConstraints gbc_panelUserPlanet = new GridBagConstraints();
         gbc_panelUserPlanet.insets = new Insets(0, 0, 0, 5);
         gbc_panelUserPlanet.fill = GridBagConstraints.BOTH;
-        gbc_panelUserPlanet.gridx = 0;
+        gbc_panelUserPlanet.gridx = 1;
         gbc_panelUserPlanet.gridy = 0;
         panelTop.add(panelUserPlanet, gbc_panelUserPlanet);
         GridBagLayout gbl_panelUserPlanet = new GridBagLayout();
@@ -325,7 +359,7 @@ public class NextValiumGui {
         GridBagConstraints gbc_panelTarget = new GridBagConstraints();
         gbc_panelTarget.insets = new Insets(0, 0, 0, 5);
         gbc_panelTarget.fill = GridBagConstraints.BOTH;
-        gbc_panelTarget.gridx = 1;
+        gbc_panelTarget.gridx = 2;
         gbc_panelTarget.gridy = 0;
         panelTop.add(panelTarget, gbc_panelTarget);
         GridBagLayout gbl_panelTarget = new GridBagLayout();
@@ -386,7 +420,7 @@ public class NextValiumGui {
         gbc_panelRadar.insets = new Insets(0, 0, 0, 5);
         gbc_panelRadar.anchor = GridBagConstraints.WEST;
         gbc_panelRadar.fill = GridBagConstraints.VERTICAL;
-        gbc_panelRadar.gridx = 2;
+        gbc_panelRadar.gridx = 3;
         gbc_panelRadar.gridy = 0;
         panelTop.add(panelRadar, gbc_panelRadar);
         GridBagLayout gbl_panelRadar = new GridBagLayout();
@@ -443,7 +477,7 @@ public class NextValiumGui {
         GridBagConstraints gbc_panelLastPlanets = new GridBagConstraints();
         gbc_panelLastPlanets.insets = new Insets(0, 0, 0, 5);
         gbc_panelLastPlanets.fill = GridBagConstraints.BOTH;
-        gbc_panelLastPlanets.gridx = 3;
+        gbc_panelLastPlanets.gridx = 4;
         gbc_panelLastPlanets.gridy = 0;
         panelTop.add(panelLastPlanets, gbc_panelLastPlanets);
         GridBagLayout gbl_panelLastPlanets = new GridBagLayout();
@@ -524,27 +558,38 @@ public class NextValiumGui {
             }
         });
         
-        frmNextvaliumManagementGui.getContentPane().add(panelGalaxyMap, BorderLayout.CENTER); // $hide$
-        //frmNextvaliumManagementGui.getContentPane().add(new PanelUniverse(), BorderLayout.CENTER); // $hide$
+        lp = new JLayeredPane();
+        lp.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent arg0) {
+                panelUniverse.setBounds(((JLayeredPane)arg0.getComponent()).getVisibleRect());
+                panelGalaxyMap.setBounds(((JLayeredPane)arg0.getComponent()).getVisibleRect());
+            }
+        });
+        frmNextvaliumManagementGui.getContentPane().add(lp, BorderLayout.CENTER);
+        lp.add(panelGalaxyMap, LAYER_GALAXYMAP);
+        lp.add(panelUniverse, LAYER_UNIVERSE);
+        
         frmNextvaliumManagementGui.setVisible(true);
         
         listUsers.forEach(user -> comboBoxUsers.addItem(user));
         
         doInBackgroundGameDelay();
         doInBackgroundAlarm();
+        showLastPlanet();
         
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        btnRefresh.doClick();
-                    }});
-                
-            }}).start();
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                SwingUtilities.invokeLater(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        btnRefresh.doClick();
+//                    }});
+//                
+//            }}).start();
      }
 
     public Planet getPlanetMarkedAsTarget() {
@@ -598,6 +643,9 @@ public class NextValiumGui {
         
         frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         
+        if (chckbxShowUniverse.isSelected())
+            chckbxShowUniverse.doClick();
+        
         new SwingWorker<Object, Object>() {
 
             @Override
@@ -606,39 +654,55 @@ public class NextValiumGui {
                 int x = Integer.parseInt(textFieldPosX.getText());
                 int y = Integer.parseInt(textFieldPosY.getText());
                 panelGalaxyMap.loadGalaxyMap(x, y);
-                showLastPlanet();
                 return null;
             }
 
             @Override
             protected void done() {
+                showLastPlanet();
                 frmNextvaliumManagementGui.repaint();
             }
         }.execute();
     }
     
     private void showLastPlanet(){
-        try {
-            Vector<Planet> planets = new Vector<Planet>();
-            for (String user : listUsers) {
-                Planet p = Planets.loadLastUserPlanet(user);
-                planets.add(p);
-            }
-            Collections.sort(planets, new Comparator<Planet>() {
-               @Override
-                public int compare(Planet arg0, Planet arg1) {
-                    return arg0.getDate().before(arg1.getDate()) ? 1 : -1;
-                }});
-            
-            lastPlanet = planets.get(0);
-            String date = Util.getDateAsString(lastPlanet.getDate());
-            String name = lastPlanet.getName();
-            String user = lastPlanet.getUserName();
-            String text = "<html><center>"+date+"<br>"+name+"<br>"+user+"</center></html>";
-            btnLastPlanet.setText(text);
+        
+        new SwingWorker<Vector<Planet>, Object>() {
 
-        } catch (JSONException | IOException e) {
-        }
+            @Override
+            protected Vector<Planet> doInBackground() throws Exception {
+                
+                Vector<Planet> planets = new Vector<Planet>();
+                for (String user : listUsers) {
+                    Planet p = Planets.loadLastUserPlanet(user);
+                    planets.add(p);
+                }
+                Collections.sort(planets, new Comparator<Planet>() {
+                   @Override
+                    public int compare(Planet arg0, Planet arg1) {
+                        return arg0.getDate().before(arg1.getDate()) ? 1 : -1;
+                    }});
+                
+                return planets;
+            }
+
+            @Override
+            protected void done() {
+                
+                try {
+                    Vector<Planet> planets = get();
+                    lastPlanet = planets.get(0);
+                    String date = Util.getDateAsString(lastPlanet.getDate());
+                    String name = lastPlanet.getName();
+                    String user = lastPlanet.getUserName();
+                    String text = "<html><center>"+date+"<br>"+name+"<br>"+user+"</center></html>";
+                    btnLastPlanet.setText(text);
+                    
+                } catch (InterruptedException | ExecutionException e) {
+                }
+                super.done();
+            }
+        }.execute();
     }
     
     private void doInBackgroundGameDelay() {

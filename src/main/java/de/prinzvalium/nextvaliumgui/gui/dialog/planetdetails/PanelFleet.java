@@ -7,6 +7,7 @@ import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.MyIntFilter;
 import de.prinzvalium.nextvaliumgui.lib.NextValiumException;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Buildings;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Missions;
@@ -29,6 +30,8 @@ import java.awt.GridBagConstraints;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.PlainDocument;
+
+import org.json.JSONObject;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -738,19 +741,14 @@ public class PanelFleet extends JPanel {
                 textFieldResourcesUranium.setText(String.format("%.3f", res.getUranium()));
                 txtResourcesTotal.setText(String.format("%.3f", res.getCoal()+res.getOre()+res.getCopper()+res.getUranium()));
                 
-                // https://steempeak.com/nextcolony/@nextcolony/base-now-limits-the-number-of-missions-on-a-planet-level
-                //int starter = planet.isStarter() ? 1 : 0;
-                int starter = 0;
+                String cmd = Util.NEXTCOLONY_API_CMD_MISSIONINFO + "?user=" + userName + "&planet=" + planetId;
+                JSONObject jsonObj = Util.getJSONObjectFromApiCommand(cmd);
+                missionsAvailable = jsonObj.getInt("user_unused");
+                int missionsMax = jsonObj.getInt("user_max");
+                missionsPlanetAvailable = jsonObj.getInt("planet_unused");
+                int missionsPlanetMax = jsonObj.getInt("planet_max");
                 
-                int missionsActive = Missions.loadAllActiveUserMissions(userName).size();
-                int missionsMax = new Skills(userName).getMissionControlLevel() * 2 + starter;
-                missionsAvailable = missionsMax - missionsActive;
                 textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
-                
-                int baseCurrent = new Buildings(planet).getBuilding("base").getCurrent();
-                int missionsPlanetMax = baseCurrent / 2;
-                int missionsPlanetActive = Missions.loadAllActiveUserMissionsStartedFromPlanet(userName, planet.getId()).size();
-                missionsPlanetAvailable = missionsPlanetMax - missionsPlanetActive;
                 txtFreeMissionsPlanet.setText(missionsPlanetAvailable + " / " + missionsPlanetMax);
                 
                 return null;

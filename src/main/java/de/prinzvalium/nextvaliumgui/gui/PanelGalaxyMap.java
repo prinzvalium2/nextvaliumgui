@@ -21,6 +21,8 @@ import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.Galaxy;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapKey;
 import de.prinzvalium.nextvaliumgui.nextcolony.galaxymap.GalaxyMapValue;
 import javax.swing.JLabel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PanelGalaxyMap extends JPanel {
     
@@ -35,6 +37,11 @@ public class PanelGalaxyMap extends JPanel {
     private JLabel lblNewLabel;
     
     public PanelGalaxyMap()  {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent arg0) {
+            }
+        });
         LOGGER.trace("PanelGalaxyMap()");
         
         setLayout(null);

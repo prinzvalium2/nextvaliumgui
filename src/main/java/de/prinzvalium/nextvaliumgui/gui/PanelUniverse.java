@@ -13,16 +13,41 @@ import javax.swing.SwingWorker;
 
 import org.json.JSONArray;
 
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.GalaxyPlanet;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PanelUniverse extends JPanel {
     
     private static final long serialVersionUID = 1L;
     private HashMap<String, GalaxyPlanet> mapPlanets = null;
-    Integer[] ai = null;
+    private Integer[] ai = null;
+    private Double zoomX;
+    private Double zoomY;
+    private Double offsetX;
+    private Double offsetY;
     
     public PanelUniverse() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+                double mouseX = arg0.getX();
+                double mouseY = arg0.getY();
+                
+                Rectangle rectPanel = getBounds();
+                rectPanel.width -= 20;
+                rectPanel.height -= 20;
+                
+                double height = rectPanel.getHeight();
+                
+                double planetX = mouseX/zoomX - 10.0/zoomX - offsetX;
+                double planetY = 10.0/zoomY + height/zoomY - mouseY/zoomY - offsetY;
+                
+                NextValiumGui.getNextValiumGui().setCenterPosition((int)planetX, (int)planetY);
+            }
+        });
         setBackground(Color.BLACK);
         setLayout(null);
         
@@ -99,15 +124,17 @@ public class PanelUniverse extends JPanel {
         rectPanel.height -= 20;
         
         Rectangle rectUniverse = new Rectangle(ai[0], ai[1], ai[2]-ai[0], ai[3]-ai[1]);
-        Double zoomX = rectPanel.getWidth() / rectUniverse.getWidth();
-        Double zoomY = rectPanel.getHeight() / rectUniverse.getHeight();
-        Double offsetX = rectPanel.getMinX() - rectUniverse.getMinX();
-        Double offsetY = rectPanel.getMinY() - rectUniverse.getMinY();
+        zoomX = rectPanel.getWidth() / rectUniverse.getWidth();
+        zoomY = rectPanel.getHeight() / rectUniverse.getHeight();
+        offsetX = rectPanel.getMinX() - rectUniverse.getMinX();
+        offsetY = rectPanel.getMinY() - rectUniverse.getMinY();
         
         mapPlanets.forEach((id, planet) -> {
+            
             double x = 10 + (offsetX + planet.getX()) * zoomX;
             double y = (offsetY + planet.getY()) * zoomY;
             y = 10 + rectPanel.getHeight() - y;
+            
             g2.setColor(Util.getUserColor(planet.getUser()));
             g2.fillOval((int)x, (int)y, 2, 2);
         });

@@ -664,6 +664,14 @@ public class NextValiumGui {
         btnRefresh.doClick();
     }
     
+    public void  setCenterPosition(int x, int y) {
+        comboBoxUsers.setSelectedItem(null);
+        comboBoxPlanets.setSelectedItem(null);
+        textFieldPosX.setText(String.valueOf(x));
+        textFieldPosY.setText(String.valueOf(y));
+        btnRefresh.doClick();
+    }
+    
     private void actionPerformed_btnRefresh(ActionEvent e) {
         
         galaxyLoaded = true;

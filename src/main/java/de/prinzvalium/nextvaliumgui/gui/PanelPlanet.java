@@ -106,6 +106,10 @@ public class PanelPlanet extends JPanel {
             g.setColor(Color.DARK_GRAY);
             g.drawOval(0, 0, getWidth()-1, getHeight()-1);
         }
+        else if (planetUser.equalsIgnoreCase("null")) {
+            g.setColor(new Color(160, 160, 160));
+            g.drawOval(1, 1, getWidth()-3, getHeight()-3);
+        }
         else {
             g.setColor(color);
             g.fillOval(1, 1, getWidth()-3, getHeight()-3);

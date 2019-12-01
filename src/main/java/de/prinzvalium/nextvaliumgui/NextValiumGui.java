@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
 import de.prinzvalium.nextvaliumgui.gui.PanelUniverse;
+import de.prinzvalium.nextvaliumgui.gui.dialog.hostilemissions.HostileMissions;
 import de.prinzvalium.nextvaliumgui.gui.dialog.lastplanets.DialogLastPlanets;
 import de.prinzvalium.nextvaliumgui.gui.dialog.seasonranking.SeasonRanking;
 import de.prinzvalium.nextvaliumgui.lib.Util;
@@ -53,6 +54,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.SwingConstants;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class NextValiumGui {
@@ -187,6 +190,14 @@ public class NextValiumGui {
             }
         });
         mnInfo.add(mntmLastPlanets);
+        
+        JMenuItem mntmHostileMissions = new JMenuItem("Hostile missions");
+        mntmHostileMissions.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                new HostileMissions().setVisible(true);
+            }
+        });
+        mnInfo.add(mntmHostileMissions);
         
         JPanel panelTop = new JPanel();
         panelTop.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -537,6 +548,12 @@ public class NextValiumGui {
         panelStatusBar.setLayout(gbl_panelStatusBar);
         
         lblStatus = new JLabel("Alarmstatus:");
+        lblStatus.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                new HostileMissions().setVisible(true);
+            }
+        });
         GridBagConstraints gbc_lblStatus = new GridBagConstraints();
         gbc_lblStatus.anchor = GridBagConstraints.WEST;
         gbc_lblStatus.insets = new Insets(0, 5, 0, 5);
@@ -545,6 +562,12 @@ public class NextValiumGui {
         panelStatusBar.add(lblStatus, gbc_lblStatus);
         
         txtStatus = new JLabel();
+        txtStatus.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+                new HostileMissions().setVisible(true);
+            }
+        });
         //txtStatus.setEditable(false);
         GridBagConstraints gbc_txtStatus = new GridBagConstraints();
         gbc_txtStatus.insets = new Insets(0, 0, 0, 5);
@@ -661,6 +684,12 @@ public class NextValiumGui {
     public void  setCenterPosition(Planet planet) {
         comboBoxUsers.setSelectedItem(planet.getUserName());
         comboBoxPlanets.setSelectedItem(planet.getName());
+        btnRefresh.doClick();
+    }
+    
+    public void  setCenterPosition(String userName, String planetName) {
+        comboBoxUsers.setSelectedItem(userName);
+        comboBoxPlanets.setSelectedItem(planetName);
         btnRefresh.doClick();
     }
     

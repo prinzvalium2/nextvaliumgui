@@ -185,7 +185,10 @@ public class Util {
     }
     
     public static String getDateAsString(Date date) {
-        return NextValiumDateFormat.format(date);
+        if (date != null)
+            return NextValiumDateFormat.format(date);
+        else
+            return "";
     }
     
     public static void setProxy() throws FileNotFoundException, IOException {

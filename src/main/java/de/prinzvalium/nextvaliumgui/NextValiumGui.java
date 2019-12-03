@@ -714,6 +714,7 @@ public class NextValiumGui {
             @Override
             protected void done() {
                 showLastPlanet();
+                tabbedPane.setSelectedIndex(1);
                 frmNextvaliumManagementGui.repaint();
             }
         }.execute();

@@ -159,7 +159,7 @@ public class NextValiumGui {
         
         frmNextvaliumManagementGui = new JFrame();
         frmNextvaliumManagementGui.setTitle("NextValium GUI " + version + " - Multi user management GUI for NextColony");
-        frmNextvaliumManagementGui.setBounds(10, 10, 1250, 950);
+        frmNextvaliumManagementGui.setBounds(10, 10, 1250, 970);
         frmNextvaliumManagementGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         JMenuBar menuBar = new JMenuBar();

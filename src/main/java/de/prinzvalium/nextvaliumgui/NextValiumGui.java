@@ -56,6 +56,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 
 public class NextValiumGui {
@@ -92,13 +95,14 @@ public class NextValiumGui {
     private JMenuItem mntmLastPlanets;
     private JLabel lblStatus;
     private JLabel txtStatus;
-    private JPanel panelMenuUniverse;
-    private JCheckBox chckbxShowUniverse;
     private PanelUniverse panelUniverse;
     private static final Integer LAYER_UNIVERSE = new Integer(1);
     private static final Integer LAYER_GALAXYMAP = new Integer(0);
     private JLayeredPane lp;
     private Boolean galaxyLoaded = false;
+    private JPanel panel;
+    private JPanel panelTabUniverse;
+    private JTabbedPane tabbedPane;
 
     /**
      * Launch the application.
@@ -203,68 +207,56 @@ public class NextValiumGui {
         panelTop.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
         frmNextvaliumManagementGui.getContentPane().add(panelTop, BorderLayout.NORTH);
         GridBagLayout gbl_panelTop = new GridBagLayout();
-        gbl_panelTop.columnWidths = new int[]{0, 26, 91, 0, 0, 0, 0};
+        gbl_panelTop.columnWidths = new int[]{26, 0};
         gbl_panelTop.rowHeights = new int[]{23, 0};
-        gbl_panelTop.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+        gbl_panelTop.columnWeights = new double[]{1.0, Double.MIN_VALUE};
         gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE};
         panelTop.setLayout(gbl_panelTop);
         
-        panelMenuUniverse = new JPanel();
-        panelMenuUniverse.setBorder(new TitledBorder(null, "Universe", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        GridBagConstraints gbc_panel = new GridBagConstraints();
-        gbc_panel.insets = new Insets(0, 0, 0, 5);
-        gbc_panel.fill = GridBagConstraints.BOTH;
-        gbc_panel.gridx = 0;
-        gbc_panel.gridy = 0;
-        panelTop.add(panelMenuUniverse, gbc_panel);
-        
-        chckbxShowUniverse = new JCheckBox("Show");
-        chckbxShowUniverse.setSelected(true);
-        chckbxShowUniverse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                if (chckbxShowUniverse.isSelected())
+        tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent arg0) {
+                if (lp == null || panelUniverse == null)
+                    return;
+                switch (tabbedPane.getSelectedIndex()) {
+                case 0:
                     lp.setLayer(panelGalaxyMap, 0);
-                else {
+                    break;
+                case 1:
                     lp.setLayer(panelUniverse, 0);
-                    
                     if (!galaxyLoaded)
                         btnRefresh.doClick();
-                    
-                    
-//                  new Thread(new Runnable() {
-//                    
-//                                @Override
-//                                public void run() {
-//                                    SwingUtilities.invokeLater(new Runnable() {
-//                    
-//                                        @Override
-//                                        public void run() {
-//                                            btnRefresh.doClick();
-//                                        }});
-//                                    
-//                                }}).start();
-                        
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    break;
                 }
             }
         });
-        panelMenuUniverse.add(chckbxShowUniverse);
+        GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
+        gbc_tabbedPane.fill = GridBagConstraints.BOTH;
+        gbc_tabbedPane.gridx = 0;
+        gbc_tabbedPane.gridy = 0;
+        panelTop.add(tabbedPane, gbc_tabbedPane);
+        
+        panelTabUniverse = new JPanel();
+        tabbedPane.addTab("Universe", null, panelTabUniverse, null);               
+        
+        panel = new JPanel();
+        tabbedPane.addTab("Galaxy map", null, panel, null);
+        GridBagLayout gbl_panel = new GridBagLayout();
+        gbl_panel.columnWidths = new int[]{26, 91, 0, 0, 0};
+        gbl_panel.rowHeights = new int[]{23, 0};
+        gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+        panel.setLayout(gbl_panel);
         
         JPanel panelUserPlanet = new JPanel();
+        GridBagConstraints gbc_panelUserPlanet = new GridBagConstraints();
+        gbc_panelUserPlanet.fill = GridBagConstraints.BOTH;
+        gbc_panelUserPlanet.insets = new Insets(0, 0, 0, 5);
+        gbc_panelUserPlanet.gridx = 0;
+        gbc_panelUserPlanet.gridy = 0;
+        panel.add(panelUserPlanet, gbc_panelUserPlanet);
         panelUserPlanet.setToolTipText("Select user planet or x/y");
         panelUserPlanet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Center map", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        GridBagConstraints gbc_panelUserPlanet = new GridBagConstraints();
-        gbc_panelUserPlanet.insets = new Insets(0, 0, 0, 5);
-        gbc_panelUserPlanet.fill = GridBagConstraints.BOTH;
-        gbc_panelUserPlanet.gridx = 1;
-        gbc_panelUserPlanet.gridy = 0;
-        panelTop.add(panelUserPlanet, gbc_panelUserPlanet);
         GridBagLayout gbl_panelUserPlanet = new GridBagLayout();
         gbl_panelUserPlanet.columnWidths = new int[]{26, 86, 0, 0, 0, 0};
         gbl_panelUserPlanet.rowHeights = new int[]{23, 1, 0};
@@ -390,14 +382,14 @@ public class NextValiumGui {
         textFieldPosY.setColumns(4);
         
         JPanel panelTarget = new JPanel();
+        GridBagConstraints gbc_panelTarget = new GridBagConstraints();
+        gbc_panelTarget.fill = GridBagConstraints.BOTH;
+        gbc_panelTarget.insets = new Insets(0, 0, 0, 5);
+        gbc_panelTarget.gridx = 1;
+        gbc_panelTarget.gridy = 0;
+        panel.add(panelTarget, gbc_panelTarget);
         panelTarget.setToolTipText("Right click on planet to mark as target");
         panelTarget.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Target", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        GridBagConstraints gbc_panelTarget = new GridBagConstraints();
-        gbc_panelTarget.insets = new Insets(0, 0, 0, 5);
-        gbc_panelTarget.fill = GridBagConstraints.BOTH;
-        gbc_panelTarget.gridx = 2;
-        gbc_panelTarget.gridy = 0;
-        panelTop.add(panelTarget, gbc_panelTarget);
         GridBagLayout gbl_panelTarget = new GridBagLayout();
         gbl_panelTarget.columnWidths = new int[]{0, 0, 0, 0};
         gbl_panelTarget.rowHeights = new int[]{23, 1, 0};
@@ -451,14 +443,14 @@ public class NextValiumGui {
         txtTargetplanet.setColumns(15);
         
         JPanel panelRadar = new JPanel();
-        panelRadar.setBorder(new TitledBorder(null, "Flight radar", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         GridBagConstraints gbc_panelRadar = new GridBagConstraints();
-        gbc_panelRadar.insets = new Insets(0, 0, 0, 5);
         gbc_panelRadar.anchor = GridBagConstraints.WEST;
         gbc_panelRadar.fill = GridBagConstraints.VERTICAL;
-        gbc_panelRadar.gridx = 3;
+        gbc_panelRadar.insets = new Insets(0, 0, 0, 5);
+        gbc_panelRadar.gridx = 2;
         gbc_panelRadar.gridy = 0;
-        panelTop.add(panelRadar, gbc_panelRadar);
+        panel.add(panelRadar, gbc_panelRadar);
+        panelRadar.setBorder(new TitledBorder(null, "Flight radar", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         GridBagLayout gbl_panelRadar = new GridBagLayout();
         gbl_panelRadar.columnWidths = new int[]{0, 0};
         gbl_panelRadar.rowHeights = new int[]{0, 0, 0, 0};
@@ -509,13 +501,12 @@ public class NextValiumGui {
         panelRadar.add(chckbxRadarOthers, gbc_chckbxRadarOthers);
         
         JPanel panelLastPlanets = new JPanel();
-        panelLastPlanets.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Quick jump last planet", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_panelLastPlanets = new GridBagConstraints();
-        gbc_panelLastPlanets.insets = new Insets(0, 0, 0, 5);
         gbc_panelLastPlanets.fill = GridBagConstraints.BOTH;
-        gbc_panelLastPlanets.gridx = 4;
+        gbc_panelLastPlanets.gridx = 3;
         gbc_panelLastPlanets.gridy = 0;
-        panelTop.add(panelLastPlanets, gbc_panelLastPlanets);
+        panel.add(panelLastPlanets, gbc_panelLastPlanets);
+        panelLastPlanets.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Quick jump last planet", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagLayout gbl_panelLastPlanets = new GridBagLayout();
         gbl_panelLastPlanets.columnWidths = new int[] {120};
         gbl_panelLastPlanets.rowHeights = new int[] {1};
@@ -536,6 +527,15 @@ public class NextValiumGui {
         gbc_btnLastPlanet.gridx = 0;
         gbc_btnLastPlanet.gridy = 0;
         panelLastPlanets.add(btnLastPlanet, gbc_btnLastPlanet);
+        
+        btnClearTarget.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                planetMarkedAsTarget = null;
+                textFieldTargetUser.setText(null);
+                txtTargetplanet.setText(null);
+                frmNextvaliumManagementGui.repaint();
+            }
+        });
         
         panelStatusBar = new JPanel();
         panelStatusBar.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -597,15 +597,6 @@ public class NextValiumGui {
         panelStatusBar.add(textFieldGameDelay, gbc_textFieldGameDelay);
         textFieldGameDelay.setColumns(8);
         
-        btnClearTarget.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                planetMarkedAsTarget = null;
-                textFieldTargetUser.setText(null);
-                txtTargetplanet.setText(null);
-                frmNextvaliumManagementGui.repaint();
-            }
-        });
-        
         lp = new JLayeredPane();
         lp.addComponentListener(new ComponentAdapter() {
             @Override
@@ -621,6 +612,8 @@ public class NextValiumGui {
         frmNextvaliumManagementGui.setVisible(true);
         
         listUsers.forEach(user -> comboBoxUsers.addItem(user));
+        
+        frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         
         doInBackgroundGameDelay();
         doInBackgroundAlarm();
@@ -706,9 +699,6 @@ public class NextValiumGui {
         galaxyLoaded = true;
         
         frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        
-        if (chckbxShowUniverse.isSelected())
-            chckbxShowUniverse.doClick();
         
         new SwingWorker<Object, Object>() {
 

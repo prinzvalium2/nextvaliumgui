@@ -1,6 +1,7 @@
 package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -18,6 +19,7 @@ import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.GalaxyPlanet;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JLabel;
 
 public class PanelUniverse extends JPanel {
     
@@ -51,6 +53,11 @@ public class PanelUniverse extends JPanel {
         setBackground(Color.BLACK);
         setLayout(null);
         
+        JLabel lblLoadingData = new JLabel("Loading data...");
+        lblLoadingData.setForeground(Color.WHITE);
+        lblLoadingData.setBounds(0, 0, 80, 14);
+        add(lblLoadingData);
+        
         new SwingWorker <Object, Object> () {
 
             @Override
@@ -77,9 +84,12 @@ public class PanelUniverse extends JPanel {
                     
                 } catch (InterruptedException | ExecutionException e) {
                 }
+                lblLoadingData.setText("");
                 repaint();
                 
                 super.done();
+                NextValiumGui.getNextValiumGui().getFrmNextvaliumManagementGui().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
             }
         }.execute();
     }

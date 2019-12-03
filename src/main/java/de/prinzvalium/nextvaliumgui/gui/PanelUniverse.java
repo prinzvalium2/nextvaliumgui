@@ -30,8 +30,12 @@ public class PanelUniverse extends JPanel {
     private Double zoomY;
     private Double offsetX;
     private Double offsetY;
+    private NextValiumGui nextValiumGui;
     
     public PanelUniverse() {
+        
+        nextValiumGui = NextValiumGui.getNextValiumGui();
+        
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent arg0) {
@@ -47,7 +51,7 @@ public class PanelUniverse extends JPanel {
                 double planetX = mouseX/zoomX - 10.0/zoomX - offsetX;
                 double planetY = 10.0/zoomY + height/zoomY - mouseY/zoomY - offsetY;
                 
-                NextValiumGui.getNextValiumGui().setCenterPosition((int)planetX, (int)planetY);
+                nextValiumGui.setCenterPosition((int)planetX, (int)planetY);
             }
         });
         setBackground(Color.BLACK);
@@ -88,7 +92,7 @@ public class PanelUniverse extends JPanel {
                 repaint();
                 
                 super.done();
-                NextValiumGui.getNextValiumGui().getFrmNextvaliumManagementGui().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                nextValiumGui.getFrmNextvaliumManagementGui().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
             }
         }.execute();
@@ -127,6 +131,8 @@ public class PanelUniverse extends JPanel {
         if (ai == null)
             return;
         
+        String selectedUser = nextValiumGui.getSelectedUniverseUser();
+        
         Graphics2D g2 = (Graphics2D) g;
         
         Rectangle rectPanel = getBounds();
@@ -145,7 +151,13 @@ public class PanelUniverse extends JPanel {
             double y = (offsetY + planet.getY()) * zoomY;
             y = 10 + rectPanel.getHeight() - y;
             
-            g2.setColor(Util.getUserColor(planet.getUser()));
+            if (selectedUser.isEmpty())
+                g2.setColor(Util.getUserColor(planet.getUser()));
+            else if (planet.getUser().equalsIgnoreCase(selectedUser))
+                g2.setColor(Util.getUserColor(planet.getUser()).brighter());
+            else
+                g2.setColor(Color.DARK_GRAY);
+                
             g2.fillOval((int)x, (int)y, 2, 2);
         });
     }

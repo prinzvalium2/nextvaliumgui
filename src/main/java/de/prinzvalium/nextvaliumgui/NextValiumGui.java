@@ -103,6 +103,9 @@ public class NextValiumGui {
     private JPanel panel;
     private JPanel panelTabUniverse;
     private JTabbedPane tabbedPane;
+    private JPanel panelUniverseUser;
+    private JLabel lblUser;
+    private JComboBox<String> comboBoxUniverseUser;
 
     /**
      * Launch the application.
@@ -116,7 +119,7 @@ public class NextValiumGui {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    nextValiumGui = new NextValiumGui();
+                    new NextValiumGui();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -130,6 +133,8 @@ public class NextValiumGui {
      * @throws FileNotFoundException 
      */
     public NextValiumGui() {
+        nextValiumGui = this;
+        
         LOGGER.trace("");
         LOGGER.trace("---------------");
         LOGGER.trace("NextValiumGui()");
@@ -238,6 +243,49 @@ public class NextValiumGui {
         
         panelTabUniverse = new JPanel();
         tabbedPane.addTab("Universe", null, panelTabUniverse, null);               
+        GridBagLayout gbl_panelTabUniverse = new GridBagLayout();
+        gbl_panelTabUniverse.columnWidths = new int[]{607, 0};
+        gbl_panelTabUniverse.rowHeights = new int[]{10, 0};
+        gbl_panelTabUniverse.columnWeights = new double[]{0.0, Double.MIN_VALUE};
+        gbl_panelTabUniverse.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        panelTabUniverse.setLayout(gbl_panelTabUniverse);
+        
+        panelUniverseUser = new JPanel();
+        panelUniverseUser.setBorder(new TitledBorder(null, "Show", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_panelUniverseUser = new GridBagConstraints();
+        gbc_panelUniverseUser.anchor = GridBagConstraints.WEST;
+        gbc_panelUniverseUser.fill = GridBagConstraints.VERTICAL;
+        gbc_panelUniverseUser.gridx = 0;
+        gbc_panelUniverseUser.gridy = 0;
+        panelTabUniverse.add(panelUniverseUser, gbc_panelUniverseUser);
+        GridBagLayout gbl_panelUniverseUser = new GridBagLayout();
+        gbl_panelUniverseUser.columnWidths = new int[]{26, 28, 0};
+        gbl_panelUniverseUser.rowHeights = new int[]{20, 0};
+        gbl_panelUniverseUser.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelUniverseUser.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+        panelUniverseUser.setLayout(gbl_panelUniverseUser);
+        
+        lblUser = new JLabel("User:");
+        GridBagConstraints gbc_lblUser = new GridBagConstraints();
+        gbc_lblUser.anchor = GridBagConstraints.WEST;
+        gbc_lblUser.insets = new Insets(0, 0, 0, 5);
+        gbc_lblUser.gridx = 0;
+        gbc_lblUser.gridy = 0;
+        panelUniverseUser.add(lblUser, gbc_lblUser);
+        
+        comboBoxUniverseUser = new JComboBox<String>();
+        comboBoxUniverseUser.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                panelUniverse.repaint();
+            }
+        });
+        comboBoxUniverseUser.setEditable(true);
+        comboBoxUniverseUser.setPreferredSize(new Dimension(150, 20));
+        GridBagConstraints gbc_comboBoxUniverseUser = new GridBagConstraints();
+        gbc_comboBoxUniverseUser.anchor = GridBagConstraints.NORTHWEST;
+        gbc_comboBoxUniverseUser.gridx = 1;
+        gbc_comboBoxUniverseUser.gridy = 0;
+        panelUniverseUser.add(comboBoxUniverseUser, gbc_comboBoxUniverseUser);
         
         panel = new JPanel();
         tabbedPane.addTab("Galaxy map", null, panel, null);
@@ -612,6 +660,8 @@ public class NextValiumGui {
         frmNextvaliumManagementGui.setVisible(true);
         
         listUsers.forEach(user -> comboBoxUsers.addItem(user));
+        comboBoxUniverseUser.addItem("");
+        listUsers.forEach(user -> comboBoxUniverseUser.addItem(user));
         
         frmNextvaliumManagementGui.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         
@@ -713,9 +763,9 @@ public class NextValiumGui {
 
             @Override
             protected void done() {
-                showLastPlanet();
                 tabbedPane.setSelectedIndex(1);
                 frmNextvaliumManagementGui.repaint();
+                showLastPlanet();
             }
         }.execute();
     }
@@ -838,5 +888,9 @@ public class NextValiumGui {
 
     public ArrayList<String> getListUsers() {
         return listUsers;
+    }
+    
+    public String getSelectedUniverseUser() {
+        return (String) comboBoxUniverseUser.getSelectedItem();
     }
 }

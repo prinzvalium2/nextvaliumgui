@@ -30,6 +30,8 @@ public class PanelUniverse extends JPanel {
     private Double zoomY;
     private Double offsetX;
     private Double offsetY;
+    private Double centerOffsetX;
+    private Double centerOffsetY;
     private NextValiumGui nextValiumGui;
     
     public PanelUniverse() {
@@ -48,8 +50,8 @@ public class PanelUniverse extends JPanel {
                 
                 double height = rectPanel.getHeight();
                 
-                double planetX = mouseX/zoomX - 10.0/zoomX - offsetX;
-                double planetY = 10.0/zoomY + height/zoomY - mouseY/zoomY - offsetY;
+                double planetX = mouseX/zoomX - 10.0/zoomX - centerOffsetX/zoomX - offsetX;
+                double planetY = 10.0/zoomY + centerOffsetY/zoomY + height/zoomY - mouseY/zoomY - offsetY;
                 
                 nextValiumGui.setCenterPosition((int)planetX, (int)planetY);
             }
@@ -145,11 +147,17 @@ public class PanelUniverse extends JPanel {
         offsetX = rectPanel.getMinX() - rectUniverse.getMinX();
         offsetY = rectPanel.getMinY() - rectUniverse.getMinY();
         
+        zoomX = Math.min(zoomX, zoomY);
+        zoomY = zoomX;
+        
+        centerOffsetX = (rectPanel.getWidth() - rectUniverse.getWidth() * zoomX) / 2;
+        centerOffsetY = (rectPanel.getHeight() - rectUniverse.getHeight() * zoomY) / 2;
+        
         mapPlanets.forEach((id, planet) -> {
             
-            double x = 10 + (offsetX + planet.getX()) * zoomX;
+            double x = 10 + centerOffsetX +(offsetX + planet.getX()) * zoomX;
             double y = (offsetY + planet.getY()) * zoomY;
-            y = 10 + rectPanel.getHeight() - y;
+            y = 10 - centerOffsetY + rectPanel.getHeight() - y;
             
             if (selectedUser.isEmpty())
                 g2.setColor(Util.getUserColor(planet.getUser()));

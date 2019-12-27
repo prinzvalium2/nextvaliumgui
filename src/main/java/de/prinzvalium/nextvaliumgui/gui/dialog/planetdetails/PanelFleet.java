@@ -11,6 +11,8 @@ import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
+import de.prinzvalium.nextvaliumgui.nextcolony.Production;
+import de.prinzvalium.nextvaliumgui.nextcolony.ProductionRessources;
 import de.prinzvalium.nextvaliumgui.nextcolony.Resources;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
@@ -28,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.PlainDocument;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.awt.Insets;
@@ -48,9 +51,16 @@ import javax.swing.SwingWorker;
 import javax.swing.JButton;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.IOException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.EmptyBorder;
 
 public class PanelFleet extends JPanel {
 
@@ -127,6 +137,9 @@ public class PanelFleet extends JPanel {
     };
     private JTextField txtResourcesTotal;
     private JTextField txtFreeMissionsPlanet;
+    private JTextField txtTargetresources;
+    private JTextField txtTargetloot;
+    private JPanel panel;
     
     public PanelFleet(DialogPlanet dialogPlanet, Planet planet) {
         addComponentListener(new ComponentAdapter() {
@@ -149,7 +162,7 @@ public class PanelFleet extends JPanel {
         scrollPane.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
         gbc_scrollPane.gridheight = 4;
-        gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane.insets = new Insets(0, 0, 0, 5);
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 0;
         gbc_scrollPane.gridy = 0;
@@ -299,10 +312,10 @@ public class PanelFleet extends JPanel {
         gbc_panelTarget.gridy = 1;
         add(panelTarget, gbc_panelTarget);
         GridBagLayout gbl_panelTarget = new GridBagLayout();
-        gbl_panelTarget.columnWidths = new int[]{70, 0, 0};
-        gbl_panelTarget.rowHeights = new int[]{0, 0, 0, 0};
-        gbl_panelTarget.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-        gbl_panelTarget.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+        gbl_panelTarget.columnWidths = new int[] {70, 0, 0, 40};
+        gbl_panelTarget.rowHeights = new int[]{0, 0, 0, 0, 0};
+        gbl_panelTarget.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0};
+        gbl_panelTarget.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
         panelTarget.setLayout(gbl_panelTarget);
         
         JLabel lblTargetUser = new JLabel("User:");
@@ -315,7 +328,7 @@ public class PanelFleet extends JPanel {
         
         textFieldTargetUser = new JTextField();
         GridBagConstraints gbc_textFieldTargetUser = new GridBagConstraints();
-        gbc_textFieldTargetUser.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldTargetUser.insets = new Insets(0, 0, 5, 5);
         gbc_textFieldTargetUser.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldTargetUser.gridx = 1;
         gbc_textFieldTargetUser.gridy = 0;
@@ -341,60 +354,21 @@ public class PanelFleet extends JPanel {
                 }
             }
         });
-
-        JLabel lblTargetPlanet = new JLabel("Planet:");
-        GridBagConstraints gbc_lblTargetPlanet = new GridBagConstraints();
-        gbc_lblTargetPlanet.anchor = GridBagConstraints.EAST;
-        gbc_lblTargetPlanet.insets = new Insets(0, 0, 5, 5);
-        gbc_lblTargetPlanet.gridx = 0;
-        gbc_lblTargetPlanet.gridy = 1;
-        panelTarget.add(lblTargetPlanet, gbc_lblTargetPlanet);
-        
-        comboBoxTargetPlanet = new JComboBox<String>();
-        GridBagConstraints gbc_comboBoxTargetPlanet = new GridBagConstraints();
-        gbc_comboBoxTargetPlanet.insets = new Insets(0, 0, 5, 0);
-        gbc_comboBoxTargetPlanet.fill = GridBagConstraints.HORIZONTAL;
-        gbc_comboBoxTargetPlanet.gridx = 1;
-        gbc_comboBoxTargetPlanet.gridy = 1;
-        panelTarget.add(comboBoxTargetPlanet, gbc_comboBoxTargetPlanet);
-
-        comboBoxTargetPlanet.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (comboBoxTargetPlanet.getSelectedItem() == null)
-                    return;
-                
-                String planetName = comboBoxTargetPlanet.getSelectedItem().toString();
-                mapPlanets.forEach((planetId, planet) -> {
-                    if (planet.getName().equalsIgnoreCase(planetName)) {
-                        targetPlanet = planet;
-                        textFieldTargetPositionX.setText(Integer.toString(planet.getPosX()));
-                        textFieldTargetPositionY.setText(Integer.toString(planet.getPosY()));
-                    }
-                });
-                tableChanged_Fleet();
-                checkPreconditionSendToSteemButton();
-            }
-        });
-        
-        JLabel lblTargetPosition = new JLabel("Position:");
-        GridBagConstraints gbc_lblTargetPosition = new GridBagConstraints();
-        gbc_lblTargetPosition.anchor = GridBagConstraints.EAST;
-        gbc_lblTargetPosition.insets = new Insets(0, 0, 0, 5);
-        gbc_lblTargetPosition.gridx = 0;
-        gbc_lblTargetPosition.gridy = 2;
-        panelTarget.add(lblTargetPosition, gbc_lblTargetPosition);
-        
-        JPanel panelTargetPosition = new JPanel();
-        GridBagConstraints gbc_panelTargetPosition = new GridBagConstraints();
-        gbc_panelTargetPosition.fill = GridBagConstraints.BOTH;
-        gbc_panelTargetPosition.gridx = 1;
-        gbc_panelTargetPosition.gridy = 2;
-        panelTarget.add(panelTargetPosition, gbc_panelTargetPosition);
         
         JLabel lblTargetPositionX = new JLabel("X:");
-        panelTargetPosition.add(lblTargetPositionX);
+        GridBagConstraints gbc_lblTargetPositionX = new GridBagConstraints();
+        gbc_lblTargetPositionX.insets = new Insets(0, 0, 5, 5);
+        gbc_lblTargetPositionX.gridx = 2;
+        gbc_lblTargetPositionX.gridy = 0;
+        panelTarget.add(lblTargetPositionX, gbc_lblTargetPositionX);
         
         textFieldTargetPositionX = new JTextField();
+        GridBagConstraints gbc_textFieldTargetPositionX = new GridBagConstraints();
+        gbc_textFieldTargetPositionX.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldTargetPositionX.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldTargetPositionX.gridx = 3;
+        gbc_textFieldTargetPositionX.gridy = 0;
+        panelTarget.add(textFieldTargetPositionX, gbc_textFieldTargetPositionX);
         textFieldTargetPositionX.setHorizontalAlignment(SwingConstants.RIGHT);
         textFieldTargetPositionX.addFocusListener(new FocusAdapter() {
             @Override
@@ -417,13 +391,81 @@ public class PanelFleet extends JPanel {
                 checkPreconditionSendToSteemButton();
             }
         });
-        panelTargetPosition.add(textFieldTargetPositionX);
         textFieldTargetPositionX.setColumns(5);
+
+        JLabel lblTargetPlanet = new JLabel("Planet:");
+        GridBagConstraints gbc_lblTargetPlanet = new GridBagConstraints();
+        gbc_lblTargetPlanet.anchor = GridBagConstraints.EAST;
+        gbc_lblTargetPlanet.insets = new Insets(0, 0, 5, 5);
+        gbc_lblTargetPlanet.gridx = 0;
+        gbc_lblTargetPlanet.gridy = 1;
+        panelTarget.add(lblTargetPlanet, gbc_lblTargetPlanet);
+        
+        comboBoxTargetPlanet = new JComboBox<String>();
+        GridBagConstraints gbc_comboBoxTargetPlanet = new GridBagConstraints();
+        gbc_comboBoxTargetPlanet.insets = new Insets(0, 0, 5, 5);
+        gbc_comboBoxTargetPlanet.fill = GridBagConstraints.HORIZONTAL;
+        gbc_comboBoxTargetPlanet.gridx = 1;
+        gbc_comboBoxTargetPlanet.gridy = 1;
+        panelTarget.add(comboBoxTargetPlanet, gbc_comboBoxTargetPlanet);
+
+        comboBoxTargetPlanet.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (comboBoxTargetPlanet.getSelectedItem() == null)
+                    return;
+                
+                String planetName = comboBoxTargetPlanet.getSelectedItem().toString();
+                mapPlanets.forEach((planetId, planet) -> {
+                    if (planet.getName().equalsIgnoreCase(planetName)) {
+                        targetPlanet = planet;
+                        textFieldTargetPositionX.setText(Integer.toString(planet.getPosX()));
+                        textFieldTargetPositionY.setText(Integer.toString(planet.getPosY()));
+                        try {
+                            RessourceQuantitiesRessources res;
+                            res = RessourceQuantities.loadRessourceQuantites(planet.getName(), planet.getId());
+                            txtTargetresources.setText(String.format("%.3f", res.getCoal()+res.getOre()+res.getCopper()+res.getUranium()));
+                            
+                            ProductionRessources pr = new Production(targetPlanet).loadProduction();
+                            
+                            Double lootCoal = res.getCoal() - pr.getCoal().getSafe();
+                            if (lootCoal < 0)
+                                lootCoal = 0.0;
+                            Double lootOre = res.getOre() - pr.getOre().getSafe();
+                            if (lootOre < 0)
+                                lootOre = 0.0;
+                            Double lootCopper = res.getCopper() - pr.getCopper().getSafe();
+                            if (lootCopper < 0)
+                                lootCopper = 0.0;
+                            Double lootUranium = res.getUranium() - pr.getUranium().getSafe();
+                            if (lootUranium < 0)
+                                lootUranium = 0.0;
+                            
+                            Double loot = lootCoal + lootOre + lootCopper + lootUranium;
+                            txtTargetloot.setText(String.format("%.3f", loot));
+                            
+                        } catch (JSONException | IOException e1) {
+                        }
+                    }
+                });
+                tableChanged_Fleet();
+                checkPreconditionSendToSteemButton();
+            }
+        });
         
         JLabel lblTargetPositionY = new JLabel("Y:");
-        panelTargetPosition.add(lblTargetPositionY);
+        GridBagConstraints gbc_lblTargetPositionY = new GridBagConstraints();
+        gbc_lblTargetPositionY.insets = new Insets(0, 0, 5, 5);
+        gbc_lblTargetPositionY.gridx = 2;
+        gbc_lblTargetPositionY.gridy = 1;
+        panelTarget.add(lblTargetPositionY, gbc_lblTargetPositionY);
         
         textFieldTargetPositionY = new JTextField();
+        GridBagConstraints gbc_textFieldTargetPositionY = new GridBagConstraints();
+        gbc_textFieldTargetPositionY.fill = GridBagConstraints.HORIZONTAL;
+        gbc_textFieldTargetPositionY.insets = new Insets(0, 0, 5, 0);
+        gbc_textFieldTargetPositionY.gridx = 3;
+        gbc_textFieldTargetPositionY.gridy = 1;
+        panelTarget.add(textFieldTargetPositionY, gbc_textFieldTargetPositionY);
         textFieldTargetPositionY.setHorizontalAlignment(SwingConstants.TRAILING);
         textFieldTargetPositionY.addFocusListener(new FocusAdapter() {
             @Override
@@ -446,8 +488,58 @@ public class PanelFleet extends JPanel {
                 checkPreconditionSendToSteemButton();
             }
         });
-        panelTargetPosition.add(textFieldTargetPositionY);
         textFieldTargetPositionY.setColumns(5);
+        
+        JLabel lblTargetRessources = new JLabel("Resources:");
+        GridBagConstraints gbc_lblTargetRessources = new GridBagConstraints();
+        gbc_lblTargetRessources.anchor = GridBagConstraints.EAST;
+        gbc_lblTargetRessources.insets = new Insets(0, 0, 0, 5);
+        gbc_lblTargetRessources.gridx = 0;
+        gbc_lblTargetRessources.gridy = 3;
+        panelTarget.add(lblTargetRessources, gbc_lblTargetRessources);
+        
+        JPanel panelTargetResources = new JPanel();
+        GridBagConstraints gbc_panelTargetResources = new GridBagConstraints();
+        gbc_panelTargetResources.gridwidth = 3;
+        gbc_panelTargetResources.fill = GridBagConstraints.BOTH;
+        gbc_panelTargetResources.gridx = 1;
+        gbc_panelTargetResources.gridy = 3;
+        panelTarget.add(panelTargetResources, gbc_panelTargetResources);
+        GridBagLayout gbl_panelTargetResources = new GridBagLayout();
+        gbl_panelTargetResources.columnWidths = new int[]{0, 0, 0, 0};
+        gbl_panelTargetResources.rowHeights = new int[]{0, 0};
+        gbl_panelTargetResources.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_panelTargetResources.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+        panelTargetResources.setLayout(gbl_panelTargetResources);
+        
+        txtTargetresources = new JTextField();
+        txtTargetresources.setEditable(false);
+        txtTargetresources.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_txtTargetresources = new GridBagConstraints();
+        gbc_txtTargetresources.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtTargetresources.insets = new Insets(0, 0, 0, 5);
+        gbc_txtTargetresources.gridx = 0;
+        gbc_txtTargetresources.gridy = 0;
+        panelTargetResources.add(txtTargetresources, gbc_txtTargetresources);
+        txtTargetresources.setColumns(8);
+        
+        JLabel lblLoot = new JLabel("Loot:");
+        GridBagConstraints gbc_lblLoot = new GridBagConstraints();
+        gbc_lblLoot.insets = new Insets(0, 0, 0, 5);
+        gbc_lblLoot.anchor = GridBagConstraints.EAST;
+        gbc_lblLoot.gridx = 1;
+        gbc_lblLoot.gridy = 0;
+        panelTargetResources.add(lblLoot, gbc_lblLoot);
+        
+        txtTargetloot = new JTextField();
+        txtTargetloot.setEditable(false);
+        txtTargetloot.setHorizontalAlignment(SwingConstants.RIGHT);
+        GridBagConstraints gbc_txtTargetloot = new GridBagConstraints();
+        gbc_txtTargetloot.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtTargetloot.gridx = 2;
+        gbc_txtTargetloot.gridy = 0;
+        panelTargetResources.add(txtTargetloot, gbc_txtTargetloot);
+        txtTargetloot.setColumns(8);
         
         JPanel panelResources = new JPanel();
         panelResources.setBorder(new TitledBorder(null, "Resources", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -698,17 +790,32 @@ public class PanelFleet extends JPanel {
         panelResources.add(textFieldUraniumConsumption, gbc_textFieldUraniumConsumption);
         textFieldUraniumConsumption.setColumns(10);
         
+        panel = new JPanel();
+        panel.setBorder(new EmptyBorder(0, 0, 0, 0));
+        GridBagConstraints gbc_panel = new GridBagConstraints();
+        gbc_panel.fill = GridBagConstraints.BOTH;
+        gbc_panel.gridx = 1;
+        gbc_panel.gridy = 3;
+        add(panel, gbc_panel);
+        GridBagLayout gbl_panel = new GridBagLayout();
+        gbl_panel.columnWidths = new int[]{0, 0};
+        gbl_panel.rowHeights = new int[]{0, 0};
+        gbl_panel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        panel.setLayout(gbl_panel);
+        
         btnSendTransaction = new JButton("Send transaction to Steem");
+        GridBagConstraints gbc_btnSendTransaction = new GridBagConstraints();
+        gbc_btnSendTransaction.insets = new Insets(5, 5, 5, 5);
+        gbc_btnSendTransaction.fill = GridBagConstraints.BOTH;
+        gbc_btnSendTransaction.gridx = 0;
+        gbc_btnSendTransaction.gridy = 0;
+        panel.add(btnSendTransaction, gbc_btnSendTransaction);
         btnSendTransaction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionPerformed_btnSendTransaction();
             }
         });
-        GridBagConstraints gbc_btnSendTransaction = new GridBagConstraints();
-        gbc_btnSendTransaction.insets = new Insets(0, 0, 5, 0);
-        gbc_btnSendTransaction.gridx = 1;
-        gbc_btnSendTransaction.gridy = 3;
-        add(btnSendTransaction, gbc_btnSendTransaction);
         
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
         

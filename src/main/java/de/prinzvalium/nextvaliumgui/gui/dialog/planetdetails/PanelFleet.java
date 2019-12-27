@@ -56,6 +56,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import java.awt.Dimension;
 
 public class PanelFleet extends JPanel {
 
@@ -397,6 +398,7 @@ public class PanelFleet extends JPanel {
         panelTarget.add(lblTargetPlanet, gbc_lblTargetPlanet);
         
         comboBoxTargetPlanet = new JComboBox<String>();
+        comboBoxTargetPlanet.setPreferredSize(new Dimension(150, 20));
         GridBagConstraints gbc_comboBoxTargetPlanet = new GridBagConstraints();
         gbc_comboBoxTargetPlanet.insets = new Insets(0, 0, 5, 5);
         gbc_comboBoxTargetPlanet.fill = GridBagConstraints.HORIZONTAL;

@@ -706,6 +706,7 @@ public class NextValiumGui {
     public void clearTarget() {
         planetMarkedAsTarget = null;
         textFieldTargetUser.setText(null);
+        txtTargetplanet.setText(null);
         frmNextvaliumManagementGui.repaint();
     }
 

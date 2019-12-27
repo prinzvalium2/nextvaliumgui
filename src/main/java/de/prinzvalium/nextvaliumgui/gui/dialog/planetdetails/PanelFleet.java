@@ -1223,6 +1223,7 @@ public class PanelFleet extends JPanel {
     }
     
     private void actionPerformed_comboBoxMissionsStandard() {
+        tableChanged_Fleet();
         checkPreconditionSendToSteemButton();
     }
 }

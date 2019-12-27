@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
 import de.prinzvalium.nextvaliumgui.gui.PanelUniverse;
+import de.prinzvalium.nextvaliumgui.gui.dialog.fulldepots.DialogFullDepots;
 import de.prinzvalium.nextvaliumgui.gui.dialog.hostilemissions.HostileMissions;
 import de.prinzvalium.nextvaliumgui.gui.dialog.lastplanets.DialogLastPlanets;
 import de.prinzvalium.nextvaliumgui.gui.dialog.seasonranking.SeasonRanking;
@@ -59,6 +60,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 
 public class NextValiumGui {
@@ -106,6 +109,7 @@ public class NextValiumGui {
     private JPanel panelUniverseUser;
     private JLabel lblUser;
     private JComboBox<String> comboBoxUniverseUser;
+    private final Action action = new SwingAction();
 
     /**
      * Launch the application.
@@ -207,6 +211,14 @@ public class NextValiumGui {
             }
         });
         mnInfo.add(mntmHostileMissions);
+        
+        JMenuItem mntmFulldepots = new JMenuItem("Full depots");
+        mntmFulldepots.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                new DialogFullDepots().setVisible(true);
+            }
+        });
+        mnInfo.add(mntmFulldepots);
         
         JPanel panelTop = new JPanel();
         panelTop.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -892,5 +904,13 @@ public class NextValiumGui {
     
     public String getSelectedUniverseUser() {
         return (String) comboBoxUniverseUser.getSelectedItem();
+    }
+    private class SwingAction extends AbstractAction {
+        public SwingAction() {
+            putValue(NAME, "SwingAction");
+            putValue(SHORT_DESCRIPTION, "Some short description");
+        }
+        public void actionPerformed(ActionEvent e) {
+        }
     }
 }

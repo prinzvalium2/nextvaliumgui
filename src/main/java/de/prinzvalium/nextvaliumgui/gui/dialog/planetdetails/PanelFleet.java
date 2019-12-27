@@ -210,7 +210,7 @@ public class PanelFleet extends JPanel {
         scrollPane.setViewportView(tableShips);
         
         JPanel panelMissions = new JPanel();
-        panelMissions.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Missions", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panelMissions.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Mission", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         GridBagConstraints gbc_panelMissions = new GridBagConstraints();
         gbc_panelMissions.insets = new Insets(0, 0, 5, 0);
         gbc_panelMissions.fill = GridBagConstraints.BOTH;
@@ -513,6 +513,7 @@ public class PanelFleet extends JPanel {
         panelTargetResources.setLayout(gbl_panelTargetResources);
         
         txtTargetresources = new JTextField();
+        txtTargetresources.setEnabled(false);
         txtTargetresources.setEditable(false);
         txtTargetresources.setHorizontalAlignment(SwingConstants.RIGHT);
         GridBagConstraints gbc_txtTargetresources = new GridBagConstraints();
@@ -532,6 +533,7 @@ public class PanelFleet extends JPanel {
         panelTargetResources.add(lblLoot, gbc_lblLoot);
         
         txtTargetloot = new JTextField();
+        txtTargetloot.setEnabled(false);
         txtTargetloot.setEditable(false);
         txtTargetloot.setHorizontalAlignment(SwingConstants.RIGHT);
         GridBagConstraints gbc_txtTargetloot = new GridBagConstraints();

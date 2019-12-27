@@ -4,7 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JButton;
@@ -18,7 +19,6 @@ import javax.swing.table.DefaultTableModel;
 
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
-import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
@@ -78,10 +78,10 @@ public class DialogFullDepots extends JDialog {
                 });
                 table.setModel(new DefaultTableModel(
                     new Object[][] {
-                        {"Loading data...", null, null, null},
+                        {"Loading data...", null, null},
                     },
                     new String[] {
-                        "Date", "User", "Planet", "Id"
+                        "User", "Planet", "Id"
                     }
                 ) {
                     Class[] columnTypes = new Class[] {
@@ -100,7 +100,6 @@ public class DialogFullDepots extends JDialog {
                 table.getColumnModel().getColumn(0).setPreferredWidth(125);
                 table.getColumnModel().getColumn(1).setPreferredWidth(125);
                 table.getColumnModel().getColumn(2).setPreferredWidth(125);
-                table.getColumnModel().getColumn(3).setPreferredWidth(125);
                 scrollPane.setViewportView(table);
         }
         {
@@ -113,7 +112,7 @@ public class DialogFullDepots extends JDialog {
                 btnJumpToPlanet.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent arg0) {
                         dialog.setVisible(false);
-                        String id = (String) model.getValueAt(table.getSelectedRow(), 3);  
+                        String id = (String) model.getValueAt(table.getSelectedRow(), 2);  
                         
                         Planet planet = null;
                         for (Planet p : listPlanets) {
@@ -154,26 +153,21 @@ public class DialogFullDepots extends JDialog {
                 
                 listPlanets = new ArrayList<>();
 
-                ArrayList<String> listUsers = NextValiumGui.getNextValiumGui().getListUsers();
-                for (String user : listUsers) {
+                for (String user : NextValiumGui.getNextValiumGui().getListUsers()) {
                     
-                    HashMap<String, Planet> mapPlanets = Planets.loadUserPlanets(user);
+                    List<Planet> planets = new ArrayList<>(Planets.loadUserPlanets(user).values());
+                    Collections.sort(planets);
                     
-                    mapPlanets.forEach((id, p) -> {
-                        
-                        try {
-                            RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(p.getName(), p.getId());
-                            if (res.getCoal() >= res.getCoalDepot() &&
-                                    res.getOre() >= res.getOreDepot() &&
-                                    res.getCopper() >= res.getCopperDepot() &&
-                                    res.getUranium() >= res.getUraniumDepot() )
-                                listPlanets.add(p);
-                        }
-                        catch (Exception e) {
-                        }
-                    });
+                    for (Planet p : planets) { 
+                        RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(p.getName(), p.getId());
+                        if (res.getCoal() >= res.getCoalDepot() &&
+                                res.getOre() >= res.getOreDepot() &&
+                                res.getCopper() >= res.getCopperDepot() &&
+                                res.getUranium() >= res.getUraniumDepot() )
+                            
+                            listPlanets.add(p);
+                    }
                 }
-
                 return listPlanets;
             }
 
@@ -182,7 +176,7 @@ public class DialogFullDepots extends JDialog {
                 try {
                     model.removeRow(0);
                     for (Planet p : get())
-                        model.addRow(new Object[] { Util.getDateAsString(p.getDate()), p.getUserName(), p.getName(), p.getId()});
+                        model.addRow(new Object[] { p.getUserName(), p.getName(), p.getId()});
                     
                     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     

@@ -156,28 +156,20 @@ public class PanelPlanetDetails extends JPanel {
         gbc_panelContent.gridy = 1;
         add(panelContent, gbc_panelContent);
         GridBagLayout gbl_panelContent = new GridBagLayout();
-        gbl_panelContent.columnWidths = new int[]{0, 0, 0, 0};
+        gbl_panelContent.columnWidths = new int[]{0, 0, 0};
         gbl_panelContent.rowHeights = new int[]{0, 0, 0};
-        gbl_panelContent.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelContent.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         gbl_panelContent.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panelContent.setLayout(gbl_panelContent);
-        
-        JLabel lblRenamePlanet = new JLabel("Rename planet:");
-        GridBagConstraints gbc_lblRenamePlanet = new GridBagConstraints();
-        gbc_lblRenamePlanet.insets = new Insets(0, 0, 5, 5);
-        gbc_lblRenamePlanet.anchor = GridBagConstraints.EAST;
-        gbc_lblRenamePlanet.gridx = 0;
-        gbc_lblRenamePlanet.gridy = 0;
-        panelContent.add(lblRenamePlanet, gbc_lblRenamePlanet);
         
         txtRenameplanet = new JTextField(planet.getName());
         GridBagConstraints gbc_txtRenameplanet = new GridBagConstraints();
         gbc_txtRenameplanet.insets = new Insets(0, 0, 5, 5);
         gbc_txtRenameplanet.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtRenameplanet.gridx = 1;
+        gbc_txtRenameplanet.gridx = 0;
         gbc_txtRenameplanet.gridy = 0;
         panelContent.add(txtRenameplanet, gbc_txtRenameplanet);
-        txtRenameplanet.setColumns(10);
+        txtRenameplanet.setColumns(20);
         
         btnRenameplanet = new JButton("Rename planet");
         btnRenameplanet.addActionListener(new ActionListener() {
@@ -213,17 +205,9 @@ public class PanelPlanetDetails extends JPanel {
         GridBagConstraints gbc_btnRenameplanet = new GridBagConstraints();
         gbc_btnRenameplanet.fill = GridBagConstraints.HORIZONTAL;
         gbc_btnRenameplanet.insets = new Insets(0, 0, 5, 0);
-        gbc_btnRenameplanet.gridx = 2;
+        gbc_btnRenameplanet.gridx = 1;
         gbc_btnRenameplanet.gridy = 0;
         panelContent.add(btnRenameplanet, gbc_btnRenameplanet);
-        
-        JLabel lblGiftPlanet = new JLabel("Gift planet:");
-        GridBagConstraints gbc_lblGiftPlanet = new GridBagConstraints();
-        gbc_lblGiftPlanet.anchor = GridBagConstraints.EAST;
-        gbc_lblGiftPlanet.insets = new Insets(0, 0, 0, 5);
-        gbc_lblGiftPlanet.gridx = 0;
-        gbc_lblGiftPlanet.gridy = 1;
-        panelContent.add(lblGiftPlanet, gbc_lblGiftPlanet);
         
         txtGiftPlanet = new JTextField();
         txtGiftPlanet.setEnabled(false);
@@ -231,7 +215,7 @@ public class PanelPlanetDetails extends JPanel {
         GridBagConstraints gbc_txtGiftPlanet = new GridBagConstraints();
         gbc_txtGiftPlanet.insets = new Insets(0, 0, 0, 5);
         gbc_txtGiftPlanet.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtGiftPlanet.gridx = 1;
+        gbc_txtGiftPlanet.gridx = 0;
         gbc_txtGiftPlanet.gridy = 1;
         panelContent.add(txtGiftPlanet, gbc_txtGiftPlanet);
         txtGiftPlanet.setColumns(10);
@@ -240,7 +224,7 @@ public class PanelPlanetDetails extends JPanel {
         btnGiftPlanet.setEnabled(false);
         GridBagConstraints gbc_btnGiftPlanet = new GridBagConstraints();
         gbc_btnGiftPlanet.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnGiftPlanet.gridx = 2;
+        gbc_btnGiftPlanet.gridx = 1;
         gbc_btnGiftPlanet.gridy = 1;
         panelContent.add(btnGiftPlanet, gbc_btnGiftPlanet);
     

@@ -55,11 +55,6 @@ import java.io.IOException;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.EmptyBorder;
 
 public class PanelFleet extends JPanel {

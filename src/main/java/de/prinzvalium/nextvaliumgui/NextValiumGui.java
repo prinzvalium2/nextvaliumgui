@@ -60,8 +60,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 
 
 public class NextValiumGui {
@@ -109,7 +107,6 @@ public class NextValiumGui {
     private JPanel panelUniverseUser;
     private JLabel lblUser;
     private JComboBox<String> comboBoxUniverseUser;
-    private final Action action = new SwingAction();
 
     /**
      * Launch the application.
@@ -904,13 +901,5 @@ public class NextValiumGui {
     
     public String getSelectedUniverseUser() {
         return (String) comboBoxUniverseUser.getSelectedItem();
-    }
-    private class SwingAction extends AbstractAction {
-        public SwingAction() {
-            putValue(NAME, "SwingAction");
-            putValue(SHORT_DESCRIPTION, "Some short description");
-        }
-        public void actionPerformed(ActionEvent e) {
-        }
     }
 }

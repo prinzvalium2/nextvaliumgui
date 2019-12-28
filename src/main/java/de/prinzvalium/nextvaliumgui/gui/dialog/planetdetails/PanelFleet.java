@@ -133,7 +133,6 @@ public class PanelFleet extends JPanel {
     };
     private JTextField txtResourcesTotal;
     private JTextField txtFreeMissionsPlanet;
-    private JTextField txtTargetresources;
     private JTextField txtTargetloot;
     private JPanel panel;
     
@@ -420,7 +419,6 @@ public class PanelFleet extends JPanel {
                         try {
                             RessourceQuantitiesRessources res;
                             res = RessourceQuantities.loadRessourceQuantites(planet.getName(), planet.getId());
-                            txtTargetresources.setText(String.format("%.3f", res.getCoal()+res.getOre()+res.getCopper()+res.getUranium()));
                             
                             ProductionRessources pr = new Production(targetPlanet).loadProduction();
                             
@@ -487,57 +485,25 @@ public class PanelFleet extends JPanel {
         });
         textFieldTargetPositionY.setColumns(5);
         
-        JLabel lblTargetRessources = new JLabel("Resources:");
-        GridBagConstraints gbc_lblTargetRessources = new GridBagConstraints();
-        gbc_lblTargetRessources.anchor = GridBagConstraints.EAST;
-        gbc_lblTargetRessources.insets = new Insets(0, 0, 0, 5);
-        gbc_lblTargetRessources.gridx = 0;
-        gbc_lblTargetRessources.gridy = 3;
-        panelTarget.add(lblTargetRessources, gbc_lblTargetRessources);
-        
-        JPanel panelTargetResources = new JPanel();
-        GridBagConstraints gbc_panelTargetResources = new GridBagConstraints();
-        gbc_panelTargetResources.gridwidth = 3;
-        gbc_panelTargetResources.fill = GridBagConstraints.BOTH;
-        gbc_panelTargetResources.gridx = 1;
-        gbc_panelTargetResources.gridy = 3;
-        panelTarget.add(panelTargetResources, gbc_panelTargetResources);
-        GridBagLayout gbl_panelTargetResources = new GridBagLayout();
-        gbl_panelTargetResources.columnWidths = new int[]{0, 0, 0, 0};
-        gbl_panelTargetResources.rowHeights = new int[]{0, 0};
-        gbl_panelTargetResources.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-        gbl_panelTargetResources.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-        panelTargetResources.setLayout(gbl_panelTargetResources);
-        
-        txtTargetresources = new JTextField();
-        txtTargetresources.setEnabled(false);
-        txtTargetresources.setEditable(false);
-        txtTargetresources.setHorizontalAlignment(SwingConstants.RIGHT);
-        GridBagConstraints gbc_txtTargetresources = new GridBagConstraints();
-        gbc_txtTargetresources.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtTargetresources.insets = new Insets(0, 0, 0, 5);
-        gbc_txtTargetresources.gridx = 0;
-        gbc_txtTargetresources.gridy = 0;
-        panelTargetResources.add(txtTargetresources, gbc_txtTargetresources);
-        txtTargetresources.setColumns(8);
-        
+       
         JLabel lblLoot = new JLabel("Loot:");
         GridBagConstraints gbc_lblLoot = new GridBagConstraints();
         gbc_lblLoot.insets = new Insets(0, 0, 0, 5);
         gbc_lblLoot.anchor = GridBagConstraints.EAST;
-        gbc_lblLoot.gridx = 1;
-        gbc_lblLoot.gridy = 0;
-        panelTargetResources.add(lblLoot, gbc_lblLoot);
+        gbc_lblLoot.gridx = 0;
+        gbc_lblLoot.gridy = 3;
+        panelTarget.add(lblLoot, gbc_lblLoot);
         
         txtTargetloot = new JTextField();
         txtTargetloot.setEnabled(false);
         txtTargetloot.setEditable(false);
         txtTargetloot.setHorizontalAlignment(SwingConstants.RIGHT);
         GridBagConstraints gbc_txtTargetloot = new GridBagConstraints();
+        gbc_txtTargetloot.insets = new Insets(0, 0, 0, 5);
         gbc_txtTargetloot.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtTargetloot.gridx = 2;
-        gbc_txtTargetloot.gridy = 0;
-        panelTargetResources.add(txtTargetloot, gbc_txtTargetloot);
+        gbc_txtTargetloot.gridx = 1;
+        gbc_txtTargetloot.gridy = 3;
+        panelTarget.add(txtTargetloot, gbc_txtTargetloot);
         txtTargetloot.setColumns(8);
         
         JPanel panelResources = new JPanel();

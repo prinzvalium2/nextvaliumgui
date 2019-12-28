@@ -497,7 +497,7 @@ public class PanelFleet extends JPanel {
         txtTargetloot = new JTextField();
         txtTargetloot.setEnabled(false);
         txtTargetloot.setEditable(false);
-        txtTargetloot.setHorizontalAlignment(SwingConstants.RIGHT);
+        txtTargetloot.setHorizontalAlignment(SwingConstants.LEFT);
         GridBagConstraints gbc_txtTargetloot = new GridBagConstraints();
         gbc_txtTargetloot.insets = new Insets(0, 0, 0, 5);
         gbc_txtTargetloot.fill = GridBagConstraints.HORIZONTAL;

@@ -89,8 +89,12 @@ public class PanelFleet extends JPanel {
     private Fleet fleet = null;
     private int missionsAvailable = -1;
     private int missionsPlanetAvailable = -1;
+    private int missionsPlanetMax = -1;
+    private int missionsMax = -1;
     private int numberOfShips = 0;
     private boolean actionPerformed_comboBoxShipsPredefined = false;
+    private RessourceQuantitiesRessources res = null;
+    private HashMap<String, Integer> mapShips = null;
     
     private final String PREDEFINED_SHIPSELECTION_EMPTY = "";
     private final String PREDEFINED_SHIPSELECTION_NONE = "No ships";
@@ -782,6 +786,7 @@ public class PanelFleet extends JPanel {
             }
         });
         
+        
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
         
         new SwingWorker<Void, Void>() {
@@ -789,36 +794,21 @@ public class PanelFleet extends JPanel {
             @Override
             protected Void doInBackground() throws Exception {
                 
-                setTarget();
-                
-                checkPreconditionSendToSteemButton();
-                
                 String userName = planet.getUserName();
                 String planetId = planet.getId();
                 String planetName = planet.getName();
                 
                 fleet = new Fleet(userName, planetName, planetId);
-                HashMap<String, Integer> mapShips = fleet.getNumberOfShipTypesInShipyard();
-                model.removeRow(0);
-                for (Map.Entry<?,?> entry : mapShips.entrySet())
-                    model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
+                mapShips = fleet.getNumberOfShipTypesInShipyard();
                 
-                RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(planetName, planetId);
-                textFieldResourcesCoal.setText(String.format("%.3f", res.getCoal()));
-                textFieldResourcesOre.setText(String.format("%.3f", res.getOre()));
-                textFieldResourcesCopper.setText(String.format("%.3f", res.getCopper()));
-                textFieldResourcesUranium.setText(String.format("%.3f", res.getUranium()));
-                txtResourcesTotal.setText(String.format("%.3f", res.getCoal()+res.getOre()+res.getCopper()+res.getUranium()));
+                res = RessourceQuantities.loadRessourceQuantites(planetName, planetId);
                 
                 String cmd = Util.NEXTCOLONY_API_CMD_MISSIONINFO + "?user=" + userName + "&planet=" + planetId;
                 JSONObject jsonObj = Util.getJSONObjectFromApiCommand(cmd);
                 missionsAvailable = jsonObj.getInt("user_unused");
-                int missionsMax = jsonObj.getInt("user_max");
+                missionsMax = jsonObj.getInt("user_max");
                 missionsPlanetAvailable = jsonObj.getInt("planet_unused");
-                int missionsPlanetMax = jsonObj.getInt("planet_max");
-                
-                textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
-                txtFreeMissionsPlanet.setText(missionsPlanetAvailable + " / " + missionsPlanetMax);
+                missionsPlanetMax = jsonObj.getInt("planet_max");
                 
                 return null;
             }
@@ -829,13 +819,30 @@ public class PanelFleet extends JPanel {
                     get();
                 } catch (InterruptedException | ExecutionException e) {
                     dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    return;
                 }
                 
+                textFieldFreeMissions.setText(missionsAvailable + " / " + missionsMax);
+                txtFreeMissionsPlanet.setText(missionsPlanetAvailable + " / " + missionsPlanetMax);
+                
+                textFieldResourcesCoal.setText(String.format("%.3f", res.getCoal()));
+                textFieldResourcesOre.setText(String.format("%.3f", res.getOre()));
+                textFieldResourcesCopper.setText(String.format("%.3f", res.getCopper()));
+                textFieldResourcesUranium.setText(String.format("%.3f", res.getUranium()));
+                txtResourcesTotal.setText(String.format("%.3f", res.getCoal()+res.getOre()+res.getCopper()+res.getUranium()));
+
+                setTarget();
+                
+                model.removeRow(0);
+                for (Map.Entry<?,?> entry : mapShips.entrySet())
+                    model.addRow(new Object[] { entry.getKey(), entry.getValue(), null, null });
+
                 checkPreconditionSendToSteemButton();
+                
                 setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 super.done();
             }
-            
         }.execute();
     }
     

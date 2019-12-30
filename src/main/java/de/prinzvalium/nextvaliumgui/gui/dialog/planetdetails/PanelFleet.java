@@ -48,6 +48,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -342,7 +343,15 @@ public class PanelFleet extends JPanel {
                     if (userTarget == null || userTarget.isEmpty())
                         return;
 
-                    mapPlanets = Planets.loadUserPlanets(userTarget);
+                    //mapPlanets = Planets.loadUserPlanets(userTarget);
+                    mapPlanets = new HashMap<String, Planet>();
+                    HashMap<String, Planet> mapAllPlanets = Planets.getAllPlanets();
+                    mapAllPlanets.forEach((id, p) -> {
+                        if (p.getUserName().equalsIgnoreCase(userTarget))
+                            mapPlanets.put(p.getId(), p);
+                        }
+                    );
+                    
                     ArrayList<String> list = new ArrayList<String>();
                     mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
                     Collections.sort(list);
@@ -854,15 +863,14 @@ public class PanelFleet extends JPanel {
         
         textFieldTargetUser.setText(targetPlanet.getUserName());
         textFieldTargetUser.postActionEvent();
-        comboBoxTargetPlanet.setSelectedItem(targetPlanet.getName());
         
-        String selectedPlanet = (String) comboBoxTargetPlanet.getSelectedItem();
-        if (selectedPlanet.equalsIgnoreCase(targetPlanet.getName()))
+        if(((DefaultComboBoxModel<String>)comboBoxTargetPlanet.getModel()).getIndexOf(targetPlanet.getName()) == -1) {
+            textFieldTargetUser.setText(null);
+            textFieldTargetUser.postActionEvent();
             return;
-                
-        textFieldTargetUser.setText(null);
-        comboBoxTargetPlanet.removeAll();
-        NextValiumGui.getNextValiumGui().clearTarget();
+        }
+        
+        comboBoxTargetPlanet.setSelectedItem(targetPlanet.getName());
     }
     
     private void actionPerformed_comboBoxShipsPredefined() {

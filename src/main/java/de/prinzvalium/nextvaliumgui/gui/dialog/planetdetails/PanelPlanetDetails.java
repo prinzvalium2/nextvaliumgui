@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
+import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
@@ -183,6 +184,11 @@ public class PanelPlanetDetails extends JPanel {
                     @Override
                     protected Void doInBackground() throws Exception {
                         CustomJson.renamePlanet(planet.getUserName(), planet.getId(), txtRenameplanet.getText());
+                        Planet target = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
+                        if (target == null || target.getId() != planet.getId())
+                            return null;
+                        
+                        NextValiumGui.getNextValiumGui().setPlanetMarkedAsTarget(planet);
                         return null;
                     }
 

@@ -855,6 +855,14 @@ public class PanelFleet extends JPanel {
         textFieldTargetUser.setText(targetPlanet.getUserName());
         textFieldTargetUser.postActionEvent();
         comboBoxTargetPlanet.setSelectedItem(targetPlanet.getName());
+        
+        String selectedPlanet = (String) comboBoxTargetPlanet.getSelectedItem();
+        if (selectedPlanet.equalsIgnoreCase(targetPlanet.getName()))
+            return;
+                
+        textFieldTargetUser.setText(null);
+        comboBoxTargetPlanet.removeAll();
+        NextValiumGui.getNextValiumGui().clearTarget();
     }
     
     private void actionPerformed_comboBoxShipsPredefined() {

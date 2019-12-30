@@ -56,4 +56,8 @@ public class Planet implements Comparable<Planet> {
     public int compareTo(Planet p) {
         return planetName.compareTo(p.getName());
     }
+
+    public void setPlanetName(String planetName) {
+        this.planetName = planetName;
+    }
 }

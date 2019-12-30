@@ -23,6 +23,8 @@ public class DialogPlanet extends JDialog {
     private JTextField textFieldStatus;
     private Color colorError = new Color(200, 0, 0);
     private Color colorOk = new Color(0, 200, 0);
+    private PanelFleet panelFleet;
+    private PanelPlanetDetails panelPlanetDetails;
 
     /**
      * Create the dialog.
@@ -72,11 +74,11 @@ public class DialogPlanet extends JDialog {
             JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
             contentPanel.add(tabbedPane);
             {
-                PanelFleet panelFleet = new PanelFleet(this, planet);
+                panelFleet = new PanelFleet(this, planet);
                 tabbedPane.addTab("Fleet", null, panelFleet, null);
             }
             {
-                PanelPlanetDetails panelPlanetDetails = new PanelPlanetDetails(this, planet);
+                panelPlanetDetails = new PanelPlanetDetails(this, planet);
                 tabbedPane.addTab("Details", null, panelPlanetDetails, null);
             }
         }
@@ -126,5 +128,9 @@ public class DialogPlanet extends JDialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public PanelFleet getPanelFleet() {
+        return panelFleet;
     }
 }

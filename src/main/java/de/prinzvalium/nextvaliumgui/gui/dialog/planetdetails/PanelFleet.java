@@ -855,7 +855,7 @@ public class PanelFleet extends JPanel {
         }.execute();
     }
     
-    private void setTarget() {
+    public void setTarget() {
         
         Planet targetPlanet = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();      
         if (targetPlanet == null)

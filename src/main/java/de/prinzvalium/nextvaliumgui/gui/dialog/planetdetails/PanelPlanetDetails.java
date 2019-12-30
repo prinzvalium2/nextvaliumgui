@@ -199,6 +199,8 @@ public class PanelPlanetDetails extends JPanel {
                             if (target != null && target.getId() == planet.getId())
                                 NextValiumGui.getNextValiumGui().setPlanetMarkedAsTarget(planet);
                             
+                            dialogPlanet.getPanelFleet().setTarget();
+                            
                             dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
                             
                         } catch (InterruptedException | ExecutionException e) {

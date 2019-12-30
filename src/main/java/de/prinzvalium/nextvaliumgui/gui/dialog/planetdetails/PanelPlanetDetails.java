@@ -14,6 +14,7 @@ import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
+import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
@@ -184,11 +185,8 @@ public class PanelPlanetDetails extends JPanel {
                     @Override
                     protected Void doInBackground() throws Exception {
                         CustomJson.renamePlanet(planet.getUserName(), planet.getId(), txtRenameplanet.getText());
-                        Planet target = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
-                        if (target == null || target.getId() != planet.getId())
-                            return null;
+                        Planets.getAllPlanets().get(planet.getId()).setPlanetName(txtRenameplanet.getText());
                         
-                        NextValiumGui.getNextValiumGui().setPlanetMarkedAsTarget(planet);
                         return null;
                     }
 
@@ -196,6 +194,11 @@ public class PanelPlanetDetails extends JPanel {
                     protected void done() {
                         try {
                             get();
+                            
+                            Planet target = NextValiumGui.getNextValiumGui().getPlanetMarkedAsTarget();
+                            if (target != null && target.getId() == planet.getId())
+                                NextValiumGui.getNextValiumGui().setPlanetMarkedAsTarget(planet);
+                            
                             dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
                             
                         } catch (InterruptedException | ExecutionException e) {

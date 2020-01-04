@@ -8,9 +8,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
+import javax.swing.text.AbstractDocument;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.CustomJson;
+import de.prinzvalium.nextvaliumgui.lib.LimitDocumentFilter;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
@@ -172,6 +174,7 @@ public class PanelPlanetDetails extends JPanel {
         gbc_txtRenameplanet.gridy = 0;
         panelContent.add(txtRenameplanet, gbc_txtRenameplanet);
         txtRenameplanet.setColumns(20);
+        ((AbstractDocument)txtRenameplanet.getDocument()).setDocumentFilter(new LimitDocumentFilter(20));
         
         btnRenameplanet = new JButton("Rename planet");
         btnRenameplanet.addActionListener(new ActionListener() {

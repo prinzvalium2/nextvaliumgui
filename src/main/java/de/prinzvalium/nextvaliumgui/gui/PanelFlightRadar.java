@@ -160,6 +160,17 @@ public class PanelFlightRadar extends JPanel {
             double distance = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
             int speed = Util.getSlowestSpeedOfShips(val.mapShips);
             
+            // self support
+            if (distance == 0) {
+                g2.setStroke(strokeFlightOutward);
+                g2.setColor(color);
+                g2.drawOval(xs-8, ys-8, 15, 15);
+                g2.setStroke(strokeExploreOutward);
+                g2.setColor(Color.BLACK);
+                g2.drawOval(xs-9, ys-9, 17, 17);
+                continue;
+            }
+            
             double posShipX;
             double posShipY;
             Path2D path = null;

@@ -3,6 +3,8 @@ package de.prinzvalium.nextvaliumgui.gui.popupmenu;
 import javax.swing.JPopupMenu;
 
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +16,7 @@ import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.gui.PanelPlanet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
+import de.prinzvalium.nextvaliumgui.nextcolony.TransactionsRecent;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -30,6 +33,7 @@ public class PopupMenuPlanet extends JPopupMenu {
     
     private static final long serialVersionUID = 1L;
     private PopupMenuPlanet popupMenuPlanet;
+    private Date dateLastTransaction;
     
     public PopupMenuPlanet(PanelPlanet panelPlanet) {
         
@@ -46,9 +50,9 @@ public class PopupMenuPlanet extends JPopupMenu {
         
         DefaultListModel<String> model = new DefaultListModel<>();
         GridBagLayout gbl_panelPlanetDetails = new GridBagLayout();
-        gbl_panelPlanetDetails.columnWidths = new int[]{119, 0};
-        gbl_panelPlanetDetails.rowHeights = new int[]{22, 0, 0, 0};
-        gbl_panelPlanetDetails.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panelPlanetDetails.columnWidths = new int[]{0, 0, 0};
+        gbl_panelPlanetDetails.rowHeights = new int[]{0, 0, 0, 0};
+        gbl_panelPlanetDetails.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
         gbl_panelPlanetDetails.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
         panelPlanetDetails.setLayout(gbl_panelPlanetDetails);
         
@@ -97,15 +101,26 @@ public class PopupMenuPlanet extends JPopupMenu {
                 }.execute();
             }
         });
+        
+        JCheckBox chckbxFarm = new JCheckBox("Farm");
+        chckbxFarm.setEnabled(false);
+        chckbxFarm.setMargin(new Insets(0, 0, 0, 0));
+        GridBagConstraints gbc_chckbxFarm = new GridBagConstraints();
+        gbc_chckbxFarm.anchor = GridBagConstraints.WEST;
+        gbc_chckbxFarm.insets = new Insets(0, 5, 0, 0);
+        gbc_chckbxFarm.gridx = 1;
+        gbc_chckbxFarm.gridy = 0;
+        panelPlanetDetails.add(chckbxFarm, gbc_chckbxFarm);
         GridBagConstraints gbc_chckbxCenterMap = new GridBagConstraints();
-        gbc_chckbxCenterMap.anchor = GridBagConstraints.WEST;
         gbc_chckbxCenterMap.insets = new Insets(0, 0, 5, 0);
+        gbc_chckbxCenterMap.anchor = GridBagConstraints.WEST;
         gbc_chckbxCenterMap.gridx = 0;
         gbc_chckbxCenterMap.gridy = 1;
         panelPlanetDetails.add(chckbxCenterMap, gbc_chckbxCenterMap);
         
         JScrollPane scrollPane = new JScrollPane();
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+        gbc_scrollPane.gridwidth = 2;
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 0;
         gbc_scrollPane.gridy = 2;
@@ -123,12 +138,22 @@ public class PopupMenuPlanet extends JPopupMenu {
 
             @Override
             protected HashMap<String, Integer> doInBackground() throws Exception {
+                dateLastTransaction = TransactionsRecent.getLastTransactionOfUser(planet.getUserName());
                 Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
                 return fleet.getNumberOfShipTypesInShipyard();
             }
             
             @Override
             protected void done() {
+                
+                if (dateLastTransaction != null) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(new Date());
+                    cal.add(Calendar.DATE, -7);
+                    if (dateLastTransaction.before(cal.getTime()))
+                        chckbxFarm.setSelected(true);
+                }
+                
                 try {
                     HashMap<String, Integer> mapShips = get();
                     model.removeAllElements();

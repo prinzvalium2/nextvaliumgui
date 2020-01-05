@@ -16,6 +16,10 @@ import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.gui.PanelPlanet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Fleet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
+import de.prinzvalium.nextvaliumgui.nextcolony.Production;
+import de.prinzvalium.nextvaliumgui.nextcolony.ProductionRessources;
+import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
+import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
 import de.prinzvalium.nextvaliumgui.nextcolony.TransactionsRecent;
 
 import javax.swing.DefaultListModel;
@@ -28,12 +32,17 @@ import java.awt.SystemColor;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class PopupMenuPlanet extends JPopupMenu {
     
     private static final long serialVersionUID = 1L;
     private PopupMenuPlanet popupMenuPlanet;
-    private Date dateLastTransaction;
+    private Date dateLastTransaction = null;
+    private Double loot = null;
+    private JTextField txtLoot;
     
     public PopupMenuPlanet(PanelPlanet panelPlanet) {
         
@@ -50,10 +59,10 @@ public class PopupMenuPlanet extends JPopupMenu {
         
         DefaultListModel<String> model = new DefaultListModel<>();
         GridBagLayout gbl_panelPlanetDetails = new GridBagLayout();
-        gbl_panelPlanetDetails.columnWidths = new int[]{0, 0, 0};
-        gbl_panelPlanetDetails.rowHeights = new int[]{0, 0, 0, 0};
-        gbl_panelPlanetDetails.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-        gbl_panelPlanetDetails.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+        gbl_panelPlanetDetails.columnWidths = new int[]{0, 0};
+        gbl_panelPlanetDetails.rowHeights = new int[]{0, 0, 0, 0, 0};
+        gbl_panelPlanetDetails.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panelPlanetDetails.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
         panelPlanetDetails.setLayout(gbl_panelPlanetDetails);
         
         JCheckBox chckbxMarkAsTarget = new JCheckBox("Mark as target");
@@ -101,29 +110,60 @@ public class PopupMenuPlanet extends JPopupMenu {
                 }.execute();
             }
         });
-        
-        JCheckBox chckbxFarm = new JCheckBox("Farm");
-        chckbxFarm.setEnabled(false);
-        chckbxFarm.setMargin(new Insets(0, 0, 0, 0));
-        GridBagConstraints gbc_chckbxFarm = new GridBagConstraints();
-        gbc_chckbxFarm.anchor = GridBagConstraints.WEST;
-        gbc_chckbxFarm.insets = new Insets(0, 5, 0, 0);
-        gbc_chckbxFarm.gridx = 1;
-        gbc_chckbxFarm.gridy = 0;
-        panelPlanetDetails.add(chckbxFarm, gbc_chckbxFarm);
         GridBagConstraints gbc_chckbxCenterMap = new GridBagConstraints();
-        gbc_chckbxCenterMap.insets = new Insets(0, 0, 5, 0);
         gbc_chckbxCenterMap.anchor = GridBagConstraints.WEST;
         gbc_chckbxCenterMap.gridx = 0;
         gbc_chckbxCenterMap.gridy = 1;
         panelPlanetDetails.add(chckbxCenterMap, gbc_chckbxCenterMap);
         
+        JPanel panelLoot = new JPanel();
+        GridBagConstraints gbc_panelLoot = new GridBagConstraints();
+        gbc_panelLoot.insets = new Insets(0, 0, 5, 0);
+        gbc_panelLoot.fill = GridBagConstraints.BOTH;
+        gbc_panelLoot.gridx = 0;
+        gbc_panelLoot.gridy = 2;
+        panelPlanetDetails.add(panelLoot, gbc_panelLoot);
+        GridBagLayout gbl_panelLoot = new GridBagLayout();
+        gbl_panelLoot.columnWidths = new int[]{0, 0, 0, 0};
+        gbl_panelLoot.rowHeights = new int[]{14, 0};
+        gbl_panelLoot.columnWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+        gbl_panelLoot.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+        panelLoot.setLayout(gbl_panelLoot);
+        
+        JLabel lblLoot = new JLabel("Loot:");
+        lblLoot.setEnabled(false);
+        GridBagConstraints gbc_lblLoot = new GridBagConstraints();
+        gbc_lblLoot.insets = new Insets(0, 0, 0, 2);
+        gbc_lblLoot.anchor = GridBagConstraints.EAST;
+        gbc_lblLoot.gridx = 1;
+        gbc_lblLoot.gridy = 0;
+        panelLoot.add(lblLoot, gbc_lblLoot);
+        
+        txtLoot = new JTextField();
+        txtLoot.setBorder(null);
+        txtLoot.setEnabled(false);
+        txtLoot.setEditable(false);
+        GridBagConstraints gbc_txtLoot = new GridBagConstraints();
+        gbc_txtLoot.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtLoot.gridx = 2;
+        gbc_txtLoot.gridy = 0;
+        panelLoot.add(txtLoot, gbc_txtLoot);
+        txtLoot.setColumns(10);
+        
+        JCheckBox checkBoxFarm = new JCheckBox("Farm");
+        checkBoxFarm.setMargin(new Insets(0, 0, 0, 0));
+        checkBoxFarm.setEnabled(false);
+        GridBagConstraints gbc_checkBoxFarm = new GridBagConstraints();
+        gbc_checkBoxFarm.insets = new Insets(0, 0, 0, 5);
+        gbc_checkBoxFarm.gridx = 0;
+        gbc_checkBoxFarm.gridy = 0;
+        panelLoot.add(checkBoxFarm, gbc_checkBoxFarm);
+        
         JScrollPane scrollPane = new JScrollPane();
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-        gbc_scrollPane.gridwidth = 2;
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 0;
-        gbc_scrollPane.gridy = 2;
+        gbc_scrollPane.gridy = 3;
         panelPlanetDetails.add(scrollPane, gbc_scrollPane);
         
         JList<String> listShips = new JList<>(model);
@@ -138,7 +178,30 @@ public class PopupMenuPlanet extends JPopupMenu {
 
             @Override
             protected HashMap<String, Integer> doInBackground() throws Exception {
+
+                RessourceQuantitiesRessources res;
+                res = RessourceQuantities.loadRessourceQuantites(planet.getName(), planet.getId());
+                
+                ProductionRessources pr = new Production(planet).loadProduction();
+                
+                Double lootCoal = res.getCoal() - pr.getCoal().getSafe();
+                if (lootCoal < 0)
+                    lootCoal = 0.0;
+                Double lootOre = res.getOre() - pr.getOre().getSafe();
+                if (lootOre < 0)
+                    lootOre = 0.0;
+                Double lootCopper = res.getCopper() - pr.getCopper().getSafe();
+                if (lootCopper < 0)
+                    lootCopper = 0.0;
+                Double lootUranium = res.getUranium() - pr.getUranium().getSafe();
+                if (lootUranium < 0)
+                    lootUranium = 0.0;
+                
+                loot = lootCoal + lootOre + lootCopper + lootUranium;
+                
+                
                 dateLastTransaction = TransactionsRecent.getLastTransactionOfUser(planet.getUserName());
+                
                 Fleet fleet = new Fleet(planet.getUserName(), planet.getName(), planet.getId());
                 return fleet.getNumberOfShipTypesInShipyard();
             }
@@ -151,8 +214,11 @@ public class PopupMenuPlanet extends JPopupMenu {
                     cal.setTime(new Date());
                     cal.add(Calendar.DATE, -7);
                     if (dateLastTransaction.before(cal.getTime()))
-                        chckbxFarm.setSelected(true);
+                        checkBoxFarm.setSelected(true);
                 }
+                
+                if (loot != null)
+                    txtLoot.setText(String.format("%.0f", loot));
                 
                 try {
                     HashMap<String, Integer> mapShips = get();

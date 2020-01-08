@@ -60,4 +60,14 @@ public class Planet implements Comparable<Planet> {
     public void setPlanetName(String planetName) {
         this.planetName = planetName;
     }
+
+    @Override
+    public String toString() {
+        return this.planetName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return ((Planet)obj).getId().equalsIgnoreCase(planetId);
+    }
 }

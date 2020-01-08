@@ -78,7 +78,7 @@ public class PanelFleet extends JPanel {
     private JTextField textFieldResourcesFleetMax;
     private JTextField textFieldFreeMissions;
     private JTextField textFieldUraniumConsumption;
-    private JComboBox<String> comboBoxTargetPlanet;
+    private JComboBox<Planet> comboBoxTargetPlanet;
     private JComboBox<String> comboBoxShipsPredefined;
     private JComboBox<String> comboBoxMissionsStandard;
     private JButton btnSendTransaction;
@@ -352,10 +352,10 @@ public class PanelFleet extends JPanel {
                         }
                     );
                     
-                    ArrayList<String> list = new ArrayList<String>();
-                    mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
+                    ArrayList<Planet> list = new ArrayList<Planet>();
+                    mapPlanets.forEach((planetId, planet) -> list.add(planet));
                     Collections.sort(list);
-                    list.forEach(planetName -> comboBoxTargetPlanet.addItem(planetName));
+                    list.forEach(p -> comboBoxTargetPlanet.addItem(p));
                     
                 } catch (Exception e1) {
                     dialogPlanet.setStatusError(e1.getClass().getSimpleName() + ": " + e1.getMessage());
@@ -409,7 +409,7 @@ public class PanelFleet extends JPanel {
         gbc_lblTargetPlanet.gridy = 1;
         panelTarget.add(lblTargetPlanet, gbc_lblTargetPlanet);
         
-        comboBoxTargetPlanet = new JComboBox<String>();
+        comboBoxTargetPlanet = new JComboBox<Planet>();
         comboBoxTargetPlanet.setPreferredSize(new Dimension(150, 20));
         GridBagConstraints gbc_comboBoxTargetPlanet = new GridBagConstraints();
         gbc_comboBoxTargetPlanet.insets = new Insets(0, 0, 5, 5);
@@ -423,9 +423,9 @@ public class PanelFleet extends JPanel {
                 if (comboBoxTargetPlanet.getSelectedItem() == null)
                     return;
                 
-                String planetName = comboBoxTargetPlanet.getSelectedItem().toString();
+                String targetPlanetId = ((Planet)comboBoxTargetPlanet.getSelectedItem()).getId();
                 mapPlanets.forEach((planetId, planet) -> {
-                    if (planet.getName().equalsIgnoreCase(planetName)) {
+                    if (planet.getId().equalsIgnoreCase(targetPlanetId)) {
                         targetPlanet = planet;
                         textFieldTargetPositionX.setText(Integer.toString(planet.getPosX()));
                         textFieldTargetPositionY.setText(Integer.toString(planet.getPosY()));
@@ -864,13 +864,13 @@ public class PanelFleet extends JPanel {
         textFieldTargetUser.setText(targetPlanet.getUserName());
         textFieldTargetUser.postActionEvent();
         
-        if(((DefaultComboBoxModel<String>)comboBoxTargetPlanet.getModel()).getIndexOf(targetPlanet.getName()) == -1) {
+        if(((DefaultComboBoxModel<Planet>)comboBoxTargetPlanet.getModel()).getIndexOf(targetPlanet) == -1) {
             textFieldTargetUser.setText(null);
             textFieldTargetUser.postActionEvent();
             return;
         }
         
-        comboBoxTargetPlanet.setSelectedItem(targetPlanet.getName());
+        comboBoxTargetPlanet.setSelectedItem(targetPlanet);
     }
     
     private void actionPerformed_comboBoxShipsPredefined() {

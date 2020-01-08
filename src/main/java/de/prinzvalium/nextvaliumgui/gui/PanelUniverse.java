@@ -2,6 +2,7 @@ package de.prinzvalium.nextvaliumgui.gui;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -53,7 +54,19 @@ public class PanelUniverse extends JPanel {
                 double planetX = mouseX/zoomX - 10.0/zoomX - centerOffsetX/zoomX - offsetX;
                 double planetY = 10.0/zoomY + centerOffsetY/zoomY + height/zoomY - mouseY/zoomY - offsetY;
                 
-                nextValiumGui.setCenterPosition((int)planetX, (int)planetY);
+                nextValiumGui.setCenterPosition((int)planetX, (int)planetY, false);
+                repaint();
+                
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        EventQueue.invokeLater(new Runnable() {
+                           @Override
+                            public void run() {
+                                nextValiumGui.setCenterPosition((int)planetX, (int)planetY, true);                                
+                            }});
+                    }
+                }).start();
             }
         });
         setBackground(Color.BLACK);
@@ -168,5 +181,29 @@ public class PanelUniverse extends JPanel {
                 
             g2.fillOval((int)x, (int)y, 2, 2);
         });
+        
+        int posX = NextValiumGui.getNextValiumGui().getTextFieldPosX();
+        int posY = NextValiumGui.getNextValiumGui().getTextFieldPosY();
+        
+        if (posX == -1 || posY == -1)
+            return;
+        
+        double x = 10 + centerOffsetX +(offsetX + posX) * zoomX;
+        double y = (offsetY + posY) * zoomY;
+        y = 10 - centerOffsetY + rectPanel.getHeight() - y;
+        
+        double width = 200 * zoomX;
+        double height = 125 * zoomY;
+        
+        g2.setColor(Color.BLACK);
+        g2.drawRect((int)(x-width/2+2), (int)(y-height/2+2), (int)width-4, (int)height-4);
+        g2.setColor(Color.BLACK);
+        g2.drawRect((int)(x-width/2+1), (int)(y-height/2+1), (int)width-2, (int)height-2);
+        g2.setColor(Color.WHITE);
+        g2.drawRect((int)(x-width/2), (int)(y-height/2), (int)width, (int)height);
+        g2.setColor(Color.BLACK);
+        g2.drawRect((int)(x-width/2-1), (int)(y-height/2-1), (int)width+2, (int)height+2);
+        g2.setColor(Color.BLACK);
+        g2.drawRect((int)(x-width/2-2), (int)(y-height/2-2), (int)width+4, (int)height+4);
     }
 }

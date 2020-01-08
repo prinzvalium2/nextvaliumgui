@@ -740,12 +740,13 @@ public class NextValiumGui {
         btnRefresh.doClick();
     }
     
-    public void  setCenterPosition(int x, int y) {
+    public void  setCenterPosition(int x, int y, boolean refresh) {
         comboBoxUsers.setSelectedItem(null);
         comboBoxPlanets.setSelectedItem(null);
         textFieldPosX.setText(String.valueOf(x));
         textFieldPosY.setText(String.valueOf(y));
-        btnRefresh.doClick();
+        if (refresh)
+            btnRefresh.doClick();
     }
     
     private void actionPerformed_btnRefresh(ActionEvent e) {
@@ -896,5 +897,27 @@ public class NextValiumGui {
     
     public String getSelectedUniverseUser() {
         return (String) comboBoxUniverseUser.getSelectedItem();
+    }
+
+    public int getTextFieldPosX() {
+        int x = -1;
+        
+        try {
+            x = Integer.parseInt(textFieldPosX.getText());
+        }
+        catch (Exception e) {
+        }
+        return x;
+    }
+
+    public int getTextFieldPosY() {
+        int y = -1;
+        
+        try {
+            y = Integer.parseInt(textFieldPosY.getText());
+        }
+        catch (Exception e) {
+        }
+        return y;
     }
 }

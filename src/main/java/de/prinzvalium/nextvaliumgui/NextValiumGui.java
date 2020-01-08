@@ -71,7 +71,7 @@ public class NextValiumGui {
     private JTextField textFieldPosX;
     private JTextField textFieldPosY;
     private JComboBox<String> comboBoxUsers;
-    private JComboBox<String> comboBoxPlanets;
+    private JComboBox<Planet> comboBoxPlanets;
     private JCheckBox chckbxRadarExplorations;
     private JCheckBox chckbxRadarOthers;
     private HashMap<String, Planet> mapPlanets;
@@ -333,13 +333,13 @@ public class NextValiumGui {
         comboBoxUsers.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    ArrayList<String> list = new ArrayList<String>();
+                    ArrayList<Planet> list = new ArrayList<Planet>();
                     selectedUser = (String)comboBoxUsers.getSelectedItem();
                     mapPlanets = Planets.loadUserPlanets(selectedUser);
-                    mapPlanets.forEach((planetId, planet) -> list.add(planet.getName()));
+                    mapPlanets.forEach((planetId, planet) -> list.add(planet));
                     Collections.sort(list);
                     comboBoxPlanets.removeAllItems();
-                    list.forEach(planetName -> comboBoxPlanets.addItem(planetName));
+                    list.forEach(p -> comboBoxPlanets.addItem(p));
                     
                 } catch (JSONException | IOException e1) {
                     e1.printStackTrace();
@@ -397,7 +397,7 @@ public class NextValiumGui {
         gbc_lblPlanet.gridy = 1;
         panelUserPlanet.add(lblPlanet, gbc_lblPlanet);
         
-        comboBoxPlanets = new JComboBox<String>();
+        comboBoxPlanets = new JComboBox<Planet>();
         GridBagConstraints gbc_comboBoxPlanets = new GridBagConstraints();
         gbc_comboBoxPlanets.insets = new Insets(0, 2, 0, 5);
         gbc_comboBoxPlanets.anchor = GridBagConstraints.WEST;
@@ -409,9 +409,9 @@ public class NextValiumGui {
                 if (comboBoxPlanets.getSelectedItem() == null)
                     return;
                 
-                String planetName = comboBoxPlanets.getSelectedItem().toString();
+                String targetPlanetId = ((Planet)comboBoxPlanets.getSelectedItem()).getId();
                 mapPlanets.forEach((planetId, planet) -> {
-                    if (planet.getName().equalsIgnoreCase(planetName)) {
+                    if (planet.getId().equalsIgnoreCase(targetPlanetId)) {
                         textFieldPosX.setText(Integer.toString(planet.getPosX()));
                         textFieldPosY.setText(Integer.toString(planet.getPosY()));
                     }
@@ -736,13 +736,7 @@ public class NextValiumGui {
     
     public void  setCenterPosition(Planet planet) {
         comboBoxUsers.setSelectedItem(planet.getUserName());
-        comboBoxPlanets.setSelectedItem(planet.getName());
-        btnRefresh.doClick();
-    }
-    
-    public void  setCenterPosition(String userName, String planetName) {
-        comboBoxUsers.setSelectedItem(userName);
-        comboBoxPlanets.setSelectedItem(planetName);
+        comboBoxPlanets.setSelectedItem(planet);
         btnRefresh.doClick();
     }
     

@@ -68,6 +68,8 @@ public class Planet implements Comparable<Planet> {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
         return ((Planet)obj).getId().equalsIgnoreCase(planetId);
     }
 }

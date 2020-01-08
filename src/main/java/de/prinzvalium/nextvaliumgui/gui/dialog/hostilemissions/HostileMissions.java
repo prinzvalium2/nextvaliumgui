@@ -13,14 +13,18 @@ import javax.swing.SwingWorker;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
+import org.json.JSONException;
+
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Mission;
 import de.prinzvalium.nextvaliumgui.nextcolony.Missions;
+import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -77,10 +81,10 @@ public class HostileMissions extends JDialog {
            });
            table.setModel(new DefaultTableModel(
                 new Object[][] {
-                    {"Loading data...", null, null, null, null, null, null, null},
+                    {"Loading data...", null, null, null, null, null, null, null, null},
                 },
                 new String[] {
-                    "From user", "From planet", "Type", "Canceled", "To user", "To planet", "Arrival", "Returning"
+                    "From user", "From planet", "Type", "Canceled", "To user", "To planet", "To ID", "Arrival", "Returning"
                 }
             ) {
                 private static final long serialVersionUID = 1L;
@@ -97,8 +101,9 @@ public class HostileMissions extends JDialog {
             table.getColumnModel().getColumn(3).setPreferredWidth(40);
             table.getColumnModel().getColumn(4).setPreferredWidth(100);
             table.getColumnModel().getColumn(5).setPreferredWidth(100);
-            table.getColumnModel().getColumn(6).setPreferredWidth(110);
+            table.getColumnModel().getColumn(6).setPreferredWidth(100);
             table.getColumnModel().getColumn(7).setPreferredWidth(110);
+            table.getColumnModel().getColumn(8).setPreferredWidth(110);
 
             scrollPaneSeasonRanking.setViewportView(table);
         }
@@ -113,8 +118,13 @@ public class HostileMissions extends JDialog {
                     public void actionPerformed(ActionEvent arg0) {
                         dialog.setVisible(false);
                         String user = (String) model.getValueAt(table.getSelectedRow(), 4);   
-                        String planet = (String) model.getValueAt(table.getSelectedRow(), 5);   
-                        NextValiumGui.getNextValiumGui().setCenterPosition(user, planet);
+                        String planetId = (String) model.getValueAt(table.getSelectedRow(), 6);   
+                        
+                        try {
+                            NextValiumGui.getNextValiumGui().setCenterPosition(Planets.getAllPlanets().get(planetId));
+                            
+                        } catch (JSONException | IOException e) {
+                        }
                     }
                 });
                 btnJumpToPlanet.setActionCommand("");
@@ -160,10 +170,11 @@ public class HostileMissions extends JDialog {
                             String planetFrom = mission.getFromPlanetName();
                             String type = mission.getType();
                             String planetTo = mission.getToPlanetName();
+                            String planetIdTo = mission.getToPlanetId();
                             String canceled = mission.getCancel_trx() == null ? "" : "canceled";
                             String arrive = Util.getDateAsString(mission.getArrival());
                             String returning = Util.getDateAsString(mission.getReturning());
-                            model.addRow(new Object[] { attacker, planetFrom, type, canceled, user, planetTo, arrive, returning});
+                            model.addRow(new Object[] { attacker, planetFrom, type, canceled, user, planetTo, planetIdTo, arrive, returning});
                         }
                     }
                     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));

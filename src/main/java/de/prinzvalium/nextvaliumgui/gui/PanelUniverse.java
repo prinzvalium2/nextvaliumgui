@@ -60,6 +60,7 @@ public class PanelUniverse extends JPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        Util.sleep(100);
                         EventQueue.invokeLater(new Runnable() {
                            @Override
                             public void run() {

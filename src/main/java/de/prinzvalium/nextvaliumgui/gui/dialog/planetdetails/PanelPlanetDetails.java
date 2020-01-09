@@ -1,6 +1,7 @@
 package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
@@ -14,6 +15,7 @@ import de.prinzvalium.nextvaliumgui.NextValiumGui;
 import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.LimitDocumentFilter;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
+import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
@@ -267,7 +269,21 @@ public class PanelPlanetDetails extends JPanel {
                 try {
                     PlanetDetails planetDetails = get();
                     lblPlanettype.setText(planetDetails.getPlanet_rarity() + " " + planetDetails.getPlanet_type());
-                    textArea.setText(planetDetails.getJsonString());
+                    
+                    String[] as = planetDetails.getJsonString().split("[ ,]");
+                    
+                    for (int i = 0; i < as.length; i++) {
+                        String s = as[i];
+                        if (s.length() != 10 || !s.matches("[0-9]+")) 
+                            continue;
+                        
+                        long timemillis = Long.parseLong(s)*1000;
+                        Date date = new Date(timemillis);
+                        as[i] = Util.getDateAsString(date);
+                    }
+                    
+                    String s = String.join("", as);
+                    textArea.setText(s);
                     textArea.setCaretPosition(0);
                     panelImage.setBackground(Color.BLUE);
                     panelImage.setOpaque(true);

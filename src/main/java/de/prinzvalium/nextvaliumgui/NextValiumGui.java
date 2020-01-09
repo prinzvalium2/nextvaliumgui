@@ -60,6 +60,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.JSeparator;
+import javax.swing.border.LineBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
 
 
 public class NextValiumGui {
@@ -107,6 +111,7 @@ public class NextValiumGui {
     private JPanel panelUniverseUser;
     private JLabel lblUser;
     private JComboBox<String> comboBoxUniverseUser;
+    private JPanel panelLastPlanet;
 
     /**
      * Launch the application.
@@ -223,7 +228,7 @@ public class NextValiumGui {
         GridBagLayout gbl_panelTop = new GridBagLayout();
         gbl_panelTop.columnWidths = new int[]{26, 0};
         gbl_panelTop.rowHeights = new int[]{23, 0};
-        gbl_panelTop.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panelTop.columnWeights = new double[]{0.0, 1.0};
         gbl_panelTop.rowWeights = new double[]{0.0, Double.MIN_VALUE};
         panelTop.setLayout(gbl_panelTop);
         
@@ -245,6 +250,7 @@ public class NextValiumGui {
             }
         });
         GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
+        gbc_tabbedPane.insets = new Insets(0, 0, 0, 5);
         gbc_tabbedPane.fill = GridBagConstraints.BOTH;
         gbc_tabbedPane.gridx = 0;
         gbc_tabbedPane.gridy = 0;
@@ -557,21 +563,44 @@ public class NextValiumGui {
         gbc_chckbxRadarOthers.gridy = 2;
         panelRadar.add(chckbxRadarOthers, gbc_chckbxRadarOthers);
         
-        JPanel panelLastPlanets = new JPanel();
-        GridBagConstraints gbc_panelLastPlanets = new GridBagConstraints();
-        gbc_panelLastPlanets.fill = GridBagConstraints.BOTH;
-        gbc_panelLastPlanets.gridx = 3;
-        gbc_panelLastPlanets.gridy = 0;
-        panel.add(panelLastPlanets, gbc_panelLastPlanets);
-        panelLastPlanets.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Quick jump last planet", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        GridBagLayout gbl_panelLastPlanets = new GridBagLayout();
-        gbl_panelLastPlanets.columnWidths = new int[] {120};
-        gbl_panelLastPlanets.rowHeights = new int[] {1};
-        gbl_panelLastPlanets.columnWeights = new double[]{0.0};
-        gbl_panelLastPlanets.rowWeights = new double[]{1.0};
-        panelLastPlanets.setLayout(gbl_panelLastPlanets);
+        JPanel panelTopRight = new JPanel();
+        GridBagConstraints gbc_panelTopRight = new GridBagConstraints();
+        gbc_panelTopRight.anchor = GridBagConstraints.EAST;
+        gbc_panelTopRight.fill = GridBagConstraints.VERTICAL;
+        gbc_panelTopRight.gridx = 1;
+        gbc_panelTopRight.gridy = 0;
+        panelTop.add(panelTopRight, gbc_panelTopRight);
+        panelTopRight.setBorder(null);
+        GridBagLayout gbl_panelTopRight = new GridBagLayout();
+        gbl_panelTopRight.columnWidths = new int[] {120};
+        gbl_panelTopRight.rowHeights = new int[] {1};
+        gbl_panelTopRight.columnWeights = new double[]{0.0};
+        gbl_panelTopRight.rowWeights = new double[]{1.0};
+        panelTopRight.setLayout(gbl_panelTopRight);
+        
+        panelLastPlanet = new JPanel();
+        panelLastPlanet.setBorder(new TitledBorder(null, "Quick jump last planet", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        GridBagConstraints gbc_panelLastPlanet = new GridBagConstraints();
+        gbc_panelLastPlanet.anchor = GridBagConstraints.EAST;
+        gbc_panelLastPlanet.fill = GridBagConstraints.VERTICAL;
+        gbc_panelLastPlanet.gridx = 0;
+        gbc_panelLastPlanet.gridy = 0;
+        panelTopRight.add(panelLastPlanet, gbc_panelLastPlanet);
+        GridBagLayout gbl_panelLastPlanet = new GridBagLayout();
+        gbl_panelLastPlanet.columnWidths = new int[]{120, 0};
+        gbl_panelLastPlanet.rowHeights = new int[]{1, 0};
+        gbl_panelLastPlanet.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+        gbl_panelLastPlanet.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+        panelLastPlanet.setLayout(gbl_panelLastPlanet);
         
         btnLastPlanet = new JButton("");
+        GridBagConstraints gbc_btnLastPlanet = new GridBagConstraints();
+        gbc_btnLastPlanet.fill = GridBagConstraints.BOTH;
+        gbc_btnLastPlanet.gridx = 0;
+        gbc_btnLastPlanet.gridy = 0;
+        panelLastPlanet.add(btnLastPlanet, gbc_btnLastPlanet);
+        btnLastPlanet.setPreferredSize(new Dimension(130, 9));
+        btnLastPlanet.setBorder(null);
         btnLastPlanet.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 if (lastPlanet == null)
@@ -579,11 +608,6 @@ public class NextValiumGui {
                 NextValiumGui.getNextValiumGui().setCenterPosition(lastPlanet);
             }
         });
-        GridBagConstraints gbc_btnLastPlanet = new GridBagConstraints();
-        gbc_btnLastPlanet.fill = GridBagConstraints.BOTH;
-        gbc_btnLastPlanet.gridx = 0;
-        gbc_btnLastPlanet.gridy = 0;
-        panelLastPlanets.add(btnLastPlanet, gbc_btnLastPlanet);
         
         btnClearTarget.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

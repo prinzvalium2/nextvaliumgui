@@ -25,6 +25,7 @@ public class DialogPlanet extends JDialog {
     private Color colorOk = new Color(0, 200, 0);
     private PanelFleet panelFleet;
     private PanelPlanetDetails panelPlanetDetails;
+    private PanelMissions panelMissions;
 
     /**
      * Create the dialog.
@@ -34,7 +35,7 @@ public class DialogPlanet extends JDialog {
         
         setTitle(planet.getUserName() + " / " + planet.getName());
         
-        setBounds(100, 150, 800, 600);
+        setBounds(100, 150, 900, 600);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -76,6 +77,10 @@ public class DialogPlanet extends JDialog {
             {
                 panelFleet = new PanelFleet(this, planet);
                 tabbedPane.addTab("Fleet", null, panelFleet, null);
+            }
+            {
+                panelMissions = new PanelMissions(this, planet);
+                tabbedPane.addTab("Missions", null, panelMissions, null);
             }
             {
                 panelPlanetDetails = new PanelPlanetDetails(this, planet);

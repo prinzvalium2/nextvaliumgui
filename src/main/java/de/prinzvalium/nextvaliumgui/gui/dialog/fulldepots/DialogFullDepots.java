@@ -178,10 +178,9 @@ public class DialogFullDepots extends JDialog {
                     for (Planet p : get())
                         model.addRow(new Object[] { p.getUserName(), p.getName(), p.getId()});
                     
-                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    
                 } catch (InterruptedException | ExecutionException e) {
                 }
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 super.done();
             }
         }.execute();

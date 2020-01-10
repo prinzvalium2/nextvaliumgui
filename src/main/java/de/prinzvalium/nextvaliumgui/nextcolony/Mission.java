@@ -11,6 +11,7 @@ public class Mission {
     private String type;
     private Date arrival;
     private Date returning;
+    private Date start_date;
     private String toPlanetName;
     private String toPlanetId;
     private String fromPlanetName;
@@ -20,6 +21,8 @@ public class Mission {
     private int start_y;
     private int end_x;
     private int end_y;
+    private String result;
+    private int ships_total;
     
     Mission(JSONObject jsonMission) {
         
@@ -29,6 +32,20 @@ public class Mission {
         start_y = jsonMission.getInt("start_y");
         end_x = jsonMission.getInt("end_x");
         end_y = jsonMission.getInt("end_y");
+        
+//        try {
+//            result = jsonMission.getInt("result");
+//        }
+//        catch (JSONException e) {
+//            result = -1;
+//        }
+        try {
+            result = jsonMission.getString("result");
+        }
+        catch (JSONException e) {
+            result = null;
+        }
+        
         
         try {
             cancel_trx = jsonMission.getString("cancel_trx");
@@ -44,6 +61,12 @@ public class Mission {
         }
         catch (JSONException e) {
             returning = null;
+        }
+        try {
+            start_date = new Date(jsonMission.getLong("start_date") * 1000);
+        }
+        catch (JSONException e) {
+            start_date = null;
         }
         
         try {
@@ -63,6 +86,13 @@ public class Mission {
         }
         catch(JSONException e) {
             fromPlanetName = "<not set>";
+        }
+        try {
+            JSONObject jsonShips = jsonMission.getJSONObject("ships");
+            ships_total = jsonShips.getInt("total");
+        }
+        catch(JSONException e) {
+            ships_total = -1;
         }
     }
     
@@ -85,6 +115,10 @@ public class Mission {
     
     public Date getReturning() {
         return returning;
+    }
+
+    public Date getStart_date() {
+        return start_date;
     }
 
     public String getToPlanetName() {
@@ -121,5 +155,13 @@ public class Mission {
 
     public int getEnd_y() {
         return end_y;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public int getShips_total() {
+        return ships_total;
     }
 }

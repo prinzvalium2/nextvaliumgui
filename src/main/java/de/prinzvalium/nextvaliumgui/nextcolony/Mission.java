@@ -17,6 +17,7 @@ public class Mission {
     private String fromPlanetName;
     private String fromPlanetId;
     private String cancel_trx;
+    private String id;
     private int start_x;
     private int start_y;
     private int end_x;
@@ -26,6 +27,7 @@ public class Mission {
     
     Mission(JSONObject jsonMission) {
         
+        id = jsonMission.getString("id"); 
         user = jsonMission.getString("user"); 
         
         start_x = jsonMission.getInt("start_x");
@@ -163,5 +165,14 @@ public class Mission {
 
     public int getShips_total() {
         return ships_total;
+    }
+
+    @Override
+    public String toString() {
+        return getType();
+    }
+
+    public String getId() {
+        return id;
     }
 }

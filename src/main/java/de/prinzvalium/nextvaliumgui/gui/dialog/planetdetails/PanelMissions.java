@@ -3,6 +3,7 @@ package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 import javax.swing.JPanel;
 
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
+import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Mission;
 import de.prinzvalium.nextvaliumgui.nextcolony.Missions;
@@ -24,8 +25,11 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.JButton;
 
 public class PanelMissions extends JPanel {
@@ -34,8 +38,12 @@ public class PanelMissions extends JPanel {
     private JTable tableMissions;
     private DefaultTableModel model;
     private JButton btnJumpToPlanet;
+    private JButton btnCancelmission;
+    private DialogPlanet dialogPlanet;
     
     public PanelMissions(DialogPlanet dialogPlanet, Planet planet) {
+        
+        this.dialogPlanet = dialogPlanet;
         
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -63,6 +71,11 @@ public class PanelMissions extends JPanel {
         tableMissions.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent arg0) {
+                if (tableMissions.getSelectedRowCount()==1) {
+                    Planet origin = (Planet) model.getValueAt(tableMissions.getSelectedRow(), 1);
+                    ArrayList<String> users = NextValiumGui.getNextValiumGui().getListUsers();
+                    btnCancelmission.setEnabled(users.contains(origin.getUserName()));
+                }
                 btnJumpToPlanet.setEnabled(tableMissions.getSelectedRowCount() == 0 ? false : true);
                 if (arg0.getClickCount() == 2)
                     btnJumpToPlanet.doClick();
@@ -115,6 +128,16 @@ public class PanelMissions extends JPanel {
                     NextValiumGui.getNextValiumGui().setCenterPosition(destination);
             }
         });
+        
+        btnCancelmission = new JButton("Cancel mission");
+        btnCancelmission.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                Mission mission = (Mission)model.getValueAt(tableMissions.getSelectedRow(), 0);
+                actionPerformed_btnCancelmission(mission);
+            }
+        });
+        btnCancelmission.setEnabled(false);
+        panel.add(btnCancelmission);
         panel.add(btnJumpToPlanet);
         
         model = (DefaultTableModel)tableMissions.getModel();   
@@ -135,7 +158,7 @@ public class PanelMissions extends JPanel {
                     HashMap<String, Planet> p = Planets.getAllPlanets();
                     for (Mission m : get()) {
                         model.addRow(new Object[] {
-                                m.getType(), 
+                                m, 
                                 p.get(m.getFromPlanetId()), 
                                 p.get(m.getToPlanetId()), 
                                 m.getShips_total(),
@@ -149,6 +172,35 @@ public class PanelMissions extends JPanel {
                 } catch (Exception e) {
                     model.addRow(new Object[] {e.getMessage(), null, null, null, null, null, null, null, null});
                 }
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                super.done();
+            }
+        }.execute();
+    }
+    
+    private void actionPerformed_btnCancelmission(Mission mission) {
+        
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        dialogPlanet.setStatusInfo("Sending transaction to Steem. Please wait...");
+        
+        new SwingWorker<Void, Void>() {
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                CustomJson.cancelMission(mission.getUser(), mission.getId());
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+                    
+                } catch (InterruptedException | ExecutionException e) {
+                    dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
+                }
+                
                 setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 super.done();
             }

@@ -50,6 +50,23 @@ public class CustomJson {
         broadcastJSONObjectToSteem(jsonObject);
     }
     
+    public static void cancelMission(String userName, String id) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+        
+        SteemUtil.setDefaultAccount(userName);
+        
+        JsonObject jsonCommand = new JsonObject();
+        
+        // Mission-ID 
+        jsonCommand.addProperty("tr_var1", id);
+        
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("username", userName);
+        jsonObject.addProperty("type", "cancel");
+        jsonObject.add("command",  jsonCommand);
+        
+        broadcastJSONObjectToSteem(jsonObject);
+    }
+    
     public static void transportToPlanet(HashMap<String, Integer> mapNumberOfShipTypes, String userName, String planetId, int x, int y, Resources resources) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         
         SteemUtil.setDefaultAccount(userName);

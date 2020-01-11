@@ -67,6 +67,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import java.awt.SystemColor;
 
 
 public class NextValiumGui {
@@ -170,6 +171,7 @@ public class NextValiumGui {
         LOGGER.trace("initialize()");
         
         panelGalaxyMap = new PanelGalaxyMap();
+        panelGalaxyMap.setBackground(Color.WHITE);
         panelUniverse = new PanelUniverse();
         
         frmNextvaliumManagementGui = new JFrame();

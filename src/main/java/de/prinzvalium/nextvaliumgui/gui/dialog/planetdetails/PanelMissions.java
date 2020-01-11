@@ -169,7 +169,7 @@ public class PanelMissions extends JPanel {
                                 Util.getDateAsString(m.getArrival()),
                                 Util.getDateAsString(m.getReturning()),
                                 m.getResult(),
-                                m.getCancel_trx()});
+                                m.getCancel_trx() == null ? "" : "true"});
                     }
                     
                 } catch (Exception e) {

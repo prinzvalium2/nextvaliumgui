@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
 
 import de.prinzvalium.nextvaliumgui.gui.PanelGalaxyMap;
 import de.prinzvalium.nextvaliumgui.gui.PanelUniverse;
-import de.prinzvalium.nextvaliumgui.gui.dialog.fulldepots.DialogFullDepots;
-import de.prinzvalium.nextvaliumgui.gui.dialog.hostilemissions.HostileMissions;
-import de.prinzvalium.nextvaliumgui.gui.dialog.lastplanets.DialogLastPlanets;
-import de.prinzvalium.nextvaliumgui.gui.dialog.seasonranking.SeasonRanking;
+import de.prinzvalium.nextvaliumgui.gui.dialog.info.DialogFullDepots;
+import de.prinzvalium.nextvaliumgui.gui.dialog.info.DialogLastPlanets;
+import de.prinzvalium.nextvaliumgui.gui.dialog.info.HostileMissions;
+import de.prinzvalium.nextvaliumgui.gui.dialog.info.SeasonRanking;
 import de.prinzvalium.nextvaliumgui.lib.ColorButton;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;

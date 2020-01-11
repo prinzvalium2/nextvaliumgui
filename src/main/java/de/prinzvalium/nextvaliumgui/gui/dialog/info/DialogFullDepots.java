@@ -1,11 +1,11 @@
-package de.prinzvalium.nextvaliumgui.gui.dialog.lastplanets;
+package de.prinzvalium.nextvaliumgui.gui.dialog.info;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JButton;
@@ -17,23 +17,25 @@ import javax.swing.JTable;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
+import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantitiesRessources;
 import de.prinzvalium.nextvaliumgui.NextValiumGui;
-import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
+import de.prinzvalium.nextvaliumgui.nextcolony.RessourceQuantities;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class DialogLastPlanets extends JDialog {
+public class DialogFullDepots extends JDialog {
 
     private static final long serialVersionUID = 1L;
     private final JPanel contentPanel = new JPanel();
     private JTable table;
     private JButton btnJumpToPlanet;
     private JDialog dialog;
-    private HashMap<String, Planet> mapPlanets;
+    private ArrayList<Planet> listPlanets;
     private DefaultTableModel model;
 
     /**
@@ -41,7 +43,7 @@ public class DialogLastPlanets extends JDialog {
      */
     public static void main(String[] args) {
         try {
-            DialogLastPlanets dialog = new DialogLastPlanets();
+            DialogFullDepots dialog = new DialogFullDepots();
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
@@ -52,10 +54,10 @@ public class DialogLastPlanets extends JDialog {
     /**
      * Create the dialog.
      */
-    public DialogLastPlanets() {
+    public DialogFullDepots() {
         dialog = this;
         setModal(true);
-        setTitle("Last planets");
+        setTitle("Full depots");
         setBounds(100, 100, 600, 500);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -76,10 +78,10 @@ public class DialogLastPlanets extends JDialog {
                 });
                 table.setModel(new DefaultTableModel(
                     new Object[][] {
-                        {null, null, null, null},
+                        {"Loading data...", null, null},
                     },
                     new String[] {
-                        "Date", "User", "Planet", "Id"
+                        "User", "Planet", "Id"
                     }
                 ) {
                     Class[] columnTypes = new Class[] {
@@ -98,7 +100,6 @@ public class DialogLastPlanets extends JDialog {
                 table.getColumnModel().getColumn(0).setPreferredWidth(125);
                 table.getColumnModel().getColumn(1).setPreferredWidth(125);
                 table.getColumnModel().getColumn(2).setPreferredWidth(125);
-                table.getColumnModel().getColumn(3).setPreferredWidth(125);
                 scrollPane.setViewportView(table);
         }
         {
@@ -111,9 +112,18 @@ public class DialogLastPlanets extends JDialog {
                 btnJumpToPlanet.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent arg0) {
                         dialog.setVisible(false);
-                        String id = (String) model.getValueAt(table.getSelectedRow(), 3);   
-                        Planet p = mapPlanets.get(id);
-                        NextValiumGui.getNextValiumGui().setCenterPosition(p);
+                        String id = (String) model.getValueAt(table.getSelectedRow(), 2);  
+                        
+                        Planet planet = null;
+                        for (Planet p : listPlanets) {
+                            if (p.getId().equalsIgnoreCase(id) ) {
+                                planet = p;
+                                break;
+                            }
+                        }
+                        
+                        if (planet != null)
+                            NextValiumGui.getNextValiumGui().setCenterPosition(planet);
                     }
                 });
                 btnJumpToPlanet.setActionCommand("");
@@ -134,24 +144,30 @@ public class DialogLastPlanets extends JDialog {
         
         model = (DefaultTableModel)table.getModel();            }
 
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        
         new SwingWorker<ArrayList<Planet>, Object>() {
 
             @Override
             protected ArrayList<Planet> doInBackground() throws Exception {
                 
-                mapPlanets = new HashMap<String, Planet>();
-                
-                ArrayList<String> listUsers = NextValiumGui.getNextValiumGui().getListUsers();
-                for (String user : listUsers)
-                    mapPlanets.putAll(Planets.loadUserPlanets(user));
-                
-                ArrayList<Planet> listPlanets = new ArrayList<>(mapPlanets.values());
-                Collections.sort(listPlanets, new Comparator<Planet>() {
-                    @Override
-                    public int compare(Planet arg0, Planet arg1) {
-                        return arg0.getDate().before(arg1.getDate()) ? 1 : -1;
-                    }});
+                listPlanets = new ArrayList<>();
 
+                for (String user : NextValiumGui.getNextValiumGui().getListUsers()) {
+                    
+                    List<Planet> planets = new ArrayList<>(Planets.loadUserPlanets(user).values());
+                    Collections.sort(planets);
+                    
+                    for (Planet p : planets) { 
+                        RessourceQuantitiesRessources res = RessourceQuantities.loadRessourceQuantites(p.getName(), p.getId());
+                        if (res.getCoal() >= res.getCoalDepot() &&
+                                res.getOre() >= res.getOreDepot() &&
+                                res.getCopper() >= res.getCopperDepot() &&
+                                res.getUranium() >= res.getUraniumDepot() )
+                            
+                            listPlanets.add(p);
+                    }
+                }
                 return listPlanets;
             }
 
@@ -160,10 +176,11 @@ public class DialogLastPlanets extends JDialog {
                 try {
                     model.removeRow(0);
                     for (Planet p : get())
-                        model.addRow(new Object[] { Util.getDateAsString(p.getDate()), p.getUserName(), p.getName(), p.getId()});
+                        model.addRow(new Object[] { p.getUserName(), p.getName(), p.getId()});
                     
                 } catch (InterruptedException | ExecutionException e) {
                 }
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 super.done();
             }
         }.execute();

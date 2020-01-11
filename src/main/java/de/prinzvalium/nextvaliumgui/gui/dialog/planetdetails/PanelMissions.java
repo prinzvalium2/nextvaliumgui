@@ -72,9 +72,9 @@ public class PanelMissions extends JPanel {
             @Override
             public void mouseClicked(MouseEvent arg0) {
                 if (tableMissions.getSelectedRowCount()==1) {
-                    Planet origin = (Planet) model.getValueAt(tableMissions.getSelectedRow(), 1);
+                    Mission mission = (Mission) model.getValueAt(tableMissions.getSelectedRow(), 0);
                     ArrayList<String> users = NextValiumGui.getNextValiumGui().getListUsers();
-                    btnCancelmission.setEnabled(users.contains(origin.getUserName()));
+                    btnCancelmission.setEnabled(users.contains(mission.getUser()) && mission.getCancel_trx() == null);
                 }
                 btnJumpToPlanet.setEnabled(tableMissions.getSelectedRowCount() == 0 ? false : true);
                 if (arg0.getClickCount() == 2)

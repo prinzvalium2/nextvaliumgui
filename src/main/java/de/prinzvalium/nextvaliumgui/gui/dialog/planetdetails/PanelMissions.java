@@ -76,7 +76,10 @@ public class PanelMissions extends JPanel {
                     ArrayList<String> users = NextValiumGui.getNextValiumGui().getListUsers();
                     btnCancelmission.setEnabled(users.contains(mission.getUser()) && mission.getCancel_trx() == null);
                 }
-                btnJumpToPlanet.setEnabled(tableMissions.getSelectedRowCount() == 0 ? false : true);
+                else {
+                    btnCancelmission.setEnabled(false);
+                }
+                btnJumpToPlanet.setEnabled(tableMissions.getSelectedRowCount() == 1);
                 if (arg0.getClickCount() == 2)
                     btnJumpToPlanet.doClick();
             }

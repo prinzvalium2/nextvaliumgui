@@ -754,6 +754,7 @@ public class NextValiumGui {
     public void  setCenterPosition(Planet planet) {
         comboBoxUsers.setSelectedItem(planet.getUserName());
         comboBoxPlanets.setSelectedItem(planet);
+        panelUniverse.repaint();
         btnRefresh.doClick();
     }
     

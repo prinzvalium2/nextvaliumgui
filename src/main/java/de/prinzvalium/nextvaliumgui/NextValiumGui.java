@@ -11,12 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -36,14 +36,19 @@ import de.prinzvalium.nextvaliumgui.gui.dialog.fulldepots.DialogFullDepots;
 import de.prinzvalium.nextvaliumgui.gui.dialog.hostilemissions.HostileMissions;
 import de.prinzvalium.nextvaliumgui.gui.dialog.lastplanets.DialogLastPlanets;
 import de.prinzvalium.nextvaliumgui.gui.dialog.seasonranking.SeasonRanking;
+import de.prinzvalium.nextvaliumgui.lib.ColorButton;
 import de.prinzvalium.nextvaliumgui.lib.Util;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
+import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
@@ -57,13 +62,11 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-import javax.swing.JSeparator;
-import javax.swing.border.LineBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EtchedBorder;
 
 
 public class NextValiumGui {
@@ -112,6 +115,7 @@ public class NextValiumGui {
     private JLabel lblUser;
     private JComboBox<String> comboBoxUniverseUser;
     private JPanel panelLastPlanet;
+    private BufferedImage imageLastPlanet;
 
     /**
      * Launch the application.
@@ -593,14 +597,16 @@ public class NextValiumGui {
         gbl_panelLastPlanet.rowWeights = new double[]{1.0, Double.MIN_VALUE};
         panelLastPlanet.setLayout(gbl_panelLastPlanet);
         
-        btnLastPlanet = new JButton("");
+        btnLastPlanet = new ColorButton("");
+        btnLastPlanet.setBackground(Color.BLACK);
+        btnLastPlanet.setForeground(Color.WHITE);
         GridBagConstraints gbc_btnLastPlanet = new GridBagConstraints();
         gbc_btnLastPlanet.fill = GridBagConstraints.BOTH;
         gbc_btnLastPlanet.gridx = 0;
         gbc_btnLastPlanet.gridy = 0;
         panelLastPlanet.add(btnLastPlanet, gbc_btnLastPlanet);
         btnLastPlanet.setPreferredSize(new Dimension(130, 9));
-        btnLastPlanet.setBorder(null);
+        btnLastPlanet.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         btnLastPlanet.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 if (lastPlanet == null)
@@ -700,20 +706,7 @@ public class NextValiumGui {
         
         doInBackgroundGameDelay();
         doInBackgroundAlarm();
-        showLastPlanet();
-        
-//        new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                SwingUtilities.invokeLater(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        btnRefresh.doClick();
-//                    }});
-//                
-//            }}).start();
+        doInBackgroundLastPlanet();
      }
 
     public Planet getPlanetMarkedAsTarget() {
@@ -794,47 +787,6 @@ public class NextValiumGui {
             protected void done() {
                 tabbedPane.setSelectedIndex(1);
                 frmNextvaliumManagementGui.repaint();
-                showLastPlanet();
-            }
-        }.execute();
-    }
-    
-    private void showLastPlanet(){
-        
-        new SwingWorker<Vector<Planet>, Object>() {
-
-            @Override
-            protected Vector<Planet> doInBackground() throws Exception {
-                
-                Vector<Planet> planets = new Vector<Planet>();
-                for (String user : listUsers) {
-                    Planet p = Planets.loadLastUserPlanet(user);
-                    planets.add(p);
-                }
-                Collections.sort(planets, new Comparator<Planet>() {
-                   @Override
-                    public int compare(Planet arg0, Planet arg1) {
-                        return arg0.getDate().before(arg1.getDate()) ? 1 : -1;
-                    }});
-                
-                return planets;
-            }
-
-            @Override
-            protected void done() {
-                
-                try {
-                    Vector<Planet> planets = get();
-                    lastPlanet = planets.get(0);
-                    String date = Util.getDateAsString(lastPlanet.getDate());
-                    String name = lastPlanet.getName();
-                    String user = lastPlanet.getUserName();
-                    String text = "<html><center>"+date+"<br>"+name+"<br>"+user+"</center></html>";
-                    btnLastPlanet.setText(text);
-                    
-                } catch (InterruptedException | ExecutionException e) {
-                }
-                super.done();
             }
         }.execute();
     }
@@ -903,6 +855,65 @@ public class NextValiumGui {
                                     txtStatus.setText("OK");
                                  }
                            }});
+                        
+                    } catch (JSONException | IOException e) {
+                    }
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void doInBackgroundLastPlanet() {
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                
+                while (true) {
+                    try {
+                        
+                        Vector<Planet> planets = new Vector<Planet>();
+                        for (String user : listUsers) {
+                            Planet p = Planets.loadLastUserPlanet(user);
+                            planets.add(p);
+                        }
+                        Collections.sort(planets, new Comparator<Planet>() {
+                           @Override
+                            public int compare(Planet arg0, Planet arg1) {
+                                return arg0.getDate().before(arg1.getDate()) ? 1 : -1;
+                            }
+                        });
+                        
+                        try {
+                            PlanetDetails planetDetails = new PlanetDetails(planets.get(0).getId());
+                            String path = "https://nextcolony.io/img/planets/" + planetDetails.getImg();
+                            URL url = new URL(path);
+                            imageLastPlanet = ImageIO.read(url);
+                        }
+                        catch (Exception e) {
+                            imageLastPlanet = null;
+                        }
+                        
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                lastPlanet = planets.get(0);
+                                String date = Util.getDateAsString(lastPlanet.getDate());
+                                String name = lastPlanet.getName();
+                                String user = lastPlanet.getUserName();
+                                String text = "<html><center>"+date+"<br>"+name+"<br>"+user+"</center></html>";
+                                if (imageLastPlanet != null) {
+                                    //btnLastPlanet.setIcon(new ImageIcon(imageLastPlanet));
+                                    //Image img = imageLastPlanet;  
+                                    Image newimg = imageLastPlanet.getScaledInstance( btnLastPlanet.getWidth(), btnLastPlanet.getWidth(), java.awt.Image.SCALE_SMOOTH ) ;  
+                                    btnLastPlanet.setIcon(new ImageIcon( newimg ));                    
+                                }
+                                btnLastPlanet.setText(text);
+                            }});
                         
                     } catch (JSONException | IOException e) {
                     }

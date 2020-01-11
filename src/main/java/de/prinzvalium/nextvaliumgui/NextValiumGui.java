@@ -67,7 +67,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-import java.awt.SystemColor;
 
 
 public class NextValiumGui {
@@ -910,8 +909,6 @@ public class NextValiumGui {
                                 String user = lastPlanet.getUserName();
                                 String text = "<html><center>"+date+"<br>"+name+"<br>"+user+"</center></html>";
                                 if (imageLastPlanet != null) {
-                                    //btnLastPlanet.setIcon(new ImageIcon(imageLastPlanet));
-                                    //Image img = imageLastPlanet;  
                                     Image newimg = imageLastPlanet.getScaledInstance( btnLastPlanet.getWidth(), btnLastPlanet.getWidth(), java.awt.Image.SCALE_SMOOTH ) ;  
                                     btnLastPlanet.setIcon(new ImageIcon( newimg ));                    
                                 }

@@ -1,6 +1,7 @@
 package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -21,6 +22,7 @@ import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
 
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -256,7 +258,8 @@ public class PanelPlanetDetails extends JPanel {
                     String path = "https://nextcolony.io/img/planets/" + planetDetails.getImg();
                     URL url = new URL(path);
                     BufferedImage image = ImageIO.read(url);
-                    panelImage = new JLabel(new ImageIcon(image));
+                    Image newimg = image.getScaledInstance( panelImage.getWidth(), panelImage.getWidth(), java.awt.Image.SCALE_SMOOTH ) ;  
+                    panelImage = new JLabel(new ImageIcon(newimg));
                 }
                 catch (Exception e) {
                 }
@@ -283,9 +286,18 @@ public class PanelPlanetDetails extends JPanel {
                     }
                     
                     String s = String.join("", as);
+                    s = s.replaceAll("\\{\\n", "");
+                    s = s.replaceAll("\\}", "");
+                    s = s.replaceAll("\":", ": ");
+                    s = s.replaceAll("\"", "");
+                    
+                    as = s.split("\\n");
+                    Arrays.parallelSort(as);
+                    s = String.join("\n", as);
+                    
                     textArea.setText(s);
                     textArea.setCaretPosition(0);
-                    panelImage.setBackground(Color.BLUE);
+                    panelImage.setBackground(Color.BLACK);
                     panelImage.setOpaque(true);
                     add(panelImage, gbc_panelImage);
                     
@@ -293,7 +305,6 @@ public class PanelPlanetDetails extends JPanel {
                 }
                 super.done();
             }
-            
         }.execute();
     }
     private void checkPreconditionSendToSteemButton() {

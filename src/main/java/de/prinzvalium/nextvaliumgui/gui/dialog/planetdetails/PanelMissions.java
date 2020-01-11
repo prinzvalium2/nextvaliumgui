@@ -76,7 +76,14 @@ public class PanelMissions extends JPanel {
             new String[] {
                 "Type", "Origin", "Destination", "Ships", "Start", "Arrival", "Return", "Result", "Cancel"
             }
-        ));
+        ) {
+            boolean[] columnEditables = new boolean[] {
+                false, false, false, false, false, false, false, false, false
+            };
+            public boolean isCellEditable(int row, int column) {
+                return columnEditables[column];
+            }
+        });
         tableMissions.getColumnModel().getColumn(0).setPreferredWidth(60);
         tableMissions.getColumnModel().getColumn(1).setPreferredWidth(125);
         tableMissions.getColumnModel().getColumn(2).setPreferredWidth(125);

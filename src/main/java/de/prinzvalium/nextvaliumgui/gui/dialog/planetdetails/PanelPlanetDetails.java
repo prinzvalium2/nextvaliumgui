@@ -3,6 +3,7 @@ package de.prinzvalium.nextvaliumgui.gui.dialog.planetdetails;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
@@ -17,6 +18,8 @@ import de.prinzvalium.nextvaliumgui.lib.CustomJson;
 import de.prinzvalium.nextvaliumgui.lib.LimitDocumentFilter;
 import de.prinzvalium.nextvaliumgui.lib.SteemUtil;
 import de.prinzvalium.nextvaliumgui.lib.Util;
+import de.prinzvalium.nextvaliumgui.nextcolony.Building;
+import de.prinzvalium.nextvaliumgui.nextcolony.Buildings;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planet;
 import de.prinzvalium.nextvaliumgui.nextcolony.PlanetDetails;
 import de.prinzvalium.nextvaliumgui.nextcolony.Planets;
@@ -52,6 +55,8 @@ public class PanelPlanetDetails extends JPanel {
     private JTextField txtGiftPlanet;
     private Planet planet;
     private JButton btnRenameplanet;
+    private HashMap<String, Building> mapBuildings;
+    private JTextField txtShield;
     
     public PanelPlanetDetails(DialogPlanet dialogPlanet, Planet planet) {
         addComponentListener(new ComponentAdapter() {
@@ -105,6 +110,7 @@ public class PanelPlanetDetails extends JPanel {
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+        gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
         gbc_scrollPane.gridheight = 6;
         gbc_scrollPane.fill = GridBagConstraints.BOTH;
         gbc_scrollPane.gridx = 1;
@@ -145,6 +151,22 @@ public class PanelPlanetDetails extends JPanel {
         gbc_lblPlanettype.gridx = 0;
         gbc_lblPlanettype.gridy = 4;
         panelImageText.add(lblPlanettype, gbc_lblPlanettype);
+        
+        txtShield = new JTextField();
+        txtShield.setBorder(null);
+        txtShield.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+        txtShield.setEditable(false);
+        txtShield.setOpaque(false);
+        txtShield.setForeground(Color.WHITE);
+        txtShield.setHorizontalAlignment(SwingConstants.CENTER);
+        txtShield.setText("Shield");
+        GridBagConstraints gbc_txtShield = new GridBagConstraints();
+        gbc_txtShield.insets = new Insets(0, 0, 5, 5);
+        gbc_txtShield.fill = GridBagConstraints.HORIZONTAL;
+        gbc_txtShield.gridx = 0;
+        gbc_txtShield.gridy = 5;
+        panelImageText.add(txtShield, gbc_txtShield);
+        txtShield.setColumns(10);
         
         panelImage = new JLabel();
         panelImage.setBackground(Color.BLUE);
@@ -332,6 +354,9 @@ public class PanelPlanetDetails extends JPanel {
             protected PlanetDetails doInBackground() throws Exception {
                 PlanetDetails planetDetails = new PlanetDetails(planet.getId());
                 
+                Buildings buildings = new Buildings(planet);
+                mapBuildings = buildings.getBuildings();
+                
                 try {
                     String path = "https://nextcolony.io/img/planets/" + planetDetails.getImg();
                     URL url = new URL(path);
@@ -378,6 +403,11 @@ public class PanelPlanetDetails extends JPanel {
                     panelImage.setBackground(Color.BLACK);
                     panelImage.setOpaque(true);
                     add(panelImage, gbc_panelImage);
+                    
+                    Building shield = mapBuildings.get("shieldgenerator");
+                    Building bunker = mapBuildings.get("bunker");
+                    
+                    txtShield.setText("Shield Level: " + shield.getCurrent());
                     
                     if (SteemUtil.isAccountRegistered(planet.getUserName())) {
                         btnChargeShield.setEnabled(planetDetails.getShieldcharged() == 0);

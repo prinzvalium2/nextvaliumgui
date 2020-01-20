@@ -34,6 +34,7 @@ public class PlanetDetails {
     private String planet_type;
     private long shieldcharge_busy;
     private int shieldprotection_busy;
+    private int shieldcharged;
     private int startplanet;
     private int total_type;
     
@@ -67,6 +68,8 @@ public class PlanetDetails {
         level_oredepot = jsonPlanet.getInt("level_oredepot");
         level_copperdepot = jsonPlanet.getInt("level_copperdepot");
         level_uraniumdepot = jsonPlanet.getInt("level_uraniumdepot");
+        
+        shieldcharged = jsonPlanet.getInt("shieldcharged");
     }
 
     public String getPlanetId() {
@@ -169,12 +172,16 @@ public class PlanetDetails {
         return total_type;
     }
     
+    public int getShieldcharged() {
+        return shieldcharged;
+    }
+    
+    public String getJsonString() {
+        return jsonString;
+    }
+    
     public static void main(String[] args) throws JSONException, IOException {
         Util.setProxy();
         new PlanetDetails("P-ZGD7FULO3I8").loadPlanetDetails(); // patti.pizza
-    }
-
-    public String getJsonString() {
-        return jsonString;
     }
 }

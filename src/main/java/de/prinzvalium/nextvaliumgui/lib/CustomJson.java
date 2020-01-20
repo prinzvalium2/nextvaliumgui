@@ -186,6 +186,39 @@ public class CustomJson {
         broadcastJSONObjectToSteem(jsonObject);
     }
     
+    
+    public static void chargeShield(String userName, String planetId) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+        
+        SteemUtil.setDefaultAccount(userName);
+        
+        JsonObject jsonCommand = new JsonObject();
+        jsonCommand.addProperty("tr_var1", planetId); 
+        jsonCommand.addProperty("tr_var2", "shieldgenerator");
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("username", userName);
+        jsonObject.addProperty("type", "charge");
+        jsonObject.add("command",  jsonCommand);
+        
+        broadcastJSONObjectToSteem(jsonObject);
+    }
+    
+    public static void activateShield(String userName, String planetId) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+        
+        SteemUtil.setDefaultAccount(userName);
+        
+        JsonObject jsonCommand = new JsonObject();
+        jsonCommand.addProperty("tr_var1", planetId); 
+        jsonCommand.addProperty("tr_var2", "shieldgenerator");
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("username", userName);
+        jsonObject.addProperty("type", "enable");
+        jsonObject.add("command",  jsonCommand);
+        
+        broadcastJSONObjectToSteem(jsonObject);
+    }
+   
     public static void broadcastJSONObjectToSteem(JsonObject jsonObject) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         SteemUtil.broadcastJSONStringWithRetry(jsonObject.toString(), "nextcolony");
     }

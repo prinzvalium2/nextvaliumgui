@@ -164,9 +164,9 @@ public class PanelPlanetDetails extends JPanel {
         gbc_panelContent.gridy = 1;
         add(panelContent, gbc_panelContent);
         GridBagLayout gbl_panelContent = new GridBagLayout();
-        gbl_panelContent.columnWidths = new int[]{0, 0, 0};
+        gbl_panelContent.columnWidths = new int[]{0, 0, 0, 0};
         gbl_panelContent.rowHeights = new int[]{0, 0, 0};
-        gbl_panelContent.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelContent.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
         gbl_panelContent.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panelContent.setLayout(gbl_panelContent);
         
@@ -222,10 +222,49 @@ public class PanelPlanetDetails extends JPanel {
         });
         GridBagConstraints gbc_btnRenameplanet = new GridBagConstraints();
         gbc_btnRenameplanet.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnRenameplanet.insets = new Insets(0, 0, 5, 0);
+        gbc_btnRenameplanet.insets = new Insets(0, 0, 5, 5);
         gbc_btnRenameplanet.gridx = 1;
         gbc_btnRenameplanet.gridy = 0;
         panelContent.add(btnRenameplanet, gbc_btnRenameplanet);
+        
+        JButton btnChargeShield = new JButton("Charge shield");
+        btnChargeShield.setEnabled(false);
+        btnChargeShield.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                dialogPlanet.setStatusInfo("Sending transaction to Steem. Please wait...");
+                
+                new SwingWorker<Void, Void>(){
+
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        CustomJson.chargeShield(planet.getUserName(), planet.getId());
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            get();
+                            dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+                            
+                        } catch (InterruptedException | ExecutionException e) {
+                            dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
+                        }
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        super.done();
+                    }
+                }.execute();
+                
+            }
+        });
+        GridBagConstraints gbc_btnChargeShield = new GridBagConstraints();
+        gbc_btnChargeShield.fill = GridBagConstraints.HORIZONTAL;
+        gbc_btnChargeShield.insets = new Insets(0, 0, 5, 0);
+        gbc_btnChargeShield.gridx = 2;
+        gbc_btnChargeShield.gridy = 0;
+        panelContent.add(btnChargeShield, gbc_btnChargeShield);
         
         txtGiftPlanet = new JTextField();
         txtGiftPlanet.setEnabled(false);
@@ -241,10 +280,49 @@ public class PanelPlanetDetails extends JPanel {
         JButton btnGiftPlanet = new JButton("Gift planet");
         btnGiftPlanet.setEnabled(false);
         GridBagConstraints gbc_btnGiftPlanet = new GridBagConstraints();
+        gbc_btnGiftPlanet.insets = new Insets(0, 0, 0, 5);
         gbc_btnGiftPlanet.fill = GridBagConstraints.HORIZONTAL;
         gbc_btnGiftPlanet.gridx = 1;
         gbc_btnGiftPlanet.gridy = 1;
         panelContent.add(btnGiftPlanet, gbc_btnGiftPlanet);
+        
+        JButton btnActivateShield = new JButton("Activate shield");
+        btnActivateShield.setEnabled(false);
+        btnActivateShield.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                dialogPlanet.setStatusInfo("Sending transaction to Steem. Please wait...");
+                
+                new SwingWorker<Void, Void>(){
+
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        CustomJson.activateShield(planet.getUserName(), planet.getId());
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            get();
+                            dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+                            
+                        } catch (InterruptedException | ExecutionException e) {
+                            dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
+                        }
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        super.done();
+                    }
+                }.execute();
+                
+            }
+        });
+        GridBagConstraints gbc_btnActivateShield = new GridBagConstraints();
+        gbc_btnActivateShield.fill = GridBagConstraints.HORIZONTAL;
+        gbc_btnActivateShield.gridx = 2;
+        gbc_btnActivateShield.gridy = 1;
+        panelContent.add(btnActivateShield, gbc_btnActivateShield);
     
         checkPreconditionSendToSteemButton();
         
@@ -301,6 +379,11 @@ public class PanelPlanetDetails extends JPanel {
                     panelImage.setOpaque(true);
                     add(panelImage, gbc_panelImage);
                     
+                    if (SteemUtil.isAccountRegistered(planet.getUserName())) {
+                        btnChargeShield.setEnabled(planetDetails.getShieldcharged() == 0);
+                        btnActivateShield.setEnabled(planetDetails.getShieldcharged() == 1);
+                    }
+                    
                 } catch (InterruptedException | ExecutionException e) {
                 }
                 super.done();
@@ -311,8 +394,9 @@ public class PanelPlanetDetails extends JPanel {
         String but = "";
         
         if (!SteemUtil.isAccountRegistered(planet.getUserName())) {
-            dialogPlanet.setStatusError(but + "Private posting key of user " + planet.getUserName() + " not in nextvaliumgui.ini -> Button <send transaction to Steem> disabled");
+            dialogPlanet.setStatusError(but + "Private posting key of user " + planet.getUserName() + " not in nextvaliumgui.ini -> Buttons disabled");
             btnRenameplanet.setEnabled(false);
+            txtRenameplanet.setEnabled(false);
             return;
         }
         

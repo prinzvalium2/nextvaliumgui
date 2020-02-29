@@ -174,6 +174,8 @@ public class HostileMissions extends JDialog {
                             String canceled = mission.getCancel_trx() == null ? "" : "canceled";
                             String arrive = Util.getDateAsString(mission.getArrival());
                             String returning = Util.getDateAsString(mission.getReturning());
+                            if (returning.equalsIgnoreCase(arrive))
+                                arrive = "";
                             model.addRow(new Object[] { attacker, planetFrom, type, canceled, user, planetTo, planetIdTo, arrive, returning});
                         }
                     }

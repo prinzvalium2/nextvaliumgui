@@ -160,13 +160,18 @@ public class PanelMissions extends JPanel {
                 try {
                     HashMap<String, Planet> p = Planets.getAllPlanets();
                     for (Mission m : get()) {
+                        
+                        String arrival = Util.getDateAsString(m.getArrival());
+                        if (m.getArrival().equals(m.getReturning()))
+                            arrival = "";
+                        
                         model.addRow(new Object[] {
                                 m, 
                                 p.get(m.getFromPlanetId()), 
                                 p.get(m.getToPlanetId()), 
                                 m.getShips_total(),
                                 Util.getDateAsString(m.getStart_date()), 
-                                Util.getDateAsString(m.getArrival()),
+                                arrival,
                                 Util.getDateAsString(m.getReturning()),
                                 m.getResult(),
                                 m.getCancel_trx() == null ? "" : "true"});

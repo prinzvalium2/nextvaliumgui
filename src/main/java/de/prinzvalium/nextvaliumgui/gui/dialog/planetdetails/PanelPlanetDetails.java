@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.text.AbstractDocument;
@@ -299,6 +300,9 @@ public class PanelPlanetDetails extends JPanel {
         JButton btnBurnPlanet = new JButton("Burn Planet");
         btnBurnPlanet.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                
+                if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null, "Burn planet " + planet.getName() + " ?", "Danger zone!", JOptionPane.YES_NO_OPTION))
+                    return;
                 
                 setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 dialogPlanet.setStatusInfo("Sending transaction to Steem. Please wait...");

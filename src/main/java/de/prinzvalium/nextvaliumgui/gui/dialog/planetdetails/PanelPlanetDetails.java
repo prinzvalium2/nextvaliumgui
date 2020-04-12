@@ -186,9 +186,9 @@ public class PanelPlanetDetails extends JPanel {
         gbc_panelContent.gridy = 1;
         add(panelContent, gbc_panelContent);
         GridBagLayout gbl_panelContent = new GridBagLayout();
-        gbl_panelContent.columnWidths = new int[]{0, 0, 0, 0};
+        gbl_panelContent.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
         gbl_panelContent.rowHeights = new int[]{0, 0, 0};
-        gbl_panelContent.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panelContent.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
         gbl_panelContent.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
         panelContent.setLayout(gbl_panelContent);
         
@@ -283,10 +283,55 @@ public class PanelPlanetDetails extends JPanel {
         });
         GridBagConstraints gbc_btnChargeShield = new GridBagConstraints();
         gbc_btnChargeShield.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnChargeShield.insets = new Insets(0, 0, 5, 0);
+        gbc_btnChargeShield.insets = new Insets(0, 0, 5, 5);
         gbc_btnChargeShield.gridx = 2;
         gbc_btnChargeShield.gridy = 0;
         panelContent.add(btnChargeShield, gbc_btnChargeShield);
+        
+        Component horizontalStrut_1 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_horizontalStrut_1 = new GridBagConstraints();
+        gbc_horizontalStrut_1.fill = GridBagConstraints.HORIZONTAL;
+        gbc_horizontalStrut_1.insets = new Insets(0, 0, 5, 5);
+        gbc_horizontalStrut_1.gridx = 3;
+        gbc_horizontalStrut_1.gridy = 0;
+        panelContent.add(horizontalStrut_1, gbc_horizontalStrut_1);
+        
+        JButton btnBurnPlanet = new JButton("Burn Planet");
+        btnBurnPlanet.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                dialogPlanet.setStatusInfo("Sending transaction to Steem. Please wait...");
+                
+                new SwingWorker<Void, Void>(){
+
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        CustomJson.burnPlanet(planet.getUserName(), planet.getId());
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            get();
+                            dialogPlanet.setStatusOk("Transaction sent to Steem. Check later for NextColony accepting the transaction.");
+                            
+                        } catch (InterruptedException | ExecutionException e) {
+                            dialogPlanet.setStatusError(e.getClass().getSimpleName() + ": " + e.getMessage());
+                        }
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        super.done();
+                    }
+                }.execute();
+                
+            }
+        });
+        GridBagConstraints gbc_btnBurnPlanet = new GridBagConstraints();
+        gbc_btnBurnPlanet.insets = new Insets(0, 0, 5, 0);
+        gbc_btnBurnPlanet.gridx = 4;
+        gbc_btnBurnPlanet.gridy = 0;
+        panelContent.add(btnBurnPlanet, gbc_btnBurnPlanet);
         
         txtGiftPlanet = new JTextField();
         txtGiftPlanet.setEnabled(false);
@@ -341,6 +386,7 @@ public class PanelPlanetDetails extends JPanel {
             }
         });
         GridBagConstraints gbc_btnActivateShield = new GridBagConstraints();
+        gbc_btnActivateShield.insets = new Insets(0, 0, 0, 5);
         gbc_btnActivateShield.fill = GridBagConstraints.HORIZONTAL;
         gbc_btnActivateShield.gridx = 2;
         gbc_btnActivateShield.gridy = 1;

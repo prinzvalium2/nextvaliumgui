@@ -186,6 +186,20 @@ public class CustomJson {
         broadcastJSONObjectToSteem(jsonObject);
     }
     
+    public static void burnPlanet(String userName, String planetId) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
+        
+        SteemUtil.setDefaultAccount(userName);
+        
+        JsonObject jsonCommand = new JsonObject();
+        jsonCommand.addProperty("tr_var1", planetId); 
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("username", userName);
+        jsonObject.addProperty("type", "burn");
+        jsonObject.add("command",  jsonCommand);
+        
+        broadcastJSONObjectToSteem(jsonObject);
+    }
     
     public static void chargeShield(String userName, String planetId) throws SteemInvalidTransactionException, SteemCommunicationException, SteemResponseException {
         

@@ -248,6 +248,9 @@ public class Util {
         if (userName == null)
             return Color.BLACK;
         
+        if (userName.equalsIgnoreCase("null"))
+            return Color.DARK_GRAY;
+        
         int[] colorValues = new int[3];
 
         colorValues[0] = ThreadLocalRandom.current().nextInt(1, 13) * 20;

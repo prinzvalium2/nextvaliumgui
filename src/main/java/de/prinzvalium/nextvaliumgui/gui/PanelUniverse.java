@@ -175,9 +175,12 @@ public class PanelUniverse extends JPanel {
             
             if (selectedUser.isEmpty())
                 g2.setColor(Util.getUserColor(planet.getUser()));
-            else if (planet.getUser().equalsIgnoreCase(selectedUser))
-                g2.setColor(Util.getUserColor(planet.getUser()).brighter());
-            else
+            else if (planet.getUser().equalsIgnoreCase(selectedUser)) {
+                if (selectedUser.equalsIgnoreCase("null"))
+                    g2.setColor(Color.LIGHT_GRAY);
+                else
+                    g2.setColor(Util.getUserColor(planet.getUser()).brighter());
+            } else
                 g2.setColor(Color.DARK_GRAY);
                 
             g2.fillOval((int)x, (int)y, 2, 2);

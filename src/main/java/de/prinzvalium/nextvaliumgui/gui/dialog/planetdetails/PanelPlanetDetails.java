@@ -56,6 +56,7 @@ public class PanelPlanetDetails extends JPanel {
     private JTextField txtGiftPlanet;
     private Planet planet;
     private JButton btnRenameplanet;
+    private JButton btnBurnPlanet;
     private HashMap<String, Building> mapBuildings;
     private JTextField txtShield;
     
@@ -297,7 +298,7 @@ public class PanelPlanetDetails extends JPanel {
         gbc_horizontalStrut_1.gridy = 0;
         panelContent.add(horizontalStrut_1, gbc_horizontalStrut_1);
         
-        JButton btnBurnPlanet = new JButton("Burn Planet");
+        btnBurnPlanet = new JButton("Burn Planet");
         btnBurnPlanet.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 
@@ -477,10 +478,12 @@ public class PanelPlanetDetails extends JPanel {
             dialogPlanet.setStatusError(but + "Private posting key of user " + planet.getUserName() + " not in nextvaliumgui.ini -> Buttons disabled");
             btnRenameplanet.setEnabled(false);
             txtRenameplanet.setEnabled(false);
+            btnBurnPlanet.setEnabled(false);
             return;
         }
         
         dialogPlanet.setStatusOk("Ok");
         btnRenameplanet.setEnabled(true);
+        btnBurnPlanet.setEnabled(true);
     }
  }
